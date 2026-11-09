@@ -7,19 +7,23 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -38,12 +42,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.itb.k09.historygo.BuildConfig
-import id.ac.itb.k09.historygo.data.LocationReading
+import id.ac.itb.k09.historygo.data.Poi
+import id.ac.itb.k09.historygo.data.SettingsStore
+import id.ac.itb.k09.historygo.data.VisitHistoryStore
 import id.ac.itb.k09.historygo.data.loadPoisFromAssets
-import id.ac.itb.k09.historygo.location.LocationClient
+import id.ac.itb.k09.historygo.location.TriggerService
+import id.ac.itb.k09.historygo.location.TriggerState
 import id.ac.itb.k09.historygo.location.hasLocationPermission
 import id.ac.itb.k09.historygo.location.isGpsEnabled
-import kotlinx.coroutines.flow.emptyFlow
 
 /** Izin yang diminta. COARSE wajib ikut diminta bersama FINE sejak Android 12. */
 private val LOCATION_PERMISSIONS = arrayOf(
@@ -52,7 +58,11 @@ private val LOCATION_PERMISSIONS = arrayOf(
 )
 
 @Composable
-fun LocationScreen(modifier: Modifier = Modifier) {
+fun LocationScreen(
+    onOpenHistory: () -> Unit,
+    onOpenDetail: (Poi) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val activity = LocalActivity.current
 
@@ -60,8 +70,9 @@ fun LocationScreen(modifier: Modifier = Modifier) {
     var hasPermission by remember { mutableStateOf(hasLocationPermission(context)) }
     var gpsOn by remember { mutableStateOf(isGpsEnabled(context)) }
     var askedOnce by rememberSaveable { mutableStateOf(false) }
+    var askedNotification by rememberSaveable { mutableStateOf(false) }
 
-    // ---------- MINTA IZIN ----------
+    // ---------- MINTA IZIN LOKASI ----------
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { result ->
@@ -73,9 +84,30 @@ fun LocationScreen(modifier: Modifier = Modifier) {
         if (!hasPermission && !askedOnce) permissionLauncher.launch(LOCATION_PERMISSIONS)
     }
 
+    // ---------- MINTA IZIN NOTIFIKASI (BARU PB05) ----------
+    // Hanya Android 13 (API 33) ke atas yang butuh izin ini. Ditolak pun tidak apa-apa:
+    // POI tetap disimpan dan kartunya muncul saat aplikasi dibuka (DECISIONS.md).
+    val notificationLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { askedNotification = true }
+
+    LaunchedEffect(hasPermission) {
+        if (hasPermission && !askedNotification && Build.VERSION.SDK_INT >= 33) {
+            notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    // ---------- MULAI SERVICE (BARU PB05) ----------
+    // Dimulai saat aplikasi terlihat dan izin lokasi ada (DECISIONS.md).
+    LaunchedEffect(hasPermission, gpsOn) {
+        if (hasPermission && gpsOn) TriggerService.start(context)
+    }
+
     LifecycleResumeEffect(Unit) {
         hasPermission = hasLocationPermission(context)
         gpsOn = isGpsEnabled(context)
+        // Kalau service sempat dihentikan lewat tombol "Berhenti", nyalakan lagi saat aplikasi dibuka.
+        if (hasPermission && gpsOn) TriggerService.start(context)
         onPauseOrDispose { }
     }
 
@@ -94,19 +126,21 @@ fun LocationScreen(modifier: Modifier = Modifier) {
         onDispose { context.unregisterReceiver(receiver) }
     }
 
-    // ---------- BACA LOKASI ----------
-    val client = remember { LocationClient(context) }
-    val readings = remember(hasPermission, gpsOn) {
-        if (hasPermission && gpsOn) client.locationUpdates() else emptyFlow()
-    }
-    val reading: LocationReading? by readings.collectAsStateWithLifecycle(initialValue = null)
+    // ---------- BACA DARI TriggerState (BARU PB05) ----------
+    // Layar tidak lagi membaca GPS sendiri; TriggerService yang membacanya.
+    val reading by TriggerState.latestReading.collectAsStateWithLifecycle()
+    val triggeredPoi by TriggerState.triggeredPoi.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) { VisitHistoryStore.load(context) }
+    val history by VisitHistoryStore.history.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) { SettingsStore.load(context) }
+    val autoplay by SettingsStore.autoplay.collectAsStateWithLifecycle()
 
-    // ---------- TAMPILAN ----------
+    // ---------- DATA ----------
     val pois = remember { loadPoisFromAssets(context) }
     val current = reading
     val poiTanpaKoordinat = pois.count { !it.hasCoordinates }
 
-    // Box = menumpuk: peta di bawah, kartu pesan di atasnya.
+    // ---------- TAMPILAN ----------
     Box(modifier = modifier.fillMaxSize()) {
 
         // Peta selalu tampil, walau izin lokasi ditolak (PRD: konten tetap bisa diakses manual).
@@ -153,6 +187,34 @@ fun LocationScreen(modifier: Modifier = Modifier) {
             if (poiTanpaKoordinat > 0) {
                 StatusCard(message = "$poiTanpaKoordinat POI belum punya koordinat, belum tampil di peta.")
             }
+
+            Button(onClick = onOpenHistory) { Text("POI yang dilewati (${history.size})") }
+
+            // F04 no. 3: saklar autoplay narasi (default mati, DECISIONS.md).
+            Card(modifier = Modifier.padding(top = 8.dp)) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("Putar narasi otomatis")
+                    Spacer(Modifier.width(12.dp))
+                    Switch(
+                        checked = autoplay,
+                        onCheckedChange = { enabled -> SettingsStore.setAutoplay(context, enabled) },
+                    )
+                }
+            }
+        }
+
+        // Kartu POI di bagian bawah saat sebuah POI terpicu (juga yang terpicu saat aplikasi di latar).
+        val shownPoi = triggeredPoi
+        if (shownPoi != null) {
+            PoiCard(
+                poi = shownPoi,
+                onClose = { TriggerState.triggeredPoi.value = null },
+                onOpenDetail = { onOpenDetail(shownPoi) },
+                modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp),
+            )
         }
     }
 }

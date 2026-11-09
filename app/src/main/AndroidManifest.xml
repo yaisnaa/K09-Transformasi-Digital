@@ -8,6 +8,13 @@
     <!-- Google Maps mengunduh tile peta. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- PB05: foreground service lokasi + notifikasi POI (DECISIONS.md).
+         ACCESS_BACKGROUND_LOCATION sengaja TIDAK dipakai. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- PB06: narasi audio tetap berputar di latar (Media3). -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -27,6 +34,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.HistoryGo"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -35,6 +43,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- PB05: service pendeteksi POI. exported=false = hanya aplikasi ini yang boleh memulainya. -->
+        <service
+            android:name=".location.TriggerService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+        <!-- PB06: service pemutar narasi. Intent-filter ini wajib agar kontrol media sistem
+     (notifikasi, lock screen, headset Bluetooth) bisa terhubung. -->
+        <service
+            android:name=".audio.NarrationService"
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
     </application>
+
 
 </manifest>

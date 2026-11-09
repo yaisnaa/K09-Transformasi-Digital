@@ -7,11 +7,19 @@
     "lat": -6.921376,
     "lng": 107.609154,
     "verified": false,
-    "ringkasan": null,
-    "foto": null,
-    "infografis": null,
+    "ringkasan": "Gedung Merdeka dibangun pada 1895 sebagai Sociëteit Concordia, tempat warga Eropa di Bandung berkumpul, berdansa, dan menonton pertunjukan. Pada 1926 gedung ini dirombak total oleh Van Galen Last dan C.P. Wolff Schoemaker dengan gaya Art Deco, lalu diperluas oleh Albert Aalbers pada 1940. Pada 18-24 April 1955 gedung ini menjadi tempat Konferensi Asia Afrika. Setelah itu gedung dipakai Konstituante sampai dibubarkan pada 1959. Sejak 1980 di dalamnya terdapat Museum Konferensi Asia Afrika.",
+    "foto": "foto/p01.jpg",
+    "infografis": {
+      "tahunDibangun": "1895 (dirombak 1926, diperluas 1940)",
+      "arsitek": "Van Galen Last dan C.P. Wolff Schoemaker (1926); Albert Aalbers (1940)",
+      "gayaArsitektur": "Art Deco",
+      "peranHistoris": "Tempat Konferensi Asia Afrika 1955, gedung Konstituante hingga 1959, Museum KAA sejak 1980"
+    },
     "audio": null,
-    "sumber": [],
+    "sumber": [
+      "Wikipedia bahasa Indonesia, \"Gedung Merdeka\", https://id.wikipedia.org/wiki/Gedung_Merdeka (diakses 10 November 2026)",
+      "Foto: Chainwit., CC BY 4.0, Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Bandung_-_Gedung_Merdeka_(2025)_-_img_03.jpg"
+    ],
     "validated": false
   },
   {
@@ -23,10 +31,12 @@
     "lng": 107.607722,
     "verified": false,
     "ringkasan": null,
-    "foto": null,
+    "foto": "foto/p02.jpg",
     "infografis": null,
     "audio": null,
-    "sumber": [],
+    "sumber": [
+      "Foto: Astari28, CC BY-SA 4.0, Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Tugu_Bola_Dunia_Asia_Afrika.jpg"
+    ],
     "validated": false
   },
   {
@@ -37,11 +47,19 @@
     "lat": -6.921595,
     "lng": 107.610591,
     "verified": false,
-    "ringkasan": null,
-    "foto": null,
-    "infografis": null,
+    "ringkasan": "Hotel ini berawal dari Hotel Homann, penginapan milik keluarga Homann yang sudah berdiri di jalan ini sejak abad ke-19. Bangunan yang terlihat sekarang selesai pada 1939 dan dirancang arsitek Belanda Albert Aalbers dengan gaya Art Deco, baik di bagian luar maupun interiornya. Saat Konferensi Asia Afrika 1955, hotel ini menjadi tempat menginap tokoh-tokoh penting, di antaranya Sukarno, Ho Chi Minh, dan Josip Broz Tito. Hingga kini Savoy Homann masih beroperasi sebagai hotel.",
+    "foto": "foto/p03.jpg",
+    "infografis": {
+      "tahunDibangun": "1939 (bangunan sekarang); Hotel Homann sudah ada sejak abad ke-19",
+      "arsitek": "Albert Aalbers",
+      "gayaArsitektur": "Art Deco",
+      "peranHistoris": "Penginapan tamu penting Konferensi Asia Afrika 1955"
+    },
     "audio": null,
-    "sumber": [],
+    "sumber": [
+      "Wikipedia bahasa Indonesia, \"Savoy Homann Bidakara Hotel\", https://id.wikipedia.org/wiki/Savoy_Homann_Bidakara_Hotel (diakses 10 November 2026)",
+      "Foto: Chainwit., CC BY 4.0, Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Bandung_-_Hotel_Savoy_Homann_(2025)_-_img_01.jpg"
+    ],
     "validated": false
   },
   {
@@ -52,11 +70,19 @@
     "lat": -6.921070,
     "lng": 107.612037,
     "verified": false,
-    "ringkasan": null,
-    "foto": null,
-    "infografis": null,
+    "ringkasan": "Hotel Preanger bermula pada 1897 sebagai penginapan kecil di tepi jalan yang kini bernama Jalan Asia Afrika. Pada 1920-an pemiliknya, W.H.C. van Deeterkom, membangunnya ulang dengan rancangan C.P. Wolff Schoemaker bergaya Art Deco. Sukarno muda, yang saat itu mahasiswa Schoemaker, ikut terlibat sebagai juru gambar. Setelah renovasi rampung pada 1929, namanya menjadi Grand Hotel Preanger. Pada 1955 hotel ini ikut menampung tamu Konferensi Asia Afrika yang berlangsung di Gedung Merdeka.",
+    "foto": "foto/p04.jpg",
+    "infografis": {
+      "tahunDibangun": "1897 (dibangun ulang, selesai 1929)",
+      "arsitek": "C.P. Wolff Schoemaker",
+      "gayaArsitektur": "Art Deco",
+      "peranHistoris": "Penginapan tamu Konferensi Asia Afrika 1955; Sukarno muda ikut dalam renovasinya"
+    },
     "audio": null,
-    "sumber": [],
+    "sumber": [
+      "Wikipedia bahasa Indonesia, \"Prama Grand Preanger\", https://id.wikipedia.org/wiki/Prama_Grand_Preanger (diakses 10 November 2026)",
+      "Foto: Chainwit., CC BY 4.0, Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Bandung_-_Hotel_Preanger_(2025)_-_img_01.jpg"
+    ],
     "validated": false
   },
   {
@@ -67,11 +93,18 @@
     "lat": -6.921481,
     "lng": 107.611164,
     "verified": false,
-    "ringkasan": null,
+    "ringkasan": "Tugu Titik Nol Kilometer berdiri di Jalan Asia Afrika, di depan kantor Dinas Bina Marga dan Penataan Ruang Jawa Barat. Menurut kisah yang beredar, pada 1810 Gubernur Jenderal H.W. Daendels menancapkan tongkatnya di titik ini saat meninjau Jalan Raya Pos bersama Bupati R.A. Wiranatakusumah II, lalu meminta agar sebuah kota dibangun di sana. Tugu ini diresmikan Gubernur Jawa Barat Danny Setiawan pada 2004 dan direnovasi pada 2016. Di dekatnya ada mesin gilas uap dan prasasti untuk mengenang korban pembangunan Jalan Raya Pos.",
     "foto": null,
-    "infografis": null,
+    "infografis": {
+      "tahunDibangun": "2004 (diresmikan); direnovasi 2016",
+      "arsitek": null,
+      "gayaArsitektur": null,
+      "peranHistoris": "Penanda titik awal Kota Bandung dan pengingat pembangunan Jalan Raya Pos era Daendels (1810)"
+    },
     "audio": null,
-    "sumber": [],
+    "sumber": [
+      "iNews.id, \"KM 0, Tonggak Sejarah Kota Bandung 211 Tahun Silam\", https://www.inews.id/regional/jabar/km-0-tonggak-sejarah-kota-bandung-211-tahun-silam/all (diakses 10 November 2026)"
+    ],
     "validated": false
   },
   {
@@ -82,11 +115,20 @@
     "lat": null,
     "lng": null,
     "verified": false,
-    "ringkasan": null,
-    "foto": null,
-    "infografis": null,
+    "ringkasan": "Kantor Pos Besar Bandung dibangun pemerintah Hindia Belanda mulai 1928 dan selesai pada 1931 sebagai Kantor Pos dan Telegraf. Gedung rancangan J. Ven Gendt ini bergaya Art Deco geometris. Lokasinya berdekatan dengan bekas pos pergantian kuda di Jalan Raya Pos. Hampir seabad kemudian, bangunan ini masih berfungsi sebagai kantor pos yang dikelola Pos Indonesia. Pada 2017 pemerintah menetapkannya sebagai bangunan cagar budaya peringkat nasional.",
+    "foto": "foto/p06.jpg",
+    "infografis": {
+      "tahunDibangun": "1928-1931",
+      "arsitek": "J. Ven Gendt",
+      "gayaArsitektur": "Art Deco geometris",
+      "peranHistoris": "Kantor pos dan telegraf sejak masa kolonial, masih beroperasi; cagar budaya nasional (2017)"
+    },
     "audio": null,
-    "sumber": [],
+    "sumber": [
+      "Wikipedia bahasa Indonesia, \"Kantor Pos Besar Bandung\", https://id.wikipedia.org/wiki/Kantor_Pos_Besar_Bandung (diakses 10 November 2026)",
+      "Wikipedia bahasa Indonesia, \"Alun-alun Bandung\", https://id.wikipedia.org/wiki/Alun-alun_Bandung (diakses 10 November 2026)",
+      "Foto: Rochelimit, CC BY-SA 4.0, Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Kantor_Pos_Besar_Bandung.JPG"
+    ],
     "validated": false
   },
   {
@@ -97,11 +139,20 @@
     "lat": null,
     "lng": null,
     "verified": false,
-    "ringkasan": null,
-    "foto": null,
-    "infografis": null,
+    "ringkasan": "Alun-alun Bandung menjadi pusat kota sejak pusat pemerintahan dipindahkan dari Krapyak ke dekat Jalan Raya Pos pada awal abad ke-19, berdampingan dengan Masjid Raya. Kawasan ini berkali-kali ditata ulang. Pada 2001-2004 alun-alun disatukan dengan pelataran Masjid Raya. Penataan terakhir diresmikan Wali Kota Ridwan Kamil pada 31 Desember 2014: taman seluas 1.200 meter persegi beralas rumput sintetis di atas gedung parkir, lengkap dengan area bermain anak, perpustakaan, dan WiFi.",
+    "foto": "foto/p07.jpg",
+    "infografis": {
+      "tahunDibangun": "Awal abad ke-19; penataan terakhir 2014",
+      "arsitek": null,
+      "gayaArsitektur": null,
+      "peranHistoris": "Pusat kota tradisional Bandung dan ruang publik warga"
+    },
     "audio": null,
-    "sumber": [],
+    "sumber": [
+      "Wikipedia bahasa Indonesia, \"Alun-alun Bandung\", https://id.wikipedia.org/wiki/Alun-alun_Bandung (diakses 10 November 2026)",
+      "Wikipedia bahasa Indonesia, \"Masjid Raya Bandung\", https://id.wikipedia.org/wiki/Masjid_Raya_Bandung (diakses 10 November 2026)",
+      "Foto: Nuroni, CC BY-SA 4.0, Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Alun_-_Alun_Bandung_Masjid_Raya_Bandung.jpg"
+    ],
     "validated": false
   },
   {
@@ -112,11 +163,19 @@
     "lat": null,
     "lng": null,
     "verified": false,
-    "ringkasan": null,
-    "foto": null,
-    "infografis": null,
+    "ringkasan": "Masjid Raya Bandung pertama kali didirikan sekitar 1810-1812, bersamaan dengan pindahnya pusat kota ke kawasan Alun-alun. Awalnya masjid ini sederhana, berdinding bambu, dan atapnya kemudian dibuat bersusun tinggi yang oleh warga disebut bale nyungcung. Menjelang Konferensi Asia Afrika 1955, masjid dirombak dengan kubah bawang atas desain Sukarno dan menjadi tempat salat para delegasi. Bentuknya yang sekarang, dengan dua menara setinggi 81 meter, diresmikan pada 2003.",
+    "foto": "foto/p08.jpg",
+    "infografis": {
+      "tahunDibangun": "1810-1812; bentuk sekarang diresmikan 2003",
+      "arsitek": "Keulman, Arie Atmadibrata, Nu'man, dan Slamet Wirasonjaya (desain 2001)",
+      "gayaArsitektur": "Timur Tengah dengan ornamen seni Islam Sunda",
+      "peranHistoris": "Pusat kegiatan keagamaan kota; tempat salat delegasi Konferensi Asia Afrika 1955"
+    },
     "audio": null,
-    "sumber": [],
+    "sumber": [
+      "Wikipedia bahasa Indonesia, \"Masjid Raya Bandung\", https://id.wikipedia.org/wiki/Masjid_Raya_Bandung (diakses 10 November 2026)",
+      "Foto: Rhmtdns, CC BY-SA 4.0, Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Masjid_Raya_Bandung_menara_dua_sisi.jpg"
+    ],
     "validated": false
   },
   {
@@ -127,11 +186,18 @@
     "lat": null,
     "lng": null,
     "verified": false,
-    "ringkasan": null,
+    "ringkasan": "Cikapundung Riverspot adalah ruang publik di tepi Sungai Cikapundung, di kawasan Jalan Dr. Ir. Sukarno dekat Jalan Asia Afrika. Tempat ini dibangun pada 2013-2015 melalui Cikapundung Rehabilitation Program bersama komunitas dan warga, dengan anggaran sekitar Rp18 miliar dari APBN melalui BBWS Citarum. Tujuannya mengubah citra sungai yang dulu kotor menjadi tempat warga berkumpul dan berkegiatan. Pada 2016 penataan Teras Cikapundung, bagian dari program yang sama, diresmikan Wali Kota Ridwan Kamil.",
     "foto": null,
-    "infografis": null,
+    "infografis": {
+      "tahunDibangun": "2013-2015",
+      "arsitek": null,
+      "gayaArsitektur": null,
+      "peranHistoris": "Ruang publik tepi sungai dan bagian dari upaya memulihkan Sungai Cikapundung"
+    },
     "audio": null,
-    "sumber": [],
+    "sumber": [
+      "detikJabar, \"Sejarah Cikapundung Riverspot, Berawal dari Wajah Muram Sungai\", https://www.detik.com/jabar/berita/d-7077513/sejarah-cikapundung-riverspot-berawal-dari-wajah-muram-sungai (diakses 10 November 2026)"
+    ],
     "validated": false
   },
   {
@@ -142,11 +208,18 @@
     "lat": null,
     "lng": null,
     "verified": false,
-    "ringkasan": null,
+    "ringkasan": "Penjara Banceuy dibangun pemerintah Hindia Belanda pada akhir abad ke-19 untuk tahanan politik dan kriminal biasa; sumber menyebut tahun 1871 dan 1877. Sukarno ditahan di sini sekitar delapan bulan sejak akhir Desember 1929, bersama Maskoen, Soepriadinata, dan Gatot Mangkoepraja. Di sel nomor 5 ia menyusun pidato pembelaan Indonesia Menggugat, yang kemudian dibacakan di Landraad Bandung. Penjara ini dibongkar pada 1983 untuk kompleks pertokoan; yang tersisa hanya sel Sukarno dan sebagian menara jaga.",
     "foto": null,
-    "infografis": null,
+    "infografis": {
+      "tahunDibangun": "1871 atau 1877 (sumber berbeda)",
+      "arsitek": null,
+      "gayaArsitektur": null,
+      "peranHistoris": "Tempat Sukarno ditahan dan menyusun pleidoi Indonesia Menggugat (1929-1930)"
+    },
     "audio": null,
-    "sumber": [],
+    "sumber": [
+      "Wikipedia bahasa Indonesia, \"Penjara Banceuy\", https://id.wikipedia.org/wiki/Penjara_Banceuy (diakses 10 November 2026)"
+    ],
     "validated": false
   }
 ]

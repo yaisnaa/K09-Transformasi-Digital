@@ -16,9 +16,9 @@ data class Poi(
     val lng: Double? = null,
     val verified: Boolean = false,    // koordinat sudah dicek di lapangan?
     val ringkasan: String? = null,
-    val foto: String? = null,
-    val infografis: String? = null,
-    val audio: String? = null,
+    val foto: String? = null,         // path di folder assets, mis. "foto/p01.jpg"
+    val infografis: Infografis? = null,
+    val audio: String? = null,        // path di folder assets, mis. "audio/p01.mp3"
     val sumber: List<String> = emptyList(),
     val validated: Boolean = false,   // konten sudah diperiksa tim?
 ) {
@@ -26,3 +26,15 @@ data class Poi(
     val hasCoordinates: Boolean
         get() = lat != null && lng != null
 }
+
+/**
+ * Infografis ringkas (F03). Semua berupa teks supaya fleksibel,
+ * mis. tahun "1895" atau "sekitar 1920-an".
+ */
+@Serializable
+data class Infografis(
+    val tahunDibangun: String? = null,
+    val arsitek: String? = null,
+    val gayaArsitektur: String? = null,
+    val peranHistoris: String? = null,
+)
