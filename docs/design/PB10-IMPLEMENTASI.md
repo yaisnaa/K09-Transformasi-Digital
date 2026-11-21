@@ -33,67 +33,92 @@ Panduan kerja untuk menerapkan desain Baseline v3 ke kode. Dikerjakan berurutan 
 ## Fase
 
 ### F0. Persiapan
-- [ ] Buat branch `feature/pb10-ui` dari `dev`.
+- [x] Buat branch `feature/pb10-ui` dari `dev`.
 - [ ] Ekspor PNG semua artboard v3 dan lembar state ke `docs/design/baseline-v3/`.
 - [ ] Tim mengonfirmasi `APPROACH_DISTANCE_M`, lalu dicatat di `DECISIONS.md`.
 
 ### F1. Fondasi tema
-- [ ] Font ke `res/font/` (`dm_serif_display.ttf`, `inter_*.ttf`, `ibm_plex_mono_medium.ttf`).
-- [ ] `ui/theme/Color.kt`: token `DESIGN.md` + peran M3 terang dan gelap.
-- [ ] `ui/theme/Type.kt`: skala huruf Material dipetakan ke tiga font (sp).
-- [ ] `ui/theme/Shape.kt`: 8/10/16/20/24dp.
-- [ ] `ui/theme/Theme.kt`: matikan Dynamic Color, pilih skema dari tema sistem.
+- [x] Font ke `res/font/` (`dm_serif_display.ttf`, `inter_*.ttf`, `ibm_plex_mono_medium.ttf`).
+- [x] `ui/theme/Color.kt`: token `DESIGN.md` + peran M3 terang dan gelap.
+- [x] `ui/theme/Type.kt`: skala huruf Material dipetakan ke tiga font (sp).
+- [x] `ui/theme/Shape.kt`: 8/10/16/20/24dp.
+- [x] `ui/theme/Theme.kt`: matikan Dynamic Color, pilih skema dari tema sistem.
 - **Cek:** build hijau; layar yang ada sudah memakai warna dan font baru.
 
 ### F2. Kerangka navigasi
-- [ ] `Screen` sealed class: Jelajah, Rute, JejakSejarah, Riwayat, Detail(id), Cari, Profil, Pengaturan, Onboarding.
-- [ ] Komponen `HistoryGoNavBar` (4 tujuan, indikator pil).
-- [ ] Layar Pengaturan baru: rencana kunjungan, bahasa (segmented), autoplay, deteksi on/off, Tentang konten. Toggle bahasa dan autoplay dipindah dari `LocationScreen`.
+- [x] `Screen` sealed class: Jelajah, Rute, JejakSejarah, Riwayat, Detail(id), Cari, Profil, Pengaturan, Onboarding.
+- [x] Komponen `HistoryGoNavBar` (4 tujuan, indikator pil).
+- [x] Layar Pengaturan baru: rencana kunjungan, bahasa (segmented), autoplay, deteksi on/off, Tentang konten. Toggle bahasa dan autoplay dipindah dari `LocationScreen`.
 - **Cek:** semua tab bisa dibuka; tombol Back sistem kembali dengan benar.
 
 ### F3. Peta (Explore Map)
-- [ ] `map_style.json` dan `map_style_dark.json` sesuai warna peta di `DESIGN.md`; sembunyikan `poi.business`.
-- [ ] Marker belah ketupat (`MarkerComposable`), marker terpicu, titik posisi, radius 25 m (`Circle`), label nama.
-- [ ] Bar atas (nama app, chip status, tombol Pengaturan) dan search bar.
-- [ ] Sheet per state: di luar area, mendekati, terpicu (kartu POI baru), izin ditolak, GPS mati, mencari lokasi.
-- [ ] Logika "mendekati" di `trigger/` (Kotlin murni) + unit test, memakai `APPROACH_DISTANCE_M`.
+- [x] `map_style.json` dan `map_style_dark.json` sesuai warna peta di `DESIGN.md`; sembunyikan `poi.business`.
+- [x] Marker belah ketupat (`MarkerComposable`), marker terpicu, titik posisi, radius 25 m (`Circle`), label nama.
+- [x] Bar atas (nama app, chip status, tombol Pengaturan) dan search bar.
+- [x] Sheet per state: di luar area, mendekati, terpicu (kartu POI baru), izin ditolak, GPS mati, mencari lokasi.
+- [x] Logika "mendekati" di `trigger/` (Kotlin murni) + unit test, memakai `APPROACH_DISTANCE_M`.
 - **Cek emulator:** lokasi palsu di luar area, ±60 m dari P01, dan di dalam 25 m (perintah di bawah).
 
 ### F4. POI Detail
-- [ ] Hero foto + sheet membulat, judul display, chip status, ornamen.
-- [ ] Bar narasi (play dan jeda, chip "Audio contoh" selama audio placeholder).
-- [ ] Plakat infografis 2 kolom.
-- [ ] Kartu Misi Jejak Sejarah: semua state check-in dan kuis dari lembar "State: check-in, kuis". Kuis tanpa pilihan awal.
-- [ ] Bar "Navigasi ke sini" tetap di bawah; versi nonaktif untuk POI tanpa koordinat.
+- [x] Hero foto + sheet membulat, judul display, chip status, ornamen.
+- [x] Bar narasi (play dan jeda, chip "Audio contoh" selama audio placeholder).
+- [x] Plakat infografis 2 kolom.
+- [x] Kartu Misi Jejak Sejarah: semua state check-in dan kuis dari lembar "State: check-in, kuis". Kuis tanpa pilihan awal.
+- [x] Bar "Navigasi ke sini" tetap di bawah; versi nonaktif untuk POI tanpa koordinat.
 
 ### F5. Layar fitur
-- [ ] Cari: search field, chip filter, hasil dengan jarak, tanpa lokasi, tidak ditemukan.
-- [ ] Kuesioner profil: kartu durasi, checkbox minat, tombol nonaktif tanpa minat.
-- [ ] Rute rekomendasi: timeline belah ketupat, jam tiba, catatan kontekstual, state kosong.
-- [ ] Kartu navigasi: berjalan, menghitung, menunggu lokasi, menghitung ulang, gagal, tiba, beberapa titik.
-- [ ] Jejak Sejarah: progres belah ketupat, poin, badge terkunci/terbuka, daftar misi, ulangi misi dengan dialog konfirmasi.
-- [ ] Riwayat: judul baru, state kosong, hapus dengan snackbar Urungkan.
+- [x] Cari: search field, chip filter, hasil dengan jarak, tanpa lokasi, tidak ditemukan.
+- [x] Kuesioner profil: kartu durasi, checkbox minat, tombol nonaktif tanpa minat.
+- [x] Rute rekomendasi: timeline belah ketupat, jam tiba, catatan kontekstual, state kosong.
+- [x] Kartu navigasi: berjalan, menghitung, menunggu lokasi, menghitung ulang, gagal, tiba, beberapa titik.
+- [x] Jejak Sejarah: progres belah ketupat, poin, badge terkunci/terbuka, daftar misi, ulangi misi dengan dialog konfirmasi.
+- [x] Riwayat: judul baru, state kosong, hapus dengan snackbar Urungkan.
 
 ### F6. Onboarding dan izin
-- [ ] Dua layar onboarding, tampil sekali (flag di `SettingsStore`).
-- [ ] Layar izin menjelaskan lokasi dan notifikasi sebelum dialog sistem; "Jelajah tanpa lokasi" langsung ke peta.
+- [x] Dua layar onboarding, tampil sekali (flag di `SettingsStore`).
+- [x] Layar izin menjelaskan lokasi dan notifikasi sebelum dialog sistem; "Jelajah tanpa lokasi" langsung ke peta.
 
 ### F7. Ikon dan notifikasi
-- [ ] Adaptive icon vector (`ic_launcher_foreground.xml`, latar Chestnut) dari artboard Ikon.
-- [ ] Ikon notifikasi satu warna (`ic_stat_historygo.xml`) menggantikan `android.R.drawable.ic_dialog_map` di `TriggerService`.
-- [ ] Warna aksen notifikasi Chestnut.
+- [x] Adaptive icon vector (`ic_launcher_foreground.xml`, latar Chestnut) dari artboard Ikon.
+- [x] Ikon notifikasi satu warna (`ic_stat_historygo.xml`) menggantikan `android.R.drawable.ic_dialog_map` di `TriggerService`.
+- [x] Warna aksen notifikasi Chestnut.
 
 ### F8. Teks
-- [ ] Perbarui `AppStrings` ID dan EN: "Tempat yang kamu lewati", "Tempat tidak ditemukan.", jam tiba, teks onboarding, izin, Pengaturan, Tentang konten, state baru.
-- [ ] `TranslationTest` tetap hijau (semua kunci punya terjemahan).
+- [x] Perbarui `AppStrings` ID dan EN: "Tempat yang kamu lewati", "Tempat tidak ditemukan.", jam tiba, teks onboarding, izin, Pengaturan, Tentang konten, state baru.
+- [x] `TranslationTest` tetap hijau (semua kunci punya terjemahan).
 
 ### F9. Verifikasi akhir
-- [ ] `./gradlew testDebugUnitTest` hijau.
-- [ ] Screenshot emulator semua layar, terang dan gelap, disimpan di `docs/design/impl/` dan dibandingkan berdampingan dengan `docs/design/baseline-v3/`.
-- [ ] Font scale 1.3: tidak ada teks terpotong.
-- [ ] Empat state prototype PRD dapat didemokan: di luar area, mendekati, terpicu, akses konten.
+- [x] `./gradlew testDebugUnitTest` hijau.
+- [x] Screenshot emulator semua layar, terang dan gelap, disimpan di `docs/design/impl/` dan dibandingkan berdampingan dengan `docs/design/baseline-v3/`.
+- [x] Font scale 1.3: tidak ada teks terpotong.
+- [x] Empat state prototype PRD dapat didemokan: di luar area, mendekati, terpicu, akses konten.
 - [ ] Acceptance F01-F06 dicek ulang di emulator (tidak rusak karena perubahan UI).
 - [ ] Entri Development Log / AI & Tools Disclosure untuk PB10.
+
+## Status (2026-11-21)
+
+F1-F9 selesai di branch `feature/pb10-ui`, satu commit per fase. Bukti screenshot emulator di `docs/design/impl/` (nama file diawali nomor fase).
+
+Teruji di emulator (`Medium_Phone_API_37.0`, lokasi palsu):
+- Empat state peta: di luar area, mendekati (±60 m), terpicu, akses konten
+- Izin ditolak / GPS mati / deteksi dimatikan (service benar-benar berhenti dan hidup lagi)
+- POI Detail, check-in, kuis tanpa pilihan awal, jawaban salah, misi selesai
+- Narasi diputar dan tombol berubah menjadi "Jeda cerita" (media session PLAYING)
+- Cari, kuesioner, rute rekomendasi, navigasi dengan Routes API, Jejak Sejarah, Riwayat + Urungkan
+- Onboarding pada instalasi baru, dialog izin sistem setelah penjelasan, ikon launcher baru
+- Tema gelap, bahasa Inggris, ukuran huruf 1.3
+- `./gradlew testDebugUnitTest`: 61 test hijau (termasuk 7 test baru `ApproachTest`)
+
+Belum teruji (butuh HP fisik, PB07/PB14):
+- Notifikasi POI saat aplikasi di latar dan ikon notifikasi baru di status bar
+- Narasi saat layar terkunci dan kontrol dari lock screen
+- Akurasi GPS nyata untuk state "mendekati" (100 m) dan trigger 25 m
+- Map style di HP fisik dan perilaku penghemat baterai OEM
+
+Masih terbuka:
+- Ekspor PNG artboard v3 ke `docs/design/baseline-v3/` untuk perbandingan berdampingan
+- Konfirmasi seluruh tim untuk `APPROACH_DISTANCE_M` = 100 m (DECISIONS.md)
+- Acceptance F01-F06 lengkap per butir (compliance matrix) dan entri Development Log
 
 ## Cara menguji di emulator
 
