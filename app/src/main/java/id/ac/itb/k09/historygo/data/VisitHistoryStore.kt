@@ -47,6 +47,14 @@ object VisitHistoryStore {
         File(context.filesDir, FILE_NAME).writeText(json.encodeToString(serializer, updated))
     }
 
+    /** Mengembalikan riwayat yang baru dihapus (tombol "Urungkan" di snackbar, PB10). */
+    @Synchronized
+    fun restore(context: Context, records: List<VisitRecord>) {
+        load(context)
+        _history.value = records
+        File(context.filesDir, FILE_NAME).writeText(json.encodeToString(serializer, records))
+    }
+
     /** Menghapus seluruh riwayat (dipakai tombol "Hapus riwayat"). */
     @Synchronized
     fun clear(context: Context) {

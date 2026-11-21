@@ -12,6 +12,16 @@ import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.ui.res.painterResource
+import id.ac.itb.k09.historygo.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -204,14 +214,9 @@ fun LocationScreen(
         ) {
             MapTopBar(status = status, onOpenSettings = onOpenSettings)
             MapSearchButton(onClick = onOpenSearch)
-            // F06: panel navigasi selama navigasi berjalan (tampilan baru di PB10 F5).
-            navigation?.let { nav ->
-                NavigationCard(
-                    nav = nav,
-                    hasLocation = current != null,
-                    onStop = { NavigationManager.stop() },
-                    onRetry = { NavigationManager.retry() },
-                )
+            // F06: pita teal "Menuju …" selama navigasi berjalan; kartunya di bawah.
+            navTarget?.let { target ->
+                NavHeader(pois.firstOrNull { it.id == target.id }?.nama ?: target.nama)
             }
             if (!BuildConfig.HAS_MAPS_API_KEY) DevWarning(s.mapsKeyMissing)
         }
@@ -275,14 +280,22 @@ fun LocationScreen(
                     onDismiss = { locationSheetDismissed = true },
                 )
 
+                // F06: kartu navigasi (berjalan, menghitung, gagal, tiba, beberapa titik).
+                navigation != null -> NavigationCard(
+                    nav = navigation!!,
+                    hasLocation = current != null,
+                    onStop = { NavigationManager.stop() },
+                    onRetry = { NavigationManager.retry() },
+                )
+
                 // Mendekati (PB10): pita kecil, peta tetap terlihat.
                 approaching != null -> ApproachStrip(
                     name = approaching.poi.nama,
                     distanceM = approaching.distanceM.roundToInt(),
                 )
 
-                // Di luar area: bangunan terdekat. Disembunyikan selama navigasi berjalan.
-                current != null && navigation == null -> IdleSheet(
+                // Di luar area: bangunan terdekat.
+                current != null -> IdleSheet(
                     nearestName = nearest?.poi?.nama,
                     nearestDistanceM = nearest?.distanceM?.roundToInt(),
                     nearestWalkMinutes = nearest?.distanceM?.let { PoiSearch.walkMinutes(it) },
@@ -292,5 +305,20 @@ fun LocationScreen(
                 )
             }
         }
+    }
+}
+
+/** Pita teal di atas peta selama navigasi berjalan (DESIGN.md: teal = lokasi dan rute). */
+@Composable
+private fun NavHeader(destinationName: String) {
+    val s = LocalStrings.current
+    val colors = MaterialTheme.colorScheme
+    Row(
+        modifier = Modifier.fillMaxWidth().background(colors.secondary, MaterialTheme.shapes.medium).padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(painterResource(R.drawable.ic_navigate), null, tint = colors.onSecondary, modifier = Modifier.size(20.dp))
+        Spacer(Modifier.width(10.dp))
+        Text(s.navTowards(destinationName), style = MaterialTheme.typography.titleMedium, color = colors.onSecondary, maxLines = 1)
     }
 }

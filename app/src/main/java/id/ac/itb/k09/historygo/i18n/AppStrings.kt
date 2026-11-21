@@ -67,6 +67,31 @@ interface AppStrings {
     val quizDummyChip: String
     fun pointsShort(value: Int): String
 
+    // Layar fitur (PB10 F5)
+    fun resultsCount(count: Int): String
+    val notFoundHint: String
+    val interestMultiHint: String
+    fun filterHelp(filter: PoiFilter): String
+    val minutesUnit: String
+    fun etaAt(time: String): String
+    fun recFinish(time: String, used: Int, duration: Int): String
+    fun recVisitNote(visit: Int): String
+    val recOrderNote: String
+    val changeDuration: String
+    val historySubtitle: String
+    val today: String
+    val emptyHistoryHint: String
+    val historyCleared: String
+    val undo: String
+    val detectedBackgroundShort: String
+    val detectedForegroundShort: String
+    val missionsDoneLabel: String
+    fun pointsLabel(value: Int): String
+    val resetConfirmTitle: String
+    val resetConfirmBody: String
+    val cancel: String
+    fun navTowards(name: String): String
+
     // Peta (Explore Map)
     val permissionNeeded: String
     val allowLocation: String
@@ -268,6 +293,34 @@ object IdStrings : AppStrings {
     override val keepsPlayingLocked = "Tetap berputar saat layar terkunci"
     override val quizDummyChip = "Soal contoh"
     override fun pointsShort(value: Int) = "+$value poin"
+
+    override fun resultsCount(count: Int) = "$count tempat, terdekat dulu"
+    override val notFoundHint = "Coba kata lain, atau pilih kategori Semua."
+    override val interestMultiHint = "Boleh lebih dari satu."
+    override fun filterHelp(filter: PoiFilter) = when (filter) {
+        PoiFilter.HERITAGE -> "Bangunan dan situs bersejarah"
+        PoiFilter.SPOT_FOTO -> "Tempat ikonik untuk berfoto"
+        PoiFilter.ISTIRAHAT_KULINER -> "Ruang publik untuk rehat dan makan"
+    }
+    override val minutesUnit = "menit"
+    override fun etaAt(time: String) = "tiba ±$time"
+    override fun recFinish(time: String, used: Int, duration: Int) = "Selesai ±$time, memakai $used dari $duration menitmu"
+    override fun recVisitNote(visit: Int) = "Termasuk ±$visit menit di setiap tempat."
+    override val recOrderNote = "Urutan dimulai dari tempat terdekat. Waktu jalan diperkirakan dari jarak garis lurus."
+    override val changeDuration = "Ubah durasi"
+    override val historySubtitle = "Tercatat otomatis, juga saat HP ada di saku."
+    override val today = "Hari ini"
+    override val emptyHistoryHint = "Mulai berjalan di Jalan Asia Afrika. Setiap bangunan yang kamu datangi akan tercatat di sini."
+    override val historyCleared = "Riwayat dihapus"
+    override val undo = "Urungkan"
+    override val detectedBackgroundShort = "Terdeteksi di latar"
+    override val detectedForegroundShort = "Terdeteksi saat aplikasi terbuka"
+    override val missionsDoneLabel = "misi selesai"
+    override fun pointsLabel(value: Int) = "$value poin"
+    override val resetConfirmTitle = "Ulangi semua misi?"
+    override val resetConfirmBody = "Semua check-in, jawaban kuis, dan poin akan dihapus."
+    override val cancel = "Batal"
+    override fun navTowards(name: String) = "Menuju $name"
     override val switchLanguage = "🌐 English"
 
     override val permissionNeeded = "HistoryGo butuh izin lokasi presisi untuk mengetahui bangunan bersejarah di sekitarmu."
@@ -314,13 +367,13 @@ object IdStrings : AppStrings {
     override val playNarration = "Putar narasi"
     override val pauseNarration = "Jeda narasi"
 
-    override val historyTitle = "POI yang dilewati"
-    override val noHistory = "Belum ada POI yang dilewati."
+    override val historyTitle = "Tempat yang kamu lewati"
+    override val noHistory = "Belum ada tempat yang kamu lewati."
     override val clearHistory = "Hapus riwayat"
     override val detectedInBackground = " · terdeteksi di latar"
     override val detectedInForeground = " · terdeteksi saat aplikasi terbuka"
 
-    override val searchTitle = "Cari POI"
+    override val searchTitle = "Cari tempat"
     override val searchHint = "Nama tempat, mis. merdeka"
     override val filterAll = "Semua"
     override fun filterLabel(filter: PoiFilter) = when (filter) {
@@ -329,7 +382,7 @@ object IdStrings : AppStrings {
         PoiFilter.ISTIRAHAT_KULINER -> "Istirahat/Kuliner"
     }
     override val noLocationSortedByName = "Lokasi belum terbaca: hasil diurutkan menurut nama, tanpa jarak."
-    override val notFound = "POI tidak ditemukan."
+    override val notFound = "Tempat tidak ditemukan."
     override fun distanceAndWalk(meters: Int, minutes: Int) = "$meters m · ±$minutes menit jalan kaki"
 
     override val navArrived = "Tiba di tujuan"
@@ -362,16 +415,16 @@ object IdStrings : AppStrings {
     override val profileIntro = "HistoryGo akan menyarankan hingga 3 tempat yang cocok dan muat dalam waktumu."
     override val profileDurationQuestion = "Berapa lama waktumu di kawasan Asia Afrika?"
     override fun minutes(value: Int) = "$value menit"
-    override val profileInterestQuestion = "Apa yang ingin kamu lihat? (boleh lebih dari satu)"
+    override val profileInterestQuestion = "Apa yang ingin kamu lihat?"
     override val skip = "Lewati"
     override val seeRecommendations = "Lihat rekomendasi"
     override val recTitle = "Rekomendasi untukmu"
     override val recNeedProfile = "Isi profil singkat dulu supaya HistoryGo bisa memberi rekomendasi."
     override val fillProfile = "Isi profil"
     override val recNoLocation = "Lokasi belum terbaca: jarak dihitung dari tengah kawasan."
-    override fun recVisitedExcluded(count: Int) = "$count POI yang sudah dilewati tidak direkomendasikan lagi."
+    override fun recVisitedExcluded(count: Int) = "$count tempat yang sudah kamu lewati tidak direkomendasikan lagi."
     override fun recEmpty(duration: Int) =
-        "Belum ada POI yang muat dalam $duration menit, atau semua POI sudah dilewati. Coba durasi yang lebih panjang."
+        "Belum ada tempat yang muat dalam $duration menit, atau semua tempat sudah kamu lewati. Coba durasi yang lebih panjang."
     override fun recLine(meters: Int, walk: Int, finishAt: Int) =
         "$meters m · ±$walk menit jalan · selesai di menit ke-$finishAt"
     override val recMatchesInterest = "Sesuai minatmu"
@@ -477,6 +530,34 @@ object EnStrings : AppStrings {
     override val keepsPlayingLocked = "Keeps playing when the screen is locked"
     override val quizDummyChip = "Sample question"
     override fun pointsShort(value: Int) = "+$value pts"
+
+    override fun resultsCount(count: Int) = "$count places, nearest first"
+    override val notFoundHint = "Try another word, or choose All."
+    override val interestMultiHint = "Choose one or more."
+    override fun filterHelp(filter: PoiFilter) = when (filter) {
+        PoiFilter.HERITAGE -> "Historic buildings and sites"
+        PoiFilter.SPOT_FOTO -> "Iconic spots for photos"
+        PoiFilter.ISTIRAHAT_KULINER -> "Public spaces to rest and eat"
+    }
+    override val minutesUnit = "min"
+    override fun etaAt(time: String) = "arrive ~$time"
+    override fun recFinish(time: String, used: Int, duration: Int) = "Done ~$time, using $used of your $duration minutes"
+    override fun recVisitNote(visit: Int) = "Includes ~$visit min at each place."
+    override val recOrderNote = "The order starts from the nearest place. Walking time is estimated from straight-line distance."
+    override val changeDuration = "Change duration"
+    override val historySubtitle = "Recorded automatically, even with your phone in your pocket."
+    override val today = "Today"
+    override val emptyHistoryHint = "Start walking along Jalan Asia Afrika. Every building you visit will be recorded here."
+    override val historyCleared = "History cleared"
+    override val undo = "Undo"
+    override val detectedBackgroundShort = "Detected in the background"
+    override val detectedForegroundShort = "Detected while the app was open"
+    override val missionsDoneLabel = "missions done"
+    override fun pointsLabel(value: Int) = "$value pts"
+    override val resetConfirmTitle = "Restart all missions?"
+    override val resetConfirmBody = "All check-ins, quiz answers, and points will be deleted."
+    override val cancel = "Cancel"
+    override fun navTowards(name: String) = "Heading to $name"
     override val switchLanguage = "🌐 Bahasa Indonesia"
 
     override val permissionNeeded = "HistoryGo needs precise location access to find historic buildings around you."
@@ -524,7 +605,7 @@ object EnStrings : AppStrings {
     override val playNarration = "Play narration"
     override val pauseNarration = "Pause narration"
 
-    override val historyTitle = "Visited places"
+    override val historyTitle = "Places you passed"
     override val noHistory = "No places visited yet."
     override val clearHistory = "Clear history"
     override val detectedInBackground = " · detected in the background"
@@ -572,7 +653,7 @@ object EnStrings : AppStrings {
     override val profileIntro = "HistoryGo will suggest up to 3 places that match your interests and fit your time."
     override val profileDurationQuestion = "How much time do you have in the Asia Afrika area?"
     override fun minutes(value: Int) = "$value min"
-    override val profileInterestQuestion = "What would you like to see? (choose one or more)"
+    override val profileInterestQuestion = "What would you like to see?"
     override val skip = "Skip"
     override val seeRecommendations = "See recommendations"
     override val recTitle = "Recommended for you"
