@@ -20,6 +20,7 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import id.ac.itb.k09.historygo.MainActivity
+import id.ac.itb.k09.historygo.R
 import id.ac.itb.k09.historygo.audio.NarrationService
 import id.ac.itb.k09.historygo.audio.narrationItem
 import id.ac.itb.k09.historygo.data.Poi
@@ -186,7 +187,8 @@ class TriggerService : Service() {
         )
         val s = LanguageStore.strings(this)
         return NotificationCompat.Builder(this, CHANNEL_TRACKING)
-            .setSmallIcon(android.R.drawable.ic_dialog_map)
+            .setSmallIcon(R.drawable.ic_stat_historygo)
+            .setColor(ContextCompat.getColor(this, R.color.chestnut))
             .setContentTitle(s.trackingTitle)
             .setContentText(s.trackingText)
             .setOngoing(true)
@@ -199,7 +201,8 @@ class TriggerService : Service() {
         val s = LanguageStore.strings(this)
         val localized = poi.localized(LanguageStore.language.value)
         return NotificationCompat.Builder(this, CHANNEL_POI)
-            .setSmallIcon(android.R.drawable.ic_dialog_map)
+            .setSmallIcon(R.drawable.ic_stat_historygo)
+            .setColor(ContextCompat.getColor(this, R.color.chestnut))
             .setContentTitle(s.nearPoiTitle(localized.nama))
             .setContentText(localized.kategori)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
