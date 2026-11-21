@@ -49,7 +49,7 @@ Fitur yang sudah ada di kode (branch `dev`, ditambah PB10 di `feature/pb10-ui`):
 
 - Desain high fidelity PB10: navigasi 4 tab, onboarding dengan penjelasan izin, layar Pengaturan (bahasa, autoplay, toggle deteksi, penjelasan label konten), state peta "mendekati" (25-100 m), tema terang dan gelap, ikon aplikasi dan notifikasi baru (`DESIGN.md`, CL-04 sampai CL-06)
 
-Direncanakan, belum diimplementasikan: akun lokal (Masuk/Daftar) dengan profil, riwayat, dan progres Jejak Sejarah per akun, serta mode tamu (CL-03).
+- Akun lokal (CL-03): Masuk/Daftar dengan password ter-hash, profil, riwayat, dan progres Jejak Sejarah per akun, mode tamu tetap ada; akun tidak tersinkron antar-HP
 
 Status pengujian fitur di atas: teruji di emulator; perilaku di HP asli dan uji lapangan **belum teruji**.
 

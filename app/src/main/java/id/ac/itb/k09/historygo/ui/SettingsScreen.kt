@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -26,11 +27,15 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import id.ac.itb.k09.historygo.account.AccountStore
 import id.ac.itb.k09.historygo.data.AppLanguage
 import id.ac.itb.k09.historygo.data.ProfileStore
 import id.ac.itb.k09.historygo.data.SettingsStore
@@ -51,6 +56,7 @@ import id.ac.itb.k09.historygo.ui.components.StatusChip
 fun SettingsScreen(
     onBack: () -> Unit,
     onEditProfile: () -> Unit,
+    onOpenAuth: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -62,6 +68,9 @@ fun SettingsScreen(
     val autoplay by SettingsStore.autoplay.collectAsStateWithLifecycle()
     val detection by SettingsStore.detection.collectAsStateWithLifecycle()
     val profile by ProfileStore.profile.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) { AccountStore.load(context) }
+    val account by AccountStore.current.collectAsStateWithLifecycle()
+    var confirmSignOut by rememberSaveable { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxSize()) {
         HgTopBar(title = s.settingsTitle, onBack = onBack)
@@ -72,6 +81,30 @@ fun SettingsScreen(
                 .padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(28.dp),
         ) {
+            // ---------- Akun (CL-03) ----------
+            Section(title = s.settingsAccount) {
+                SettingsCard {
+                    Row(
+                        modifier = Modifier.padding(start = 16.dp, end = 4.dp, top = 12.dp, bottom = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(account?.name ?: s.guestMode, style = MaterialTheme.typography.titleMedium)
+                            Text(
+                                account?.email ?: s.guestModeHint,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        if (account == null) {
+                            TextButton(onClick = onOpenAuth) { Text(s.signInOrUp, color = MaterialTheme.colorScheme.tertiary) }
+                        } else {
+                            TextButton(onClick = { confirmSignOut = true }) { Text(s.signOut, color = MaterialTheme.colorScheme.error) }
+                        }
+                    }
+                }
+            }
+
             // ---------- Rencana kunjungan (F07) ----------
             Section(title = s.settingsVisitPlan) {
                 SettingsCard {
@@ -163,6 +196,22 @@ fun SettingsScreen(
                 }
             }
         }
+    }
+
+    // Keluar akun minta konfirmasi; progres tetap tersimpan di akun itu.
+    if (confirmSignOut) {
+        AlertDialog(
+            onDismissRequest = { confirmSignOut = false },
+            title = { Text(s.signOutConfirmTitle, style = MaterialTheme.typography.headlineSmall) },
+            text = { Text(s.signOutConfirmBody, style = MaterialTheme.typography.bodyLarge) },
+            confirmButton = {
+                TextButton(onClick = { AccountStore.signOut(context); confirmSignOut = false }) {
+                    Text(s.signOut, color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = { TextButton(onClick = { confirmSignOut = false }) { Text(s.cancel) } },
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        )
     }
 }
 

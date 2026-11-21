@@ -88,7 +88,7 @@ Status: diimplementasikan di PB10. `SettingsStore.detection` (default nyala). Sa
 Status: diimplementasikan di PB10. Token, tipografi, komponen, dan katalog state ada di `DESIGN.md`. Material 3 sebagai kerangka, Dynamic Color tidak dipakai, font dibundel (OFL). Navigasi utama 4 tab (Jelajah, Rute, Jejak Sejarah, Riwayat); Pengaturan dibuka dari bar atas peta.
 
 ### Akun pengguna: lokal di HP (CL-03)
-Status: dipilih anggota tim 2026-11-21, perlu konfirmasi seluruh tim. Akun dan progres disimpan di perangkat (SharedPreferences/berkas per akun), password di-hash PBKDF2 + salt. Logika validasi akun ditulis Kotlin murni dengan unit test. Firebase dipertimbangkan ulang hanya kalau sinkronisasi antar-HP benar-benar dibutuhkan.
+Status: dipilih anggota tim 2026-11-21 dan diimplementasikan, perlu konfirmasi seluruh tim. Akun dan progres disimpan di perangkat (SharedPreferences/berkas per akun), password di-hash PBKDF2 + salt. Logika validasi akun ditulis Kotlin murni dengan unit test. Firebase dipertimbangkan ulang hanya kalau sinkronisasi antar-HP benar-benar dibutuhkan.
 
 ## Pertanyaan terbuka
 

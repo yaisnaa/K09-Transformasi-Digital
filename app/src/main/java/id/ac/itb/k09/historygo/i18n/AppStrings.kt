@@ -103,6 +103,30 @@ interface AppStrings {
     val permNotifTitle: String
     val permNotifBody: String
 
+    // Akun lokal (CL-03)
+    val signInTitle: String
+    val signUpTitle: String
+    val authIntro: String
+    val fieldName: String
+    val fieldEmail: String
+    val fieldPassword: String
+    val fieldConfirmPassword: String
+    val signIn: String
+    val signUp: String
+    val noAccountYet: String
+    val haveAccount: String
+    val continueAsGuest: String
+    fun accountError(error: id.ac.itb.k09.historygo.account.AccountError): String
+    val settingsAccount: String
+    val guestMode: String
+    val guestModeHint: String
+    val signInOrUp: String
+    val signOut: String
+    val signOutConfirmTitle: String
+    val signOutConfirmBody: String
+    val showPassword: String
+    val hidePassword: String
+
     // Peta (Explore Map)
     val permissionNeeded: String
     val allowLocation: String
@@ -342,6 +366,36 @@ object IdStrings : AppStrings {
     override val permLocationBody = "Supaya HistoryGo tahu kamu sedang di depan bangunan mana. Dipakai selama deteksi berjalan, dan bisa kamu hentikan kapan saja."
     override val permNotifTitle = "Notifikasi"
     override val permNotifBody = "Memberi tahu saat kamu melewati bangunan bersejarah ketika HP ada di saku. Tanpa izin ini, ceritanya tetap tersimpan dan muncul saat aplikasi dibuka."
+
+    override val signInTitle = "Masuk"
+    override val signUpTitle = "Buat akun"
+    override val authIntro = "Simpan profil, riwayat, dan progres Jejak Sejarah di akunmu. Akun tersimpan di HP ini."
+    override val fieldName = "Nama"
+    override val fieldEmail = "Email"
+    override val fieldPassword = "Password"
+    override val fieldConfirmPassword = "Ulangi password"
+    override val signIn = "Masuk"
+    override val signUp = "Daftar"
+    override val noAccountYet = "Belum punya akun? Daftar"
+    override val haveAccount = "Sudah punya akun? Masuk"
+    override val continueAsGuest = "Lanjut tanpa akun"
+    override val settingsAccount = "Akun"
+    override val guestMode = "Mode tamu"
+    override val guestModeHint = "Progres tersimpan di HP ini tanpa akun."
+    override val signInOrUp = "Masuk / Daftar"
+    override val signOut = "Keluar"
+    override val signOutConfirmTitle = "Keluar dari akun?"
+    override val signOutConfirmBody = "Progresmu tetap tersimpan di akun ini dan muncul lagi saat kamu masuk."
+    override val showPassword = "Tampilkan password"
+    override val hidePassword = "Sembunyikan password"
+    override fun accountError(error: id.ac.itb.k09.historygo.account.AccountError) = when (error) {
+        id.ac.itb.k09.historygo.account.AccountError.NAME_EMPTY -> "Nama belum diisi."
+        id.ac.itb.k09.historygo.account.AccountError.EMAIL_INVALID -> "Format email belum benar."
+        id.ac.itb.k09.historygo.account.AccountError.PASSWORD_SHORT -> "Password minimal 8 karakter."
+        id.ac.itb.k09.historygo.account.AccountError.PASSWORD_MISMATCH -> "Password tidak sama."
+        id.ac.itb.k09.historygo.account.AccountError.EMAIL_TAKEN -> "Email sudah terdaftar di HP ini. Silakan masuk."
+        id.ac.itb.k09.historygo.account.AccountError.WRONG_CREDENTIALS -> "Email atau password salah."
+    }
     override val switchLanguage = "🌐 English"
 
     override val permissionNeeded = "HistoryGo butuh izin lokasi presisi untuk mengetahui bangunan bersejarah di sekitarmu."
@@ -589,6 +643,36 @@ object EnStrings : AppStrings {
     override val permLocationBody = "So HistoryGo knows which building you are standing in front of. Used while detection runs, and you can stop it any time."
     override val permNotifTitle = "Notifications"
     override val permNotifBody = "Lets you know when you pass a historic building while your phone is in your pocket. Without it, the story is still saved and shown when you open the app."
+
+    override val signInTitle = "Sign in"
+    override val signUpTitle = "Create account"
+    override val authIntro = "Keep your profile, history, and History Trail progress in your account. Accounts are stored on this phone."
+    override val fieldName = "Name"
+    override val fieldEmail = "Email"
+    override val fieldPassword = "Password"
+    override val fieldConfirmPassword = "Repeat password"
+    override val signIn = "Sign in"
+    override val signUp = "Sign up"
+    override val noAccountYet = "No account yet? Sign up"
+    override val haveAccount = "Already have an account? Sign in"
+    override val continueAsGuest = "Continue without an account"
+    override val settingsAccount = "Account"
+    override val guestMode = "Guest mode"
+    override val guestModeHint = "Progress is saved on this phone without an account."
+    override val signInOrUp = "Sign in / Sign up"
+    override val signOut = "Sign out"
+    override val signOutConfirmTitle = "Sign out?"
+    override val signOutConfirmBody = "Your progress stays saved in this account and comes back when you sign in."
+    override val showPassword = "Show password"
+    override val hidePassword = "Hide password"
+    override fun accountError(error: id.ac.itb.k09.historygo.account.AccountError) = when (error) {
+        id.ac.itb.k09.historygo.account.AccountError.NAME_EMPTY -> "Please enter your name."
+        id.ac.itb.k09.historygo.account.AccountError.EMAIL_INVALID -> "Please enter a valid email."
+        id.ac.itb.k09.historygo.account.AccountError.PASSWORD_SHORT -> "Password must be at least 8 characters."
+        id.ac.itb.k09.historygo.account.AccountError.PASSWORD_MISMATCH -> "Passwords do not match."
+        id.ac.itb.k09.historygo.account.AccountError.EMAIL_TAKEN -> "This email is already registered on this phone. Please sign in."
+        id.ac.itb.k09.historygo.account.AccountError.WRONG_CREDENTIALS -> "Wrong email or password."
+    }
     override val switchLanguage = "🌐 Bahasa Indonesia"
 
     override val permissionNeeded = "HistoryGo needs precise location access to find historic buildings around you."

@@ -16,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import id.ac.itb.k09.historygo.account.AccountStore
 import id.ac.itb.k09.historygo.data.Poi
 import id.ac.itb.k09.historygo.data.ProfileStore
 import id.ac.itb.k09.historygo.data.SettingsStore
@@ -27,6 +28,7 @@ import id.ac.itb.k09.historygo.location.TriggerService
 import id.ac.itb.k09.historygo.location.hasLocationPermission
 import id.ac.itb.k09.historygo.location.isGpsEnabled
 import id.ac.itb.k09.historygo.navigation.NavigationManager
+import id.ac.itb.k09.historygo.ui.AuthScreen
 import id.ac.itb.k09.historygo.ui.GameScreen
 import id.ac.itb.k09.historygo.ui.HistoryScreen
 import id.ac.itb.k09.historygo.ui.LocationScreen
@@ -61,6 +63,8 @@ class MainActivity : ComponentActivity() {
         LanguageStore.load(this)
         // PB10: onboarding tampil sekali, dibaca sebelum layar pertama digambar.
         SettingsStore.load(this)
+        // CL-03: akun lokal aktif (default tamu).
+        AccountStore.load(this)
         setContent {
             // Bahasa aktif dibagikan ke semua layar. Saat diganti, semua layar langsung digambar ulang.
             val language by LanguageStore.language.collectAsStateWithLifecycle()
@@ -79,6 +83,8 @@ class MainActivity : ComponentActivity() {
                     var detailPoiId by rememberSaveable { mutableStateOf<String?>(null) }
 
                     val onboardingDone by SettingsStore.onboardingDone.collectAsStateWithLifecycle()
+                    val authDecided by AccountStore.authDecided.collectAsStateWithLifecycle()
+                    var showAuth by rememberSaveable { mutableStateOf(false) }
                     val profile by ProfileStore.profile.collectAsStateWithLifecycle()
                     val profileSkipped by ProfileStore.skipped.collectAsStateWithLifecycle()
                     // Alur PRD no. 1: kuesioner muncul otomatis saat pertama kali, sampai diisi atau dilewati.
@@ -96,7 +102,7 @@ class MainActivity : ComponentActivity() {
                     val startNavigation: (Poi) -> Unit = { poi -> startRoute(listOf(poi)) }
                     val openDetail: (Poi) -> Unit = { poi -> detailPoiId = poi.id }
 
-                    val overlayOpen = !onboardingDone || detailPoiId != null || showProfile || firstTimeProfile || showSettings || showSearch
+                    val overlayOpen = !onboardingDone || !authDecided || showAuth || detailPoiId != null || showProfile || firstTimeProfile || showSettings || showSearch
 
                     // Tombol Back di tab selain Jelajah kembali ke Jelajah.
                     BackHandler(enabled = !overlayOpen && tab != MainTab.EXPLORE) { tab = MainTab.EXPLORE }
@@ -114,6 +120,15 @@ class MainActivity : ComponentActivity() {
                         when {
                             // PB10: onboarding + penjelasan izin, sekali saja.
                             !onboardingDone -> OnboardingScreen(onFinish = {}, modifier = screenModifier)
+
+                            // CL-03: Masuk / Daftar / Lanjut tanpa akun, sekali setelah onboarding.
+                            !authDecided -> AuthScreen(onDone = {}, modifier = screenModifier)
+
+                            showAuth -> AuthScreen(
+                                onDone = { showAuth = false },
+                                onBack = { showAuth = false },
+                                modifier = screenModifier,
+                            )
 
                             poiId != null -> PoiDetailScreen(
                                 poiId = poiId,
@@ -140,6 +155,7 @@ class MainActivity : ComponentActivity() {
                             showSettings -> SettingsScreen(
                                 onBack = { showSettings = false },
                                 onEditProfile = { showProfile = true },
+                                onOpenAuth = { showAuth = true },
                                 modifier = screenModifier,
                             )
 
