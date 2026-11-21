@@ -36,7 +36,7 @@ Konteks: tugas besar II4011 Transformasi Digital, ITB, Kelompok 9. Requirement b
 
 ## Capabilities and Constraints
 
-Fitur yang sudah ada di kode (branch `dev`):
+Fitur yang sudah ada di kode (branch `dev`, ditambah PB10 di `feature/pb10-ui`):
 - Explore Map (Google Maps SDK) dengan posisi pengguna dan 10 POI (F01)
 - Trigger berbasis lokasi lewat foreground service: kartu POI saat aplikasi aktif, notifikasi saat di latar, riwayat "POI yang dilewati" (F02)
 - POI Detail: teks sejarah, foto, infografis (tahun dibangun, arsitek, gaya arsitektur, peran historis), sumber (F03)
@@ -47,14 +47,18 @@ Fitur yang sudah ada di kode (branch `dev`):
 - Gamifikasi "Jejak Sejarah" (F08, PB12): check-in hanya di dalam radius POI (+5 poin), satu kuis pilihan ganda per POI (jawaban benar +10 poin, hanya jawaban pertama yang dihitung), progres misi x/N POI, badge "Penjelajah Jejak Sejarah" setelah semua misi selesai. Progres tersimpan di perangkat.
 - Dwibahasa ID/EN (A01, PB13): seluruh teks antarmuka dan konten POI, ganti bahasa tanpa restart, pilihan tersimpan.
 
+- Desain high fidelity PB10: navigasi 4 tab, onboarding dengan penjelasan izin, layar Pengaturan (bahasa, autoplay, toggle deteksi, penjelasan label konten), state peta "mendekati" (25-100 m), tema terang dan gelap, ikon aplikasi dan notifikasi baru (`DESIGN.md`, CL-04 sampai CL-06)
+
+Direncanakan, belum diimplementasikan: akun lokal (Masuk/Daftar) dengan profil, riwayat, dan progres Jejak Sejarah per akun, serta mode tamu (CL-03).
+
 Status pengujian fitur di atas: teruji di emulator; perilaku di HP asli dan uji lapangan **belum teruji**.
 
 Constraint teknis:
 - Kotlin + Jetpack Compose, target Android saja. Font harus tersedia gratis (Google Fonts) untuk dibundel di aplikasi.
 - Peta adalah Google Maps: warna bisa diatur lewat map style, tetapi font label jalan milik Google tidak bisa diganti.
-- PB10 mewajibkan: ikon aplikasi dan ikon notifikasi baru, layar onboarding sebelum meminta izin, dan empat state prototype (di luar area, mendekati POI, terpicu, akses konten).
+- PB10: ikon aplikasi dan notifikasi, onboarding sebelum meminta izin, dan empat state prototype (di luar area, mendekati POI, terpicu, akses konten) sudah diimplementasikan; teruji di emulator, belum di HP asli.
 
-Istilah: POI (Point of Interest), "POI yang dilewati" (riwayat), "Konten contoh" (label konten dummy), "Belum tervalidasi" (konten `validated=false`), "Jejak Sejarah" (nama mode gamifikasi), check-in, misi, poin, badge.
+Istilah: POI (Point of Interest; di teks untuk wisatawan disebut "tempat"), "POI yang dilewati" (riwayat), "Konten contoh" (label konten dummy), "Belum tervalidasi" (konten `validated=false`), "Jejak Sejarah" (nama mode gamifikasi), check-in, misi, poin, badge.
 
 ## Brand Commitments
 

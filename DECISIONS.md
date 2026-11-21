@@ -78,6 +78,15 @@ Agar iOS bisa ditambahkan nanti (misalnya lewat Kotlin Multiplatform), kode di `
 ### Jetpack Compose untuk UI
 PRD tidak menentukan. Compose diusulkan agar perubahan state (di luar radius, mendekat, terpicu, akses konten) sederhana dibuat.
 
+### Izin diminta lewat onboarding (CL-04)
+Status: diimplementasikan di PB10. Izin lokasi presisi dan notifikasi (Android 13+) diminta bersamaan di layar onboarding setelah dijelaskan, satu kali. `LocationScreen` tidak lagi meminta izin otomatis; kalau ditolak, sheet di peta menawarkan "Izinkan lokasi" atau "Jelajah tanpa lokasi". Izin notifikasi tidak diminta dua kali (`SettingsStore.notificationAsked`).
+
+### Deteksi bisa dimatikan dari Pengaturan (CL-05)
+Status: diimplementasikan di PB10. `SettingsStore.detection` (default nyala). Saat mati, `TriggerService.start()` tidak menjalankan service dan toggle memanggil `TriggerService.stop()`; chip peta menampilkan "Deteksi mati". Tetap tanpa `ACCESS_BACKGROUND_LOCATION`.
+
+### Desain UI: "Jurnal Penjelajah Deco" (PB10)
+Status: diimplementasikan di PB10. Token, tipografi, komponen, dan katalog state ada di `DESIGN.md`. Material 3 sebagai kerangka, Dynamic Color tidak dipakai, font dibundel (OFL). Navigasi utama 4 tab (Jelajah, Rute, Jejak Sejarah, Riwayat); Pengaturan dibuka dari bar atas peta.
+
 ### Akun pengguna: lokal di HP (CL-03)
 Status: dipilih anggota tim 2026-11-21, perlu konfirmasi seluruh tim. Akun dan progres disimpan di perangkat (SharedPreferences/berkas per akun), password di-hash PBKDF2 + salt. Logika validasi akun ditulis Kotlin murni dengan unit test. Firebase dipertimbangkan ulang hanya kalau sinkronisasi antar-HP benar-benar dibutuhkan.
 

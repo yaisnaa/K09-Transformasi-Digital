@@ -7,6 +7,9 @@ Perubahan requirement atau backlog setelah baseline W9, beserta alasannya (lihat
 | CL-01 | 2026-11-09 | F01 acceptance 2, PB04 | Marker posisi berpindah saat pengguna berjalan ≥10 m | Marker posisi berpindah saat pengguna berjalan 1-2 m | Agar pergerakan pengguna di peta terasa lebih responsif saat menyusuri koridor | Diputuskan anggota tim, perlu konfirmasi seluruh tim |
 | CL-02 | 2026-11-21 | F07 acceptance 3, PB11 | Maksimal 3 rekomendasi, urut minat dan jarak | Maksimal 3 rekomendasi **dipilih** menurut minat lalu jarak; **urutan tampil dan kunjungan** dimulai dari POI terdekat dengan titik awal, lalu terdekat dari POI sebelumnya. Navigasi menjadi satu rute: titik awal → rekomendasi 1 → 2 → 3 | Rekomendasi dipakai sebagai rute jalan kaki; urutan terdekat-berikutnya mengurangi jalan bolak-balik | Diputuskan anggota tim, perlu konfirmasi seluruh tim |
 | CL-03 | 2026-11-21 | Baru (di luar F01-F08) | Tidak ada akun; progres tersimpan per HP | Masuk/Daftar dengan akun lokal di HP; profil, riwayat, dan progres Jejak Sejarah tersimpan per akun; mode tamu tetap ada | Beberapa pengguna bisa memakai HP yang sama tanpa progresnya tercampur; demo progres per akun | Diputuskan anggota tim, perlu konfirmasi seluruh tim; belum diimplementasikan |
+| CL-04 | 2026-11-21 | PB10, alur PRD no. 1 | Izin lokasi diminta otomatis saat peta pertama kali dibuka | Izin lokasi dan notifikasi diminta di layar onboarding setelah dijelaskan; "Jelajah tanpa lokasi" langsung ke peta tanpa dialog | Pengguna memahami alasan izin sebelum dialog sistem; tetap bisa memakai aplikasi tanpa lokasi | Diimplementasikan di `feature/pb10-ui`, teruji di emulator, perlu konfirmasi seluruh tim |
+| CL-05 | 2026-11-21 | Baru (di luar F01-F08), PB10 | Deteksi hanya bisa dihentikan lewat tombol "Berhenti" di notifikasi permanen | Toggle "Deteksi bangunan sekitar" di layar Pengaturan menghentikan atau menjalankan pembacaan GPS dan notifikasi | Kendali pengguna atas lokasi dan baterai (hasil critique desain) | Diimplementasikan di `feature/pb10-ui`, teruji di emulator, perlu konfirmasi seluruh tim |
+| CL-06 | 2026-11-21 | PB10, state prototype PRD | Tidak ada state "mendekati POI" | Pita "Mendekati …" saat POI terdekat berjarak 25-100 m; hanya tampilan, tidak memicu kartu atau notifikasi | Keempat state prototype PRD (di luar area, mendekati, terpicu, akses konten) dapat didemokan | Diimplementasikan di `feature/pb10-ui` dengan unit test, teruji di emulator; jarak 100 m perlu konfirmasi seluruh tim dan kalibrasi lapangan |
 
 ## Catatan CL-01
 
@@ -28,3 +31,10 @@ Perubahan requirement atau backlog setelah baseline W9, beserta alasannya (lihat
 - **Data per akun:** profil kunjungan (F07), riwayat tempat yang dilewati (F02 no. 4), progres Jejak Sejarah (F08). Bahasa, autoplay, dan deteksi tetap pengaturan per HP.
 - **Mode tamu:** tetap ada ("Lanjut tanpa akun"); saat tamu mendaftar, progresnya dipindahkan ke akun baru.
 - **Status pengujian:** belum diimplementasikan.
+
+## Catatan CL-04 sampai CL-06 (PB10)
+
+- **Kode:** `ui/OnboardingScreen.kt`, `ui/SettingsScreen.kt`, `ui/LocationScreen.kt`, `data/SettingsStore.kt` (`onboardingDone`, `notificationAsked`, `detection`), `location/TriggerService.kt` (`start` mematuhi pengaturan deteksi, `stop` baru), `trigger/Approach.kt` + `TriggerConfig.APPROACH_DISTANCE_M`.
+- **Unit test:** `ApproachTest` (7 skenario).
+- **Status pengujian:** teruji di emulator dengan lokasi palsu (screenshot di `docs/design/impl/`); **belum teruji di HP asli**. Akurasi GPS nyata dapat membuat state "mendekati" muncul-hilang; kalibrasi saat uji lapangan (PB14).
+- **Perubahan tampilan tanpa dampak requirement** (tidak dicatat sebagai CL tersendiri): rekomendasi menampilkan jam perkiraan tiba ("tiba ±14.07") alih-alih "selesai di menit ke-X"; judul riwayat menjadi "Tempat yang kamu lewati"; istilah "POI" di teks untuk wisatawan diganti "tempat".
