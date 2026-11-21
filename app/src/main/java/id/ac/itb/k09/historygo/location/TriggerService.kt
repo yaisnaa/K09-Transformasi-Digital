@@ -27,6 +27,7 @@ import id.ac.itb.k09.historygo.data.SettingsStore
 import id.ac.itb.k09.historygo.data.VisitHistoryStore
 import id.ac.itb.k09.historygo.data.VisitRecord
 import id.ac.itb.k09.historygo.data.loadPoisFromAssets
+import id.ac.itb.k09.historygo.navigation.NavigationManager
 import id.ac.itb.k09.historygo.trigger.TriggerEngine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -75,7 +76,11 @@ class TriggerService : Service() {
             trackingJob = scope.launch {
                 LocationClient(this@TriggerService).locationUpdates().collect { reading ->
                     TriggerState.latestReading.value = reading
-                    val poi = engine.onReading(reading, System.currentTimeMillis())
+                    // F06: perbarui sisa jarak / status tiba / hitung ulang rute.
+                    NavigationManager.onReading(reading)
+                    // Tujuan navigasi aktif diprioritaskan saat radius tumpang tindih (DECISIONS.md Bab 4.2).
+                    val navigationTargetId = NavigationManager.state.value?.destination?.id
+                    val poi = engine.onReading(reading, System.currentTimeMillis(), navigationTargetId)
                     if (poi != null) onPoiTriggered(poi)
                 }
             }

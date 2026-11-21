@@ -12,6 +12,7 @@ import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,6 +48,7 @@ import id.ac.itb.k09.historygo.data.SettingsStore
 import id.ac.itb.k09.historygo.data.VisitHistoryStore
 import id.ac.itb.k09.historygo.data.loadPoisFromAssets
 import id.ac.itb.k09.historygo.location.TriggerService
+import id.ac.itb.k09.historygo.navigation.NavigationManager
 import id.ac.itb.k09.historygo.location.TriggerState
 import id.ac.itb.k09.historygo.location.hasLocationPermission
 import id.ac.itb.k09.historygo.location.isGpsEnabled
@@ -61,6 +63,7 @@ private val LOCATION_PERMISSIONS = arrayOf(
 fun LocationScreen(
     onOpenHistory: () -> Unit,
     onOpenDetail: (Poi) -> Unit,
+    onOpenSearch: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -134,6 +137,8 @@ fun LocationScreen(
     val history by VisitHistoryStore.history.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) { SettingsStore.load(context) }
     val autoplay by SettingsStore.autoplay.collectAsStateWithLifecycle()
+    // F06: keadaan navigasi (null = tidak sedang bernavigasi).
+    val navigation by NavigationManager.state.collectAsStateWithLifecycle()
 
     // ---------- DATA ----------
     val pois = remember { loadPoisFromAssets(context) }
@@ -144,12 +149,28 @@ fun LocationScreen(
     Box(modifier = modifier.fillMaxSize()) {
 
         // Peta selalu tampil, walau izin lokasi ditolak (PRD: konten tetap bisa diakses manual).
-        ExploreMap(pois = pois, reading = current, modifier = Modifier.fillMaxSize())
+        ExploreMap(
+            pois = pois,
+            reading = current,
+            modifier = Modifier.fillMaxSize(),
+            onPoiClick = onOpenDetail,
+            route = navigation?.route,
+        )
 
         Column(
             modifier = Modifier.align(Alignment.TopCenter).padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            // F06: panel navigasi paling atas selama navigasi berjalan.
+            navigation?.let { nav ->
+                NavigationCard(
+                    nav = nav,
+                    hasLocation = current != null,
+                    onStop = { NavigationManager.stop() },
+                    onRetry = { NavigationManager.retry() },
+                )
+            }
+
             when {
                 !hasPermission -> StatusCard(
                     message = "HistoryGo butuh izin lokasi presisi untuk mengetahui bangunan bersejarah di sekitarmu.",
@@ -188,7 +209,11 @@ fun LocationScreen(
                 StatusCard(message = "$poiTanpaKoordinat POI belum punya koordinat, belum tampil di peta.")
             }
 
-            Button(onClick = onOpenHistory) { Text("POI yang dilewati (${history.size})") }
+            // F05: tombol Cari di sebelah tombol riwayat.
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = onOpenSearch) { Text("Cari POI") }
+                Button(onClick = onOpenHistory) { Text("POI yang dilewati (${history.size})") }
+            }
 
             // F04 no. 3: saklar autoplay narasi (default mati, DECISIONS.md).
             Card(modifier = Modifier.padding(top = 8.dp)) {

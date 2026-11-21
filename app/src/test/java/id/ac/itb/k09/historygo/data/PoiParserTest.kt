@@ -32,6 +32,42 @@ class PoiParserTest {
     }
 
     @Test
+    fun fieldDummy_bawaannyaFalse_danBisaDibacaTrue() {
+        val text = """
+            [{"id":"PA","nama":"Asli","kategori":"Tes"},
+             {"id":"PB","nama":"Contoh","kategori":"Tes","dummy":true}]
+        """
+        val pois = PoiParser.parse(text)
+
+        assertFalse(pois[0].dummy)   // tidak ditulis di JSON = bukan dummy
+        assertTrue(pois[1].dummy)
+    }
+
+    @Test
+    fun poiDummy_diFileAsli_tidakBolehTervalidasi_danTanpaSumberTeks() {
+        // Aturan CLAUDE.md no. 2: konten dummy tidak boleh ditandai tervalidasi
+        // dan tidak boleh mencantumkan sumber rujukan (atribusi foto tetap boleh).
+        val pois = PoiParser.parse(File("src/main/assets/poi.json").readText())
+
+        for (poi in pois.filter { it.dummy }) {
+            assertFalse("${poi.id}: dummy tidak boleh validated", poi.validated)
+            val sumberTeks = poi.sumber.filterNot { it.startsWith("Foto:") }
+            assertTrue("${poi.id}: dummy tidak boleh punya sumber teks", sumberTeks.isEmpty())
+        }
+    }
+
+    @Test
+    fun koordinatDummy_diFileAsli_tidakBolehVerified() {
+        // Koordinat perkiraan belum dicek di lapangan, jadi tidak boleh ditandai verified.
+        val pois = PoiParser.parse(File("src/main/assets/poi.json").readText())
+
+        for (poi in pois.filter { it.koordinatDummy }) {
+            assertFalse("${poi.id}: koordinat dummy tidak boleh verified", poi.verified)
+            assertTrue("${poi.id}: koordinat dummy harus terisi", poi.hasCoordinates)
+        }
+    }
+
+    @Test
     fun fileAsliPoiJson_berisiP01sampaiP10_danKoordinatnyaDiBandung() {
         // Unit test dijalankan dari folder app/, jadi path-nya relatif dari sana.
         val pois = PoiParser.parse(File("src/main/assets/poi.json").readText())

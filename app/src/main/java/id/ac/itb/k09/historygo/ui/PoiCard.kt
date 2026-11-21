@@ -41,6 +41,9 @@ fun PoiCard(
             if (!poi.validated) {
                 Text("Konten belum divalidasi tim.", style = MaterialTheme.typography.labelSmall)
             }
+            if (poi.dummy) {
+                Text("Konten contoh (dummy).", style = MaterialTheme.typography.labelSmall)
+            }
 
             // Tombol Tutup di kiri, Lihat detail di kanan.
             Row(

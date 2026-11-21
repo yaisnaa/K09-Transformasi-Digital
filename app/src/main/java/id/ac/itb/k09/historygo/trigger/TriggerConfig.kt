@@ -22,4 +22,10 @@ object TriggerConfig {
 
     /** Bacaan yang lebih tua dari ini dianggap kedaluwarsa (milidetik). */
     const val MAX_AGE_MS = 15_000L
+
+    /**
+     * Navigasi (F06 no. 4): pengguna dianggap menyimpang dari rute kalau jaraknya ke garis rute
+     * lebih dari ini (meter) selama CONFIRM_READINGS bacaan berturut-turut, lalu rute dihitung ulang.
+     */
+    const val REROUTE_DISTANCE_M = 30.0
 }

@@ -14,6 +14,7 @@ Letakkan seluruhnya di satu file konstanta.
 | Interval GPS saat trigger aktif | 3 detik | Waktu terburuk konfirmasi sekitar 6 detik, menyisakan ruang untuk syarat ≤10 detik |
 | Akurasi maksimum | 30 m | Pembacaan lebih buruk dianggap tidak valid (usulan awal, sesuaikan saat uji lapangan) |
 | Umur data maksimum | 15 detik | Pembacaan lebih lama dianggap tidak valid (usulan awal) |
+| Ambang menyimpang navigasi (F06) | >30 m | Acceptance F06 no. 4. Rute dihitung ulang setelah 2 bacaan berturut-turut di luar rute, dan hanya kalau pengguna sudah berpindah >30 m dari titik hitung ulang terakhir (mencegah permintaan berulang saat pengguna jauh dari jalan). Ditambahkan 2026-11-21, PB09 |
 
 ## Logika pemicu
 

@@ -45,7 +45,12 @@ import kotlinx.coroutines.withContext
 
 /** Halaman POI Detail (UI03, F03): foto, sejarah, infografis, audio, sumber. */
 @Composable
-fun PoiDetailScreen(poiId: String, onBack: () -> Unit, modifier: Modifier = Modifier) {
+fun PoiDetailScreen(
+    poiId: String,
+    onBack: () -> Unit,
+    onNavigate: (Poi) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val poi = remember(poiId) { loadPoisFromAssets(context).firstOrNull { it.id == poiId } }
 
@@ -63,13 +68,13 @@ fun PoiDetailScreen(poiId: String, onBack: () -> Unit, modifier: Modifier = Modi
         if (poi == null) {
             Text("POI tidak ditemukan.")
         } else {
-            PoiDetailContent(poi)
+            PoiDetailContent(poi, onNavigate = { onNavigate(poi) })
         }
     }
 }
 
 @Composable
-private fun PoiDetailContent(poi: Poi) {
+private fun PoiDetailContent(poi: Poi, onNavigate: () -> Unit) {
     Text(poi.nama, style = MaterialTheme.typography.headlineSmall)
     Text(poi.kategori, style = MaterialTheme.typography.bodyMedium)
     if (!poi.validated) {
@@ -78,6 +83,19 @@ private fun PoiDetailContent(poi: Poi) {
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.error,
         )
+    }
+    if (poi.dummy) {
+        Text(
+            "Konten contoh (dummy), bukan data sejarah asli.",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.error,
+        )
+    }
+
+    // F05 no. 4 + F06: tombol "Navigasi" memulai rute jalan kaki lalu kembali ke peta.
+    Spacer(Modifier.height(12.dp))
+    Button(onClick = onNavigate, enabled = poi.hasCoordinates) {
+        Text(if (poi.hasCoordinates) "Navigasi ke sini" else "Navigasi (koordinat belum ada)")
     }
 
     SectionTitle("Foto")
@@ -199,7 +217,13 @@ private fun NarrationButton(poi: Poi, audioPath: String) {
             val c = controller ?: return@Button
             when {
                 thisPoiPlaying -> c.pause()
-                currentId == poi.id -> c.play()            // lanjutkan dari posisi terakhir
+                currentId == poi.id -> {
+                    // Narasi sudah selesai: putar ulang dari awal. Kalau hanya dijeda: lanjutkan.
+                    if (c.playbackState == Player.STATE_ENDED) c.seekTo(0)
+                    // Pemutar sempat berhenti total (mis. error atau dihentikan): siapkan lagi.
+                    if (c.playbackState == Player.STATE_IDLE) c.prepare()
+                    c.play()
+                }
                 else -> {                                  // narasi POI lain / belum ada: mulai baru
                     c.setMediaItem(narrationItem(poi, audioPath))
                     c.prepare()
