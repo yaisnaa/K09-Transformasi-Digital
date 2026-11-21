@@ -27,17 +27,19 @@ object ProfileStore {
     /** true = pengguna memilih "Lewati" di kuesioner, jadi jangan ditampilkan otomatis lagi. */
     val skipped: StateFlow<Boolean> = _skipped.asStateFlow()
 
-    private var loaded = false
+    /** Akun yang datanya sedang dimuat; null = belum dimuat (CL-03, progres per akun). */
+    private var loadedFor: String? = null
 
     @Synchronized
     fun load(context: Context) {
-        if (loaded) return
+        val account = ActiveAccount.current(context)
+        if (loadedFor == account) return
         val prefs = prefs(context)
         _profile.value = prefs.getString(KEY_PROFILE, null)?.let { text ->
             runCatching { json.decodeFromString(UserProfile.serializer(), text) }.getOrNull()
         }
         _skipped.value = prefs.getBoolean(KEY_SKIPPED, false)
-        loaded = true
+        loadedFor = account
     }
 
     fun save(context: Context, profile: UserProfile) {
@@ -52,6 +54,16 @@ object ProfileStore {
         prefs(context).edit { putBoolean(KEY_SKIPPED, true) }
     }
 
-    private fun prefs(context: Context) =
-        context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    /** Dipanggil ActiveAccount saat berganti akun: buang data akun lama, muat data akun baru. */
+    @Synchronized
+    fun reload(context: Context) {
+        loadedFor = null
+        load(context)
+    }
+
+    /** Penyimpanan milik akun aktif; akun tamu memakai nama lama. */
+    private fun prefs(context: Context) = context.applicationContext.getSharedPreferences(
+        AccountNaming.scoped(PREFS_NAME, ActiveAccount.current(context)),
+        Context.MODE_PRIVATE,
+    )
 }

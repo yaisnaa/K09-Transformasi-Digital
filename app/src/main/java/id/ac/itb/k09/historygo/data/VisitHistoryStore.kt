@@ -22,20 +22,22 @@ object VisitHistoryStore {
     private val _history = MutableStateFlow<List<VisitRecord>>(emptyList())
     val history: StateFlow<List<VisitRecord>> = _history.asStateFlow()
 
-    private var loaded = false
+    /** Akun yang riwayatnya sedang dimuat; null = belum dimuat (CL-03, progres per akun). */
+    private var loadedFor: String? = null
 
     /** Membaca file sekali saja. Kalau file rusak, mulai dari daftar kosong (tidak crash). */
     @Synchronized
     fun load(context: Context) {
-        if (loaded) return
-        val file = File(context.filesDir, FILE_NAME)
-        _history.value = if (file.exists()) {
-            runCatching { json.decodeFromString(serializer, file.readText()) }
+        val account = ActiveAccount.current(context)
+        if (loadedFor == account) return
+        val historyFile = file(context)
+        _history.value = if (historyFile.exists()) {
+            runCatching { json.decodeFromString(serializer, historyFile.readText()) }
                 .getOrDefault(emptyList())
         } else {
             emptyList()
         }
-        loaded = true
+        loadedFor = account
     }
 
     /** Menambah satu catatan (terbaru di paling atas) lalu menyimpannya ke file. */
@@ -44,7 +46,7 @@ object VisitHistoryStore {
         load(context)
         val updated = listOf(record) + _history.value
         _history.value = updated
-        File(context.filesDir, FILE_NAME).writeText(json.encodeToString(serializer, updated))
+        file(context).writeText(json.encodeToString(serializer, updated))
     }
 
     /** Mengembalikan riwayat yang baru dihapus (tombol "Urungkan" di snackbar, PB10). */
@@ -52,7 +54,7 @@ object VisitHistoryStore {
     fun restore(context: Context, records: List<VisitRecord>) {
         load(context)
         _history.value = records
-        File(context.filesDir, FILE_NAME).writeText(json.encodeToString(serializer, records))
+        file(context).writeText(json.encodeToString(serializer, records))
     }
 
     /** Menghapus seluruh riwayat (dipakai tombol "Hapus riwayat"). */
@@ -60,6 +62,17 @@ object VisitHistoryStore {
     fun clear(context: Context) {
         load(context)
         _history.value = emptyList()
-        File(context.filesDir, FILE_NAME).delete()
+        file(context).delete()
     }
+
+    /** Dipanggil ActiveAccount saat berganti akun: buang riwayat akun lama, muat riwayat akun baru. */
+    @Synchronized
+    fun reload(context: Context) {
+        loadedFor = null
+        load(context)
+    }
+
+    /** Berkas riwayat milik akun aktif; akun tamu memakai nama berkas lama. */
+    private fun file(context: Context) =
+        File(context.filesDir, AccountNaming.scopedFile(FILE_NAME, ActiveAccount.current(context)))
 }
