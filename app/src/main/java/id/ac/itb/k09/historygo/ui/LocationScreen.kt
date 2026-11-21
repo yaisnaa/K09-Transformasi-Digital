@@ -15,46 +15,52 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.itb.k09.historygo.BuildConfig
+import id.ac.itb.k09.historygo.audio.rememberNarration
 import id.ac.itb.k09.historygo.data.Poi
+import id.ac.itb.k09.historygo.data.PoiSearch
 import id.ac.itb.k09.historygo.data.SettingsStore
-import id.ac.itb.k09.historygo.data.VisitHistoryStore
-import id.ac.itb.k09.historygo.i18n.LanguageStore
 import id.ac.itb.k09.historygo.i18n.LocalStrings
 import id.ac.itb.k09.historygo.i18n.rememberPois
 import id.ac.itb.k09.historygo.location.TriggerService
-import id.ac.itb.k09.historygo.navigation.NavigationManager
 import id.ac.itb.k09.historygo.location.TriggerState
 import id.ac.itb.k09.historygo.location.hasLocationPermission
 import id.ac.itb.k09.historygo.location.isGpsEnabled
+import id.ac.itb.k09.historygo.navigation.NavigationManager
+import id.ac.itb.k09.historygo.trigger.distanceMeters
+import id.ac.itb.k09.historygo.trigger.findApproaching
+import id.ac.itb.k09.historygo.trigger.findNearest
+import id.ac.itb.k09.historygo.ui.components.ApproachStrip
+import id.ac.itb.k09.historygo.ui.components.DevWarning
+import id.ac.itb.k09.historygo.ui.components.IdleSheet
+import id.ac.itb.k09.historygo.ui.components.LocationProblemSheet
+import id.ac.itb.k09.historygo.ui.components.MapSearchButton
+import id.ac.itb.k09.historygo.ui.components.MapStatus
+import id.ac.itb.k09.historygo.ui.components.MapTopBar
+import id.ac.itb.k09.historygo.ui.components.RecenterButton
+import kotlin.math.roundToInt
 
 /** Izin yang diminta. COARSE wajib ikut diminta bersama FINE sejak Android 12. */
 private val LOCATION_PERMISSIONS = arrayOf(
@@ -62,21 +68,34 @@ private val LOCATION_PERMISSIONS = arrayOf(
     Manifest.permission.ACCESS_COARSE_LOCATION,
 )
 
+/**
+ * Explore Map (UI01) dalam empat state prototype PRD (PB10):
+ * di luar area (sheet "Belum ada bangunan"), mendekati (pita "Mendekati …"),
+ * terpicu (kartu POI), dan akses konten (kartu -> POI Detail).
+ * Ditambah state izin ditolak, GPS mati, dan mencari lokasi (DESIGN.md, Katalog state).
+ */
 @Composable
 fun LocationScreen(
     onOpenDetail: (Poi) -> Unit,
     onOpenSearch: () -> Unit,
     onOpenSettings: () -> Unit,
+    onNavigate: (Poi) -> Unit,
+    onOpenRoute: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val activity = LocalActivity.current
+    val density = LocalDensity.current
 
     // ---------- STATE ----------
     var hasPermission by remember { mutableStateOf(hasLocationPermission(context)) }
     var gpsOn by remember { mutableStateOf(isGpsEnabled(context)) }
     var askedOnce by rememberSaveable { mutableStateOf(false) }
     var askedNotification by rememberSaveable { mutableStateOf(false) }
+    // "Jelajah tanpa lokasi": sheet izin/GPS ditutup, peta tetap bisa dipakai manual.
+    var locationSheetDismissed by rememberSaveable { mutableStateOf(false) }
+    var recenterRequest by remember { mutableIntStateOf(0) }
+    var bottomHeightPx by remember { mutableIntStateOf(0) }
 
     // ---------- MINTA IZIN LOKASI ----------
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -90,7 +109,7 @@ fun LocationScreen(
         if (!hasPermission && !askedOnce) permissionLauncher.launch(LOCATION_PERMISSIONS)
     }
 
-    // ---------- MINTA IZIN NOTIFIKASI (BARU PB05) ----------
+    // ---------- MINTA IZIN NOTIFIKASI (PB05) ----------
     // Hanya Android 13 (API 33) ke atas yang butuh izin ini. Ditolak pun tidak apa-apa:
     // POI tetap disimpan dan kartunya muncul saat aplikasi dibuka (DECISIONS.md).
     val notificationLauncher = rememberLauncherForActivityResult(
@@ -103,7 +122,7 @@ fun LocationScreen(
         }
     }
 
-    // ---------- MULAI SERVICE (BARU PB05) ----------
+    // ---------- MULAI SERVICE (PB05) ----------
     // Dimulai saat aplikasi terlihat dan izin lokasi ada (DECISIONS.md).
     LaunchedEffect(hasPermission, gpsOn) {
         if (hasPermission && gpsOn) TriggerService.start(context)
@@ -132,22 +151,35 @@ fun LocationScreen(
         onDispose { context.unregisterReceiver(receiver) }
     }
 
-    // ---------- BACA DARI TriggerState (BARU PB05) ----------
-    // Layar tidak lagi membaca GPS sendiri; TriggerService yang membacanya.
+    // ---------- BACA DARI TriggerState (PB05) ----------
+    // Layar tidak membaca GPS sendiri; TriggerService yang membacanya.
     val reading by TriggerState.latestReading.collectAsStateWithLifecycle()
     val triggeredPoi by TriggerState.triggeredPoi.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) { VisitHistoryStore.load(context) }
-    val history by VisitHistoryStore.history.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) { SettingsStore.load(context) }
-    val autoplay by SettingsStore.autoplay.collectAsStateWithLifecycle()
+    val detectionOn by SettingsStore.detection.collectAsStateWithLifecycle()
     // F06: keadaan navigasi (null = tidak sedang bernavigasi).
     val navigation by NavigationManager.state.collectAsStateWithLifecycle()
+    val narration = rememberNarration()
 
     // ---------- DATA ----------
     val s = LocalStrings.current
     val pois = rememberPois()   // dalam bahasa aktif (A01)
     val current = reading
     val poiTanpaKoordinat = pois.count { !it.hasCoordinates }
+    val now = System.currentTimeMillis()
+
+    // Service menyimpan POI versi asli; tampilkan versi bahasa aktif (A01).
+    val shownPoi = triggeredPoi?.let { raw -> pois.firstOrNull { it.id == raw.id } ?: raw }
+    val approaching = current?.let { findApproaching(pois, it, now) }
+    val nearest = current?.let { findNearest(pois, it) }
+    val navTarget = navigation?.let { it.stops.getOrNull(it.currentStopIndex) }
+
+    val status = when {
+        !detectionOn -> MapStatus.DETECTION_OFF
+        !hasPermission || !gpsOn -> MapStatus.LOCATION_OFF
+        current == null -> MapStatus.SEARCHING
+        else -> MapStatus.DETECTING
+    }
 
     // ---------- TAMPILAN ----------
     Box(modifier = modifier.fillMaxSize()) {
@@ -159,13 +191,20 @@ fun LocationScreen(
             modifier = Modifier.fillMaxSize(),
             onPoiClick = onOpenDetail,
             route = navigation?.route,
+            activePoiId = shownPoi?.id ?: navTarget?.id,
+            radiusPoiId = shownPoi?.id ?: approaching?.poi?.id,
+            recenterRequest = recenterRequest,
+            contentPadding = PaddingValues(top = 136.dp, bottom = with(density) { bottomHeightPx.toDp() }),
         )
 
+        // ----- Atas: bar aplikasi, pencarian, navigasi berjalan -----
         Column(
-            modifier = Modifier.align(Alignment.TopCenter).padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.align(Alignment.TopCenter).fillMaxWidth().padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            // F06: panel navigasi paling atas selama navigasi berjalan.
+            MapTopBar(status = status, onOpenSettings = onOpenSettings)
+            MapSearchButton(onClick = onOpenSearch)
+            // F06: panel navigasi selama navigasi berjalan (tampilan baru di PB10 F5).
             navigation?.let { nav ->
                 NavigationCard(
                     nav = nav,
@@ -174,12 +213,43 @@ fun LocationScreen(
                     onRetry = { NavigationManager.retry() },
                 )
             }
+            if (!BuildConfig.HAS_MAPS_API_KEY) DevWarning(s.mapsKeyMissing)
+        }
+
+        // ----- Bawah: satu sheet sesuai state, plus tombol kembali ke posisi -----
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .onSizeChanged { bottomHeightPx = it.height }
+                .padding(12.dp),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            if (current != null) RecenterButton(onClick = { recenterRequest++ })
 
             when {
-                !hasPermission -> StatusCard(
-                    message = s.permissionNeeded,
-                    buttonText = s.allowLocation,
-                    onClick = {
+                // Terpicu (F02): kartu POI, juga untuk POI yang terpicu saat aplikasi di latar.
+                shownPoi != null -> {
+                    val distance = current?.let {
+                        if (shownPoi.hasCoordinates) distanceMeters(it.lat, it.lng, shownPoi.lat!!, shownPoi.lng!!).roundToInt() else null
+                    }
+                    val audio = shownPoi.audio
+                    PoiCard(
+                        poi = shownPoi,
+                        distanceM = distance,
+                        isPlaying = narration.isPlaying(shownPoi.id),
+                        onListen = audio?.let { path -> { narration.toggle(shownPoi, path, s.narrationArtist) } },
+                        onClose = { TriggerState.triggeredPoi.value = null },
+                        onOpenDetail = { onOpenDetail(shownPoi) },
+                    )
+                }
+
+                !hasPermission && !locationSheetDismissed -> LocationProblemSheet(
+                    title = s.locationNotReadTitle,
+                    body = "${s.permissionNeeded} ${s.manualAccessHint}",
+                    actionText = s.allowLocation,
+                    onAction = {
                         val canAskAgain = activity?.shouldShowRequestPermissionRationale(
                             Manifest.permission.ACCESS_FINE_LOCATION
                         ) == true
@@ -194,63 +264,32 @@ fun LocationScreen(
                             )
                         }
                     },
+                    onDismiss = { locationSheetDismissed = true },
                 )
 
-                !gpsOn -> StatusCard(
-                    message = s.gpsOff,
-                    buttonText = s.enableGps,
-                    onClick = { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) },
+                hasPermission && !gpsOn && !locationSheetDismissed -> LocationProblemSheet(
+                    title = s.gpsOffTitle,
+                    body = s.gpsOffBody,
+                    actionText = s.enableGps,
+                    onAction = { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) },
+                    onDismiss = { locationSheetDismissed = true },
                 )
 
-                current == null -> StatusCard(message = s.searchingLocation)
-            }
+                // Mendekati (PB10): pita kecil, peta tetap terlihat.
+                approaching != null -> ApproachStrip(
+                    name = approaching.poi.nama,
+                    distanceM = approaching.distanceM.roundToInt(),
+                )
 
-            if (!BuildConfig.HAS_MAPS_API_KEY) {
-                StatusCard(message = s.mapsKeyMissing)
-            }
-
-            if (poiTanpaKoordinat > 0) {
-                StatusCard(message = s.poisWithoutCoordinates(poiTanpaKoordinat))
-            }
-
-            // F05: pencarian. Rekomendasi, Jejak Sejarah, dan Riwayat sekarang tab (PB10);
-            // bahasa dan autoplay pindah ke layar Pengaturan. Tampilan peta dirombak di PB10 F3.
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = onOpenSearch) { Text(s.searchPoi) }
-                OutlinedButton(onClick = onOpenSettings) { Text(s.settingsTitle) }
-            }
-        }
-
-        // Kartu POI di bagian bawah saat sebuah POI terpicu (juga yang terpicu saat aplikasi di latar).
-        // Service menyimpan POI versi asli; tampilkan versi bahasa aktif (A01).
-        val shownPoi = triggeredPoi?.let { raw -> pois.firstOrNull { it.id == raw.id } ?: raw }
-        if (shownPoi != null) {
-            PoiCard(
-                poi = shownPoi,
-                onClose = { TriggerState.triggeredPoi.value = null },
-                onOpenDetail = { onOpenDetail(shownPoi) },
-                modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp),
-            )
-        }
-    }
-}
-
-/** Kartu pesan kecil di atas peta, dengan tombol opsional. */
-@Composable
-private fun StatusCard(
-    message: String,
-    buttonText: String? = null,
-    onClick: () -> Unit = {},
-) {
-    Card(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
-        Column(
-            modifier = Modifier.padding(16.dp).fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(message, textAlign = TextAlign.Center)
-            if (buttonText != null) {
-                Spacer(Modifier.height(8.dp))
-                Button(onClick = onClick) { Text(buttonText) }
+                // Di luar area: bangunan terdekat. Disembunyikan selama navigasi berjalan.
+                current != null && navigation == null -> IdleSheet(
+                    nearestName = nearest?.poi?.nama,
+                    nearestDistanceM = nearest?.distanceM?.roundToInt(),
+                    nearestWalkMinutes = nearest?.distanceM?.let { PoiSearch.walkMinutes(it) },
+                    poisWithoutCoordinates = poiTanpaKoordinat,
+                    onDirections = nearest?.poi?.let { poi -> { onNavigate(poi) } },
+                    onOpenRoute = onOpenRoute,
+                )
             }
         }
     }

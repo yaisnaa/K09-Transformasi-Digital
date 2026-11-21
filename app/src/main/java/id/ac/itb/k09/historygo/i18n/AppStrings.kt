@@ -39,6 +39,28 @@ interface AppStrings {
     val aboutDummy: String
     val aboutSources: String
 
+    // Peta (PB10 F3)
+    val chipDetecting: String
+    val chipLocationOff: String
+    val chipDetectionOff: String
+    val searchPlaceholder: String
+    val locationNotReadTitle: String
+    val manualAccessHint: String
+    val exploreWithoutLocation: String
+    val gpsOffTitle: String
+    val gpsOffBody: String
+    val idleTitle: String
+    fun nearestPlace(name: String): String
+    fun meters(value: Int): String
+    fun walkMinutes(value: Int): String
+    val directionsThere: String
+    val freeTimeRoute: String
+    fun approaching(name: String): String
+    val approachingHint: String
+    val listenStory: String
+    val pauseStory: String
+    val recenter: String
+
     // Peta (Explore Map)
     val permissionNeeded: String
     val allowLocation: String
@@ -214,6 +236,27 @@ object IdStrings : AppStrings {
     override val aboutNotValidated = "Konten belum diperiksa dan disahkan oleh tim."
     override val aboutDummy = "Teks sementara, bukan data sejarah asli. Akan diganti sebelum rilis."
     override val aboutSources = "Sumber rujukan tercantum di bagian bawah setiap halaman tempat."
+
+    override val chipDetecting = "Mendeteksi bangunan"
+    override val chipLocationOff = "Lokasi mati"
+    override val chipDetectionOff = "Deteksi mati"
+    override val searchPlaceholder = "Cari bangunan, spot foto, kuliner"
+    override val locationNotReadTitle = "Lokasimu belum terbaca"
+    override val manualAccessHint = "Tanpa lokasi, kamu tetap bisa mengetuk penanda di peta atau mencari tempat."
+    override val exploreWithoutLocation = "Jelajah tanpa lokasi"
+    override val gpsOffTitle = "GPS sedang mati"
+    override val gpsOffBody = "Nyalakan lokasi agar posisimu terbaca dan cerita bangunan bisa muncul otomatis."
+    override val idleTitle = "Belum ada bangunan di dekatmu"
+    override fun nearestPlace(name: String) = "Terdekat: $name"
+    override fun meters(value: Int) = "$value m"
+    override fun walkMinutes(value: Int) = "±$value menit jalan"
+    override val directionsThere = "Arahkan ke sana"
+    override val freeTimeRoute = "Punya waktu luang? Lihat rute rekomendasi"
+    override fun approaching(name: String) = "Mendekati $name"
+    override val approachingHint = "Ceritanya muncul begitu kamu tiba."
+    override val listenStory = "Dengarkan cerita"
+    override val pauseStory = "Jeda cerita"
+    override val recenter = "Kembali ke posisi saya"
     override val switchLanguage = "🌐 English"
 
     override val permissionNeeded = "HistoryGo butuh izin lokasi presisi untuk mengetahui bangunan bersejarah di sekitarmu."
@@ -397,6 +440,27 @@ object EnStrings : AppStrings {
     override val aboutNotValidated = "Content not yet reviewed and approved by the team."
     override val aboutDummy = "Placeholder text, not real historical data. Will be replaced before release."
     override val aboutSources = "References are listed at the bottom of each place page."
+
+    override val chipDetecting = "Detecting buildings"
+    override val chipLocationOff = "Location off"
+    override val chipDetectionOff = "Detection off"
+    override val searchPlaceholder = "Search buildings, photo spots, food"
+    override val locationNotReadTitle = "We can't read your location"
+    override val manualAccessHint = "Without location, you can still tap markers on the map or search for places."
+    override val exploreWithoutLocation = "Explore without location"
+    override val gpsOffTitle = "GPS is off"
+    override val gpsOffBody = "Turn on location so we can find you and stories appear automatically."
+    override val idleTitle = "No buildings near you yet"
+    override fun nearestPlace(name: String) = "Nearest: $name"
+    override fun meters(value: Int) = "$value m"
+    override fun walkMinutes(value: Int) = "~$value min walk"
+    override val directionsThere = "Get directions"
+    override val freeTimeRoute = "Have some time? See a recommended route"
+    override fun approaching(name: String) = "Approaching $name"
+    override val approachingHint = "The story appears as soon as you arrive."
+    override val listenStory = "Listen to the story"
+    override val pauseStory = "Pause story"
+    override val recenter = "Back to my location"
     override val switchLanguage = "🌐 Bahasa Indonesia"
 
     override val permissionNeeded = "HistoryGo needs precise location access to find historic buildings around you."

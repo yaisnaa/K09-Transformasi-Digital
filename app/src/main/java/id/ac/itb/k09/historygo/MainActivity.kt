@@ -146,6 +146,8 @@ class MainActivity : ComponentActivity() {
                                     onOpenDetail = openDetail,
                                     onOpenSearch = { showSearch = true },
                                     onOpenSettings = { showSettings = true },
+                                    onNavigate = startNavigation,
+                                    onOpenRoute = { tab = MainTab.ROUTE },
                                     modifier = screenModifier,
                                 )
 
