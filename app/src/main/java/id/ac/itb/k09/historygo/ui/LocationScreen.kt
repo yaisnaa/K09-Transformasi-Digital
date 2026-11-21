@@ -12,6 +12,7 @@ import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -70,6 +71,9 @@ import id.ac.itb.k09.historygo.ui.components.MapSearchButton
 import id.ac.itb.k09.historygo.ui.components.MapStatus
 import id.ac.itb.k09.historygo.ui.components.MapTopBar
 import id.ac.itb.k09.historygo.ui.components.RecenterButton
+import id.ac.itb.k09.historygo.ui.components.rememberLastNonNull
+import id.ac.itb.k09.historygo.ui.components.rememberReduceMotion
+import id.ac.itb.k09.historygo.ui.components.sheetTransition
 import kotlin.math.roundToInt
 
 /** Izin yang diminta. COARSE wajib ikut diminta bersama FINE sejak Android 12. */
@@ -174,6 +178,7 @@ fun LocationScreen(
     // F06: keadaan navigasi (null = tidak sedang bernavigasi).
     val navigation by NavigationManager.state.collectAsStateWithLifecycle()
     val narration = rememberNarration()
+    val reduceMotion = rememberReduceMotion()
 
     // ---------- DATA ----------
     val s = LocalStrings.current
@@ -187,6 +192,10 @@ fun LocationScreen(
     val approaching = current?.let { findApproaching(pois, it, now) }
     val nearest = current?.let { findNearest(pois, it) }
     val navTarget = navigation?.let { it.stops.getOrNull(it.currentStopIndex) }
+    // Nilai terakhir, agar sheet yang sedang keluar tetap utuh selama animasi.
+    val lastPoi = rememberLastNonNull(shownPoi)
+    val lastNav = rememberLastNonNull(navigation)
+    val lastApproaching = rememberLastNonNull(approaching)
 
     val status = when {
         !detectionOn -> MapStatus.DETECTION_OFF
@@ -237,9 +246,26 @@ fun LocationScreen(
         ) {
             if (current != null) RecenterButton(onClick = { recenterRequest++ })
 
+            // PB10: sheet berganti dengan animasi; kartu POI terpicu naik dengan pegas (momen utama).
+            val sheetKey = when {
+                shownPoi != null -> "poi:${shownPoi.id}"
+                !hasPermission && !locationSheetDismissed -> "permission"
+                hasPermission && !gpsOn && !locationSheetDismissed -> "gps"
+                navigation != null -> "nav"
+                approaching != null -> "near"
+                current != null -> "idle"
+                else -> "none"
+            }
+            AnimatedContent(
+                targetState = sheetKey,
+                transitionSpec = sheetTransition(reduceMotion),
+                contentAlignment = Alignment.BottomCenter,
+                label = "map-sheet",
+            ) { key ->
             when {
                 // Terpicu (F02): kartu POI, juga untuk POI yang terpicu saat aplikasi di latar.
-                shownPoi != null -> {
+                key.startsWith("poi:") -> {
+                    val shownPoi = lastPoi ?: return@AnimatedContent
                     val distance = current?.let {
                         if (shownPoi.hasCoordinates) distanceMeters(it.lat, it.lng, shownPoi.lat!!, shownPoi.lng!!).roundToInt() else null
                     }
@@ -254,7 +280,7 @@ fun LocationScreen(
                     )
                 }
 
-                !hasPermission && !locationSheetDismissed -> LocationProblemSheet(
+                key == "permission" -> LocationProblemSheet(
                     title = s.locationNotReadTitle,
                     body = "${s.permissionNeeded} ${s.manualAccessHint}",
                     actionText = s.allowLocation,
@@ -276,7 +302,7 @@ fun LocationScreen(
                     onDismiss = { locationSheetDismissed = true },
                 )
 
-                hasPermission && !gpsOn && !locationSheetDismissed -> LocationProblemSheet(
+                key == "gps" -> LocationProblemSheet(
                     title = s.gpsOffTitle,
                     body = s.gpsOffBody,
                     actionText = s.enableGps,
@@ -285,21 +311,21 @@ fun LocationScreen(
                 )
 
                 // F06: kartu navigasi (berjalan, menghitung, gagal, tiba, beberapa titik).
-                navigation != null -> NavigationCard(
-                    nav = navigation!!,
+                key == "nav" -> NavigationCard(
+                    nav = lastNav ?: return@AnimatedContent,
                     hasLocation = current != null,
                     onStop = { NavigationManager.stop() },
                     onRetry = { NavigationManager.retry() },
                 )
 
                 // Mendekati (PB10): pita kecil, peta tetap terlihat.
-                approaching != null -> ApproachStrip(
-                    name = approaching.poi.nama,
-                    distanceM = approaching.distanceM.roundToInt(),
-                )
+                key == "near" -> {
+                    val near = lastApproaching ?: return@AnimatedContent
+                    ApproachStrip(name = near.poi.nama, distanceM = near.distanceM.roundToInt())
+                }
 
                 // Di luar area: bangunan terdekat.
-                current != null -> IdleSheet(
+                key == "idle" -> IdleSheet(
                     nearestName = nearest?.poi?.nama,
                     nearestDistanceM = nearest?.distanceM?.roundToInt(),
                     nearestWalkMinutes = nearest?.distanceM?.let { PoiSearch.walkMinutes(it) },
@@ -307,6 +333,8 @@ fun LocationScreen(
                     onDirections = nearest?.poi?.let { poi -> { onNavigate(poi) } },
                     onOpenRoute = onOpenRoute,
                 )
+                else -> Unit
+            }
             }
         }
     }

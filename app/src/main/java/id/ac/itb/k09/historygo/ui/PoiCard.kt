@@ -1,5 +1,6 @@
 package id.ac.itb.k09.historygo.ui
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -98,12 +99,15 @@ fun PoiCard(
                                 Modifier.size(34.dp).background(extra.playButton, CircleShape),
                                 contentAlignment = Alignment.Center,
                             ) {
-                                Icon(
-                                    painterResource(if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play),
-                                    contentDescription = null,
-                                    tint = extra.onPlayButton,
-                                    modifier = Modifier.size(14.dp),
-                                )
+                                // Ikon play/jeda berganti halus (PB10).
+                                Crossfade(targetState = isPlaying, label = "play-pause") { showPause ->
+                                    Icon(
+                                        painterResource(if (showPause) R.drawable.ic_pause else R.drawable.ic_play),
+                                        contentDescription = null,
+                                        tint = extra.onPlayButton,
+                                        modifier = Modifier.size(14.dp),
+                                    )
+                                }
                             }
                             Spacer(Modifier.width(10.dp))
                             Text(

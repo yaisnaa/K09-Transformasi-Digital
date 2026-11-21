@@ -5,6 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +46,9 @@ import id.ac.itb.k09.historygo.ui.SearchScreen
 import id.ac.itb.k09.historygo.ui.SettingsScreen
 import id.ac.itb.k09.historygo.ui.components.HistoryGoNavBar
 import id.ac.itb.k09.historygo.ui.components.MainTab
+import id.ac.itb.k09.historygo.ui.components.ScreenKey
+import id.ac.itb.k09.historygo.ui.components.rememberReduceMotion
+import id.ac.itb.k09.historygo.ui.components.screenTransition
 import id.ac.itb.k09.historygo.ui.theme.HistoryGoTheme
 
 class MainActivity : ComponentActivity() {
@@ -111,83 +120,106 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         containerColor = MaterialTheme.colorScheme.background,
                         bottomBar = {
-                            if (!overlayOpen) HistoryGoNavBar(selected = tab, onSelect = { tab = it })
+                            // Navigation bar turun saat layar dalam dibuka, naik lagi saat kembali.
+                            AnimatedVisibility(
+                                visible = !overlayOpen,
+                                enter = slideInVertically { it } + fadeIn(),
+                                exit = slideOutVertically { it } + fadeOut(),
+                            ) { HistoryGoNavBar(selected = tab, onSelect = { tab = it }) }
                         },
                     ) { innerPadding ->
                         val screenModifier = Modifier.padding(innerPadding)
                         val poiId = detailPoiId
+                        val reduceMotion = rememberReduceMotion()
 
-                        when {
-                            // PB10: onboarding + penjelasan izin, sekali saja.
-                            !onboardingDone -> OnboardingScreen(onFinish = {}, modifier = screenModifier)
+                        // PB10: transisi antar layar (fade-through antar tab, geser saat masuk/keluar layar dalam).
+                        val screen = when {
+                            !onboardingDone -> ScreenKey("onboarding", -1)
+                            !authDecided -> ScreenKey("auth-first", -1)
+                            showAuth -> ScreenKey("auth", 3)
+                            poiId != null -> ScreenKey("detail:$poiId", 4)
+                            showProfile || firstTimeProfile -> ScreenKey("profile", 2)
+                            showSettings -> ScreenKey("settings", 1)
+                            showSearch -> ScreenKey("search", 1)
+                            else -> ScreenKey("tab:${tab.name}", 0)
+                        }
+                        AnimatedContent(
+                            targetState = screen,
+                            transitionSpec = screenTransition(reduceMotion),
+                            label = "screen",
+                        ) { key ->
+                            when {
+                                // PB10: onboarding + penjelasan izin, sekali saja.
+                                key.id == "onboarding" -> OnboardingScreen(onFinish = {}, modifier = screenModifier)
 
-                            // CL-03: Masuk / Daftar / Lanjut tanpa akun, sekali setelah onboarding.
-                            !authDecided -> AuthScreen(onDone = {}, modifier = screenModifier)
+                                // CL-03: Masuk / Daftar / Lanjut tanpa akun, sekali setelah onboarding.
+                                key.id == "auth-first" -> AuthScreen(onDone = {}, modifier = screenModifier)
 
-                            showAuth -> AuthScreen(
-                                onDone = { showAuth = false },
-                                onBack = { showAuth = false },
-                                modifier = screenModifier,
-                            )
+                                key.id == "auth" -> AuthScreen(
+                                    onDone = { showAuth = false },
+                                    onBack = { showAuth = false },
+                                    modifier = screenModifier,
+                                )
 
-                            poiId != null -> PoiDetailScreen(
-                                poiId = poiId,
-                                onBack = { detailPoiId = null },
-                                onNavigate = startNavigation,
-                                modifier = screenModifier,
-                            )
-
-                            showProfile || firstTimeProfile -> ProfileScreen(
-                                initial = profile,
-                                onSave = { newProfile ->
-                                    ProfileStore.save(this@MainActivity, newProfile)
-                                    showProfile = false
-                                    showSettings = false
-                                    tab = MainTab.ROUTE   // langsung tampilkan "rute awal"
-                                },
-                                onSkip = {
-                                    if (firstTimeProfile) ProfileStore.skip(this@MainActivity)
-                                    showProfile = false
-                                },
-                                modifier = screenModifier,
-                            )
-
-                            showSettings -> SettingsScreen(
-                                onBack = { showSettings = false },
-                                onEditProfile = { showProfile = true },
-                                onOpenAuth = { showAuth = true },
-                                modifier = screenModifier,
-                            )
-
-                            showSearch -> SearchScreen(
-                                onBack = { showSearch = false },
-                                onOpenDetail = openDetail,
-                                modifier = screenModifier,
-                            )
-
-                            else -> when (tab) {
-                                MainTab.EXPLORE -> LocationScreen(
-                                    onOpenDetail = openDetail,
-                                    onOpenSearch = { showSearch = true },
-                                    onOpenSettings = { showSettings = true },
+                                key.id.startsWith("detail:") -> PoiDetailScreen(
+                                    poiId = key.id.removePrefix("detail:"),
+                                    onBack = { detailPoiId = null },
                                     onNavigate = startNavigation,
-                                    onOpenRoute = { tab = MainTab.ROUTE },
                                     modifier = screenModifier,
                                 )
 
-                                MainTab.ROUTE -> RecommendationScreen(
-                                    onOpenDetail = openDetail,
+                                key.id == "profile" -> ProfileScreen(
+                                    initial = profile,
+                                    onSave = { newProfile ->
+                                        ProfileStore.save(this@MainActivity, newProfile)
+                                        showProfile = false
+                                        showSettings = false
+                                        tab = MainTab.ROUTE   // langsung tampilkan "rute awal"
+                                    },
+                                    onSkip = {
+                                        if (firstTimeProfile) ProfileStore.skip(this@MainActivity)
+                                        showProfile = false
+                                    },
+                                    modifier = screenModifier,
+                                )
+
+                                key.id == "settings" -> SettingsScreen(
+                                    onBack = { showSettings = false },
                                     onEditProfile = { showProfile = true },
-                                    onStartRoute = startRoute,
+                                    onOpenAuth = { showAuth = true },
                                     modifier = screenModifier,
                                 )
 
-                                MainTab.TRAIL -> GameScreen(
+                                key.id == "search" -> SearchScreen(
+                                    onBack = { showSearch = false },
                                     onOpenDetail = openDetail,
                                     modifier = screenModifier,
                                 )
 
-                                MainTab.HISTORY -> HistoryScreen(modifier = screenModifier)
+                                else -> when (MainTab.valueOf(key.id.removePrefix("tab:"))) {
+                                    MainTab.EXPLORE -> LocationScreen(
+                                        onOpenDetail = openDetail,
+                                        onOpenSearch = { showSearch = true },
+                                        onOpenSettings = { showSettings = true },
+                                        onNavigate = startNavigation,
+                                        onOpenRoute = { tab = MainTab.ROUTE },
+                                        modifier = screenModifier,
+                                    )
+
+                                    MainTab.ROUTE -> RecommendationScreen(
+                                        onOpenDetail = openDetail,
+                                        onEditProfile = { showProfile = true },
+                                        onStartRoute = startRoute,
+                                        modifier = screenModifier,
+                                    )
+
+                                    MainTab.TRAIL -> GameScreen(
+                                        onOpenDetail = openDetail,
+                                        modifier = screenModifier,
+                                    )
+
+                                    MainTab.HISTORY -> HistoryScreen(modifier = screenModifier)
+                                }
                             }
                         }
                     }

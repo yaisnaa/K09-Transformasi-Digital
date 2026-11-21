@@ -1,6 +1,7 @@
 package id.ac.itb.k09.historygo.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -273,11 +274,14 @@ private fun NarrationBar(poi: Poi) {
             modifier = Modifier.size(56.dp),
             colors = IconButtonDefaults.iconButtonColors(containerColor = extra.playButton, contentColor = extra.onPlayButton),
         ) {
-            Icon(
-                painterResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play),
-                contentDescription = if (playing) s.pauseStory else s.listenStory,
-                modifier = Modifier.size(20.dp),
-            )
+            // Ikon play/jeda berganti halus (PB10).
+            Crossfade(targetState = playing, label = "play-pause") { showPause ->
+                Icon(
+                    painterResource(if (showPause) R.drawable.ic_pause else R.drawable.ic_play),
+                    contentDescription = if (playing) s.pauseStory else s.listenStory,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
         }
         Spacer(Modifier.width(14.dp))
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
