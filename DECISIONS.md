@@ -78,6 +78,9 @@ Agar iOS bisa ditambahkan nanti (misalnya lewat Kotlin Multiplatform), kode di `
 ### Jetpack Compose untuk UI
 PRD tidak menentukan. Compose diusulkan agar perubahan state (di luar radius, mendekat, terpicu, akses konten) sederhana dibuat.
 
+### Akun pengguna: lokal di HP (CL-03)
+Status: dipilih anggota tim 2026-11-21, perlu konfirmasi seluruh tim. Akun dan progres disimpan di perangkat (SharedPreferences/berkas per akun), password di-hash PBKDF2 + salt. Logika validasi akun ditulis Kotlin murni dengan unit test. Firebase dipertimbangkan ulang hanya kalau sinkronisasi antar-HP benar-benar dibutuhkan.
+
 ## Pertanyaan terbuka
 
 - Apakah repo sudah ada?
