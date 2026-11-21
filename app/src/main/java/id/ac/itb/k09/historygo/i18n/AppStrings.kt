@@ -61,6 +61,12 @@ interface AppStrings {
     val pauseStory: String
     val recenter: String
 
+    // POI Detail dan misi (PB10 F4)
+    val audioSampleChip: String
+    val keepsPlayingLocked: String
+    val quizDummyChip: String
+    fun pointsShort(value: Int): String
+
     // Peta (Explore Map)
     val permissionNeeded: String
     val allowLocation: String
@@ -257,6 +263,11 @@ object IdStrings : AppStrings {
     override val listenStory = "Dengarkan cerita"
     override val pauseStory = "Jeda cerita"
     override val recenter = "Kembali ke posisi saya"
+
+    override val audioSampleChip = "Audio contoh"
+    override val keepsPlayingLocked = "Tetap berputar saat layar terkunci"
+    override val quizDummyChip = "Soal contoh"
+    override fun pointsShort(value: Int) = "+$value poin"
     override val switchLanguage = "🌐 English"
 
     override val permissionNeeded = "HistoryGo butuh izin lokasi presisi untuk mengetahui bangunan bersejarah di sekitarmu."
@@ -300,8 +311,8 @@ object IdStrings : AppStrings {
     override val infoStyle = "Gaya arsitektur"
     override val infoRole = "Peran historis"
     override val infoEmpty = "belum diisi"
-    override val playNarration = "▶  Putar narasi"
-    override val pauseNarration = "⏸  Jeda narasi"
+    override val playNarration = "Putar narasi"
+    override val pauseNarration = "Jeda narasi"
 
     override val historyTitle = "POI yang dilewati"
     override val noHistory = "Belum ada POI yang dilewati."
@@ -373,15 +384,15 @@ object IdStrings : AppStrings {
     override val gameIntro = "Datangi setiap tempat, check-in di lokasi, lalu jawab kuisnya."
     override fun missionsDone(done: Int, total: Int) = "Misi selesai: $done/$total"
     override fun points(value: Int) = "Poin: $value"
-    override val badgeUnlocked = "🏅 Badge terbuka"
-    override val badgeLocked = "🔒 Badge terkunci"
+    override val badgeUnlocked = "Badge terbuka"
+    override val badgeLocked = "Badge terkunci"
     override val badgeName = "Penjelajah Jejak Sejarah"
     override val badgeUnlockedText = "Selamat! Kamu sudah menyelesaikan semua misi di koridor Asia Afrika."
     override fun badgeLockedText(remaining: Int) = "Selesaikan $remaining misi lagi untuk membuka badge ini."
     override val statusNotCheckedIn = "Belum check-in"
     override val statusQuizPending = "Sudah check-in · kuis belum dijawab"
-    override val statusQuizCorrect = "Check-in ✓ · kuis benar"
-    override val statusQuizWrong = "Check-in ✓ · kuis salah"
+    override val statusQuizCorrect = "Check-in · kuis benar"
+    override val statusQuizWrong = "Check-in · kuis salah"
     override val resetMissions = "Ulangi misi dari awal"
     override val missionCardTitle = "Misi Jejak Sejarah"
     override val checkInNoLocation = "Lokasi belum terbaca. Check-in hanya bisa dilakukan di lokasi."
@@ -394,7 +405,7 @@ object IdStrings : AppStrings {
     override val locationNotRead = "Lokasi belum terbaca."
     override fun answerCorrect(points: Int) = "Benar! +$points poin"
     override fun answerWrong(correctAnswer: String) = "Kurang tepat. Jawabannya: $correctAnswer"
-    override fun missionDone(correct: Boolean?) = "Misi selesai ✓" + when (correct) {
+    override fun missionDone(correct: Boolean?) = "Misi selesai" + when (correct) {
         true -> " · kuis dijawab benar"
         false -> " · kuis dijawab salah"
         null -> ""
@@ -461,6 +472,11 @@ object EnStrings : AppStrings {
     override val listenStory = "Listen to the story"
     override val pauseStory = "Pause story"
     override val recenter = "Back to my location"
+
+    override val audioSampleChip = "Sample audio"
+    override val keepsPlayingLocked = "Keeps playing when the screen is locked"
+    override val quizDummyChip = "Sample question"
+    override fun pointsShort(value: Int) = "+$value pts"
     override val switchLanguage = "🌐 Bahasa Indonesia"
 
     override val permissionNeeded = "HistoryGo needs precise location access to find historic buildings around you."
@@ -505,8 +521,8 @@ object EnStrings : AppStrings {
     override val infoStyle = "Architectural style"
     override val infoRole = "Historical role"
     override val infoEmpty = "not filled yet"
-    override val playNarration = "▶  Play narration"
-    override val pauseNarration = "⏸  Pause narration"
+    override val playNarration = "Play narration"
+    override val pauseNarration = "Pause narration"
 
     override val historyTitle = "Visited places"
     override val noHistory = "No places visited yet."
@@ -579,16 +595,16 @@ object EnStrings : AppStrings {
     override val gameIntro = "Visit each place, check in on site, then answer its quiz."
     override fun missionsDone(done: Int, total: Int) = "Missions completed: $done/$total"
     override fun points(value: Int) = "Points: $value"
-    override val badgeUnlocked = "🏅 Badge unlocked"
-    override val badgeLocked = "🔒 Badge locked"
+    override val badgeUnlocked = "Badge unlocked"
+    override val badgeLocked = "Badge locked"
     override val badgeName = "History Trail Explorer"
     override val badgeUnlockedText = "Congratulations! You have completed every mission in the Asia Afrika corridor."
     override fun badgeLockedText(remaining: Int) =
         "Complete $remaining more mission${if (remaining == 1) "" else "s"} to unlock this badge."
     override val statusNotCheckedIn = "Not checked in"
     override val statusQuizPending = "Checked in · quiz not answered"
-    override val statusQuizCorrect = "Checked in ✓ · quiz correct"
-    override val statusQuizWrong = "Checked in ✓ · quiz wrong"
+    override val statusQuizCorrect = "Checked in · quiz correct"
+    override val statusQuizWrong = "Checked in · quiz wrong"
     override val resetMissions = "Restart missions"
     override val missionCardTitle = "History Trail mission"
     override val checkInNoLocation = "Location not available. You can only check in on site."
@@ -601,7 +617,7 @@ object EnStrings : AppStrings {
     override val locationNotRead = "Location not available yet."
     override fun answerCorrect(points: Int) = "Correct! +$points points"
     override fun answerWrong(correctAnswer: String) = "Not quite. The answer is: $correctAnswer"
-    override fun missionDone(correct: Boolean?) = "Mission complete ✓" + when (correct) {
+    override fun missionDone(correct: Boolean?) = "Mission complete" + when (correct) {
         true -> " · quiz answered correctly"
         false -> " · quiz answered incorrectly"
         null -> ""
