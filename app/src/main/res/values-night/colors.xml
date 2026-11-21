@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema gelap: latar jendela HistoryGo (DESIGN.md). -->
+    <color name="kertas">#FF17110B</color>
+</resources>
