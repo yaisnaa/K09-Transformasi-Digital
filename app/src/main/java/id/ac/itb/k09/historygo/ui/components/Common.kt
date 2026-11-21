@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import id.ac.itb.k09.historygo.R
@@ -70,5 +72,42 @@ fun StatusChip(text: String, modifier: Modifier = Modifier, warning: Boolean = t
             .padding(horizontal = 10.dp, vertical = 5.dp),
     ) {
         Text(text, style = MaterialTheme.typography.labelMedium, color = if (warning) c.onErrorContainer else c.onPrimaryContainer)
+    }
+}
+
+/**
+ * Dua tombol berdampingan; kalau tidak muat (teks Inggris panjang, ukuran huruf besar),
+ * keduanya bertumpuk selebar penuh supaya label tidak terpotong (DESIGN.md: label tombol
+ * tidak terpotong baris). Tombol pertama mengisi sisa lebar saat berdampingan.
+ * Dengan satu anak, anak itu dibuat selebar penuh.
+ */
+@Composable
+fun AdaptiveButtonRow(gap: Dp, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Layout(content = content, modifier = modifier.fillMaxWidth()) { measurables, constraints ->
+        val max = constraints.maxWidth
+        val gapPx = gap.roundToPx()
+        if (measurables.size < 2) {
+            val p = measurables.map { it.measure(Constraints.fixedWidth(max).copy(minHeight = 0, maxHeight = constraints.maxHeight)) }
+            return@Layout layout(max, p.sumOf { it.height }) { var y = 0; p.forEach { it.place(0, y); y += it.height } }
+        }
+        val (first, second) = measurables
+        val firstWant = first.maxIntrinsicWidth(constraints.maxHeight)
+        val secondWant = second.maxIntrinsicWidth(constraints.maxHeight)
+        if (firstWant + gapPx + secondWant <= max) {
+            val sp = second.measure(Constraints.fixedWidth(secondWant))
+            val fp = first.measure(Constraints.fixedWidth(max - gapPx - secondWant))
+            val h = maxOf(fp.height, sp.height)
+            layout(max, h) {
+                fp.place(0, 0)
+                sp.place(max - sp.width, 0)
+            }
+        } else {
+            val fp = first.measure(Constraints.fixedWidth(max))
+            val sp = second.measure(Constraints.fixedWidth(max))
+            layout(max, fp.height + gapPx + sp.height) {
+                fp.place(0, 0)
+                sp.place(0, fp.height + gapPx)
+            }
+        }
     }
 }

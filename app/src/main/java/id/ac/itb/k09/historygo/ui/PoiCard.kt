@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import id.ac.itb.k09.historygo.R
 import id.ac.itb.k09.historygo.data.Poi
 import id.ac.itb.k09.historygo.i18n.LocalStrings
+import id.ac.itb.k09.historygo.ui.components.AdaptiveButtonRow
 import id.ac.itb.k09.historygo.ui.components.MapSheet
 import id.ac.itb.k09.historygo.ui.components.StatusChip
 import id.ac.itb.k09.historygo.ui.components.rememberAssetBitmap
@@ -85,11 +86,11 @@ fun PoiCard(
                     }
                 }
 
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                AdaptiveButtonRow(gap = 10.dp) {
                     if (onListen != null) {
                         Button(
                             onClick = onListen,
-                            modifier = Modifier.weight(1f).height(56.dp),
+                            modifier = Modifier.height(56.dp),
                             shape = MaterialTheme.shapes.medium,
                             contentPadding = PaddingValues(start = 12.dp, end = 18.dp),
                         ) {
@@ -109,7 +110,6 @@ fun PoiCard(
                                 if (isPlaying) s.pauseStory else s.listenStory,
                                 style = MaterialTheme.typography.labelLarge,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
                             )
                         }
                         OutlinedButton(

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +31,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -238,7 +240,15 @@ private fun ActivePoiMarker(name: String) {
                 .padding(horizontal = 10.dp),
             contentAlignment = Alignment.Center,
         ) {
-            Text(name, style = MaterialTheme.typography.titleSmall, color = colors.onSurface, maxLines = 1)
+            // Nama panjang (mis. versi Inggris) dipotong agar label tidak menutupi peta.
+            Text(
+                name,
+                style = MaterialTheme.typography.titleSmall,
+                color = colors.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.widthIn(max = 200.dp),
+            )
         }
         Box(Modifier.size(ACTIVE_BOX_DP.dp), contentAlignment = Alignment.Center) {
             Box(
