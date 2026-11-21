@@ -15,6 +15,30 @@ interface AppStrings {
     val change: String
     val switchLanguage: String          // label tombol untuk pindah ke bahasa LAIN
 
+    // Navigasi utama dan Pengaturan (PB10)
+    val tabExplore: String
+    val tabRoute: String
+    val tabTrail: String
+    val tabHistory: String
+    val settingsTitle: String
+    val settingsVisitPlan: String
+    val settingsVisitPlanUsed: String
+    val settingsVisitPlanEmpty: String
+    fun settingsVisitPlanSummary(minutes: Int, interests: String): String
+    val settingsLanguage: String
+    val languageIndonesian: String
+    val languageEnglish: String
+    val settingsStoriesDetection: String
+    val autoplayHelp: String
+    val detectionLabel: String
+    val detectionHelp: String
+    val aboutContent: String
+    val notValidatedChip: String
+    val dummyChip: String
+    val aboutNotValidated: String
+    val aboutDummy: String
+    val aboutSources: String
+
     // Peta (Explore Map)
     val permissionNeeded: String
     val allowLocation: String
@@ -167,6 +191,29 @@ object IdStrings : AppStrings {
     override val back = "← Kembali"
     override val close = "Tutup"
     override val change = "Ubah"
+
+    override val tabExplore = "Jelajah"
+    override val tabRoute = "Rute"
+    override val tabTrail = "Jejak Sejarah"
+    override val tabHistory = "Riwayat"
+    override val settingsTitle = "Pengaturan"
+    override val settingsVisitPlan = "Rencana kunjungan"
+    override val settingsVisitPlanUsed = "Dipakai untuk rute rekomendasi"
+    override val settingsVisitPlanEmpty = "Belum diisi"
+    override fun settingsVisitPlanSummary(minutes: Int, interests: String) = "$minutes menit · $interests"
+    override val settingsLanguage = "Bahasa"
+    override val languageIndonesian = "Indonesia"
+    override val languageEnglish = "English"
+    override val settingsStoriesDetection = "Cerita dan deteksi"
+    override val autoplayHelp = "Cerita langsung dibacakan saat kamu tiba di sebuah bangunan."
+    override val detectionLabel = "Deteksi bangunan sekitar"
+    override val detectionHelp = "Matikan untuk menghentikan pembacaan GPS dan notifikasi."
+    override val aboutContent = "Tentang konten"
+    override val notValidatedChip = "Belum tervalidasi"
+    override val dummyChip = "Konten contoh"
+    override val aboutNotValidated = "Konten belum diperiksa dan disahkan oleh tim."
+    override val aboutDummy = "Teks sementara, bukan data sejarah asli. Akan diganti sebelum rilis."
+    override val aboutSources = "Sumber rujukan tercantum di bagian bawah setiap halaman tempat."
     override val switchLanguage = "🌐 English"
 
     override val permissionNeeded = "HistoryGo butuh izin lokasi presisi untuk mengetahui bangunan bersejarah di sekitarmu."
@@ -327,6 +374,29 @@ object EnStrings : AppStrings {
     override val back = "← Back"
     override val close = "Close"
     override val change = "Edit"
+
+    override val tabExplore = "Explore"
+    override val tabRoute = "Route"
+    override val tabTrail = "History Trail"
+    override val tabHistory = "History"
+    override val settingsTitle = "Settings"
+    override val settingsVisitPlan = "Visit plan"
+    override val settingsVisitPlanUsed = "Used for recommended routes"
+    override val settingsVisitPlanEmpty = "Not set yet"
+    override fun settingsVisitPlanSummary(minutes: Int, interests: String) = "$minutes min · $interests"
+    override val settingsLanguage = "Language"
+    override val languageIndonesian = "Indonesia"
+    override val languageEnglish = "English"
+    override val settingsStoriesDetection = "Stories and detection"
+    override val autoplayHelp = "Stories play automatically when you arrive at a building."
+    override val detectionLabel = "Detect nearby buildings"
+    override val detectionHelp = "Turn off to stop GPS and notifications."
+    override val aboutContent = "About the content"
+    override val notValidatedChip = "Not yet validated"
+    override val dummyChip = "Sample content"
+    override val aboutNotValidated = "Content not yet reviewed and approved by the team."
+    override val aboutDummy = "Placeholder text, not real historical data. Will be replaced before release."
+    override val aboutSources = "References are listed at the bottom of each place page."
     override val switchLanguage = "🌐 Bahasa Indonesia"
 
     override val permissionNeeded = "HistoryGo needs precise location access to find historic buildings around you."

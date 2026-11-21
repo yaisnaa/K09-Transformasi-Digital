@@ -34,14 +34,14 @@ import id.ac.itb.k09.historygo.game.JejakSejarah
 
 /** Layar "Jejak Sejarah" (F08): progres misi x/N, poin, badge, dan status tiap POI. */
 @Composable
-fun GameScreen(onBack: () -> Unit, onOpenDetail: (Poi) -> Unit, modifier: Modifier = Modifier) {
+fun GameScreen(onBack: (() -> Unit)? = null, onOpenDetail: (Poi) -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val s = LocalStrings.current
     val pois = rememberPois().filter { it.hasCoordinates }   // dalam bahasa aktif (A01)
     LaunchedEffect(Unit) { GameStore.load(context) }
     val progress by GameStore.progress.collectAsStateWithLifecycle()
 
-    BackHandler(onBack = onBack)
+    BackHandler(enabled = onBack != null) { onBack?.invoke() }
 
     val done = JejakSejarah.completedCount(progress, pois)
     val badge = JejakSejarah.badgeUnlocked(progress, pois)
@@ -53,7 +53,7 @@ fun GameScreen(onBack: () -> Unit, onOpenDetail: (Poi) -> Unit, modifier: Modifi
             .padding(16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            TextButton(onClick = onBack) { Text(s.back) }
+            if (onBack != null) TextButton(onClick = onBack) { Text(s.back) }
             Text(s.historyTrail, style = MaterialTheme.typography.titleLarge)
         }
         Text(

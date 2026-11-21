@@ -223,7 +223,15 @@ class TriggerService : Service() {
 
         /** Dipanggil dari layar saat aplikasi terlihat dan izin lokasi sudah ada. */
         fun start(context: Context) {
+            // PB10: pengguna bisa mematikan deteksi di layar Pengaturan.
+            SettingsStore.load(context)
+            if (!SettingsStore.detection.value) return
             ContextCompat.startForegroundService(context, Intent(context, TriggerService::class.java))
+        }
+
+        /** Dipanggil saat pengguna mematikan "Deteksi bangunan sekitar" di Pengaturan. */
+        fun stop(context: Context) {
+            context.stopService(Intent(context, TriggerService::class.java))
         }
     }
 }

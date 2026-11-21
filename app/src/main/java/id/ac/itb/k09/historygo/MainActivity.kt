@@ -2,10 +2,12 @@ package id.ac.itb.k09.historygo
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -31,6 +33,9 @@ import id.ac.itb.k09.historygo.ui.PoiDetailScreen
 import id.ac.itb.k09.historygo.ui.ProfileScreen
 import id.ac.itb.k09.historygo.ui.RecommendationScreen
 import id.ac.itb.k09.historygo.ui.SearchScreen
+import id.ac.itb.k09.historygo.ui.SettingsScreen
+import id.ac.itb.k09.historygo.ui.components.HistoryGoNavBar
+import id.ac.itb.k09.historygo.ui.components.MainTab
 import id.ac.itb.k09.historygo.ui.theme.HistoryGoTheme
 
 class MainActivity : ComponentActivity() {
@@ -60,14 +65,13 @@ class MainActivity : ComponentActivity() {
                 LocalStrings provides AppStrings.of(language),
             ) {
                 HistoryGoTheme {
-                    // Layar mana yang tampil (yang paling atas menang):
-                    // detailPoiId -> POI Detail; kuesioner profil; rekomendasi; Cari POI; Riwayat; selain itu -> Peta.
-                    // Karena urutannya begini, Kembali dari detail akan kembali ke layar asalnya (pencarian/rekomendasi).
-                    var showHistory by rememberSaveable { mutableStateOf(false) }
+                    // PB10: empat tab utama (navigation bar) + layar "di atas" tab.
+                    // Layar di atas tab (yang paling atas menang): POI Detail, kuesioner profil, Pengaturan, Cari.
+                    // Karena urutannya begini, Kembali dari detail akan kembali ke layar asalnya.
+                    var tab by rememberSaveable { mutableStateOf(MainTab.EXPLORE) }
                     var showSearch by rememberSaveable { mutableStateOf(false) }
                     var showProfile by rememberSaveable { mutableStateOf(false) }
-                    var showRecommendations by rememberSaveable { mutableStateOf(false) }
-                    var showGame by rememberSaveable { mutableStateOf(false) }
+                    var showSettings by rememberSaveable { mutableStateOf(false) }
                     var detailPoiId by rememberSaveable { mutableStateOf<String?>(null) }
 
                     val profile by ProfileStore.profile.collectAsStateWithLifecycle()
@@ -81,13 +85,24 @@ class MainActivity : ComponentActivity() {
                         NavigationManager.startRoute(this@MainActivity, pois)
                         detailPoiId = null
                         showSearch = false
-                        showHistory = false
-                        showRecommendations = false
-                        showGame = false
+                        showSettings = false
+                        tab = MainTab.EXPLORE
                     }
                     val startNavigation: (Poi) -> Unit = { poi -> startRoute(listOf(poi)) }
+                    val openDetail: (Poi) -> Unit = { poi -> detailPoiId = poi.id }
 
-                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    val overlayOpen = detailPoiId != null || showProfile || firstTimeProfile || showSettings || showSearch
+
+                    // Tombol Back di tab selain Jelajah kembali ke Jelajah.
+                    BackHandler(enabled = !overlayOpen && tab != MainTab.EXPLORE) { tab = MainTab.EXPLORE }
+
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        containerColor = MaterialTheme.colorScheme.background,
+                        bottomBar = {
+                            if (!overlayOpen) HistoryGoNavBar(selected = tab, onSelect = { tab = it })
+                        },
+                    ) { innerPadding ->
                         val screenModifier = Modifier.padding(innerPadding)
                         val poiId = detailPoiId
 
@@ -104,7 +119,8 @@ class MainActivity : ComponentActivity() {
                                 onSave = { newProfile ->
                                     ProfileStore.save(this@MainActivity, newProfile)
                                     showProfile = false
-                                    showRecommendations = true   // langsung tampilkan "rute awal"
+                                    showSettings = false
+                                    tab = MainTab.ROUTE   // langsung tampilkan "rute awal"
                                 },
                                 onSkip = {
                                     if (firstTimeProfile) ProfileStore.skip(this@MainActivity)
@@ -113,39 +129,40 @@ class MainActivity : ComponentActivity() {
                                 modifier = screenModifier,
                             )
 
-                            showRecommendations -> RecommendationScreen(
-                                onBack = { showRecommendations = false },
-                                onOpenDetail = { poi -> detailPoiId = poi.id },
+                            showSettings -> SettingsScreen(
+                                onBack = { showSettings = false },
                                 onEditProfile = { showProfile = true },
-                                onStartRoute = startRoute,
-                                modifier = screenModifier,
-                            )
-
-                            showGame -> GameScreen(
-                                onBack = { showGame = false },
-                                onOpenDetail = { poi -> detailPoiId = poi.id },
                                 modifier = screenModifier,
                             )
 
                             showSearch -> SearchScreen(
                                 onBack = { showSearch = false },
-                                onOpenDetail = { poi -> detailPoiId = poi.id },
+                                onOpenDetail = openDetail,
                                 modifier = screenModifier,
                             )
 
-                            showHistory -> HistoryScreen(
-                                onBack = { showHistory = false },
-                                modifier = screenModifier,
-                            )
+                            else -> when (tab) {
+                                MainTab.EXPLORE -> LocationScreen(
+                                    onOpenDetail = openDetail,
+                                    onOpenSearch = { showSearch = true },
+                                    onOpenSettings = { showSettings = true },
+                                    modifier = screenModifier,
+                                )
 
-                            else -> LocationScreen(
-                                onOpenHistory = { showHistory = true },
-                                onOpenDetail = { poi -> detailPoiId = poi.id },
-                                onOpenSearch = { showSearch = true },
-                                onOpenRecommendations = { showRecommendations = true },
-                                onOpenGame = { showGame = true },
-                                modifier = screenModifier,
-                            )
+                                MainTab.ROUTE -> RecommendationScreen(
+                                    onOpenDetail = openDetail,
+                                    onEditProfile = { showProfile = true },
+                                    onStartRoute = startRoute,
+                                    modifier = screenModifier,
+                                )
+
+                                MainTab.TRAIL -> GameScreen(
+                                    onOpenDetail = openDetail,
+                                    modifier = screenModifier,
+                                )
+
+                                MainTab.HISTORY -> HistoryScreen(modifier = screenModifier)
+                            }
                         }
                     }
                 }

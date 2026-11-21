@@ -64,11 +64,9 @@ private val LOCATION_PERMISSIONS = arrayOf(
 
 @Composable
 fun LocationScreen(
-    onOpenHistory: () -> Unit,
     onOpenDetail: (Poi) -> Unit,
     onOpenSearch: () -> Unit,
-    onOpenRecommendations: () -> Unit,
-    onOpenGame: () -> Unit,
+    onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -215,37 +213,11 @@ fun LocationScreen(
                 StatusCard(message = s.poisWithoutCoordinates(poiTanpaKoordinat))
             }
 
-            // F05: tombol Cari di sebelah tombol riwayat.
+            // F05: pencarian. Rekomendasi, Jejak Sejarah, dan Riwayat sekarang tab (PB10);
+            // bahasa dan autoplay pindah ke layar Pengaturan. Tampilan peta dirombak di PB10 F3.
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(onClick = onOpenSearch) { Text(s.searchPoi) }
-                // F07: rekomendasi sesuai profil.
-                Button(onClick = onOpenRecommendations) { Text(s.recommendations) }
-            }
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = onOpenHistory) { Text(s.visitedPois(history.size)) }
-                // F08: treasure hunt.
-                Button(onClick = onOpenGame) { Text(s.historyTrail) }
-            }
-
-            // A01: ganti bahasa langsung, tanpa restart. Notifikasi permanen ikut diperbarui.
-            OutlinedButton(onClick = {
-                LanguageStore.toggle(context)
-                if (hasPermission && gpsOn) TriggerService.start(context)
-            }) { Text(s.switchLanguage) }
-
-            // F04 no. 3: saklar autoplay narasi (default mati, DECISIONS.md).
-            Card(modifier = Modifier.padding(top = 8.dp)) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(s.autoplayNarration)
-                    Spacer(Modifier.width(12.dp))
-                    Switch(
-                        checked = autoplay,
-                        onCheckedChange = { enabled -> SettingsStore.setAutoplay(context, enabled) },
-                    )
-                }
+                OutlinedButton(onClick = onOpenSettings) { Text(s.settingsTitle) }
             }
         }
 

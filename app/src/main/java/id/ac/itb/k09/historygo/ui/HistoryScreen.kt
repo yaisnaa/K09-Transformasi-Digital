@@ -30,7 +30,7 @@ import java.util.Locale
 
 /** Layar daftar "POI yang dilewati" (F02 acceptance 4). */
 @Composable
-fun HistoryScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
+fun HistoryScreen(onBack: (() -> Unit)? = null, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     LaunchedEffect(Unit) { VisitHistoryStore.load(context) }
     val history by VisitHistoryStore.history.collectAsStateWithLifecycle()
@@ -40,11 +40,11 @@ fun HistoryScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
     val pois = rememberPois()
 
     // Tombol Back di HP kembali ke peta, bukan menutup aplikasi.
-    BackHandler(onBack = onBack)
+    BackHandler(enabled = onBack != null) { onBack?.invoke() }
 
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            TextButton(onClick = onBack) { Text(s.back) }
+            if (onBack != null) TextButton(onClick = onBack) { Text(s.back) }
             Text(s.historyTitle, style = MaterialTheme.typography.titleLarge)
         }
 

@@ -36,7 +36,7 @@ import id.ac.itb.k09.historygo.location.TriggerState
 /** Daftar rekomendasi (F07): maksimal 3 POI berurutan sebagai rute, sesuai profil dan durasi. */
 @Composable
 fun RecommendationScreen(
-    onBack: () -> Unit,
+    onBack: (() -> Unit)? = null,
     onOpenDetail: (Poi) -> Unit,
     onEditProfile: () -> Unit,
     onStartRoute: (List<Poi>) -> Unit,
@@ -50,7 +50,7 @@ fun RecommendationScreen(
     val history by VisitHistoryStore.history.collectAsStateWithLifecycle()
     val reading by TriggerState.latestReading.collectAsStateWithLifecycle()
 
-    BackHandler(onBack = onBack)
+    BackHandler(enabled = onBack != null) { onBack?.invoke() }
 
     Column(
         modifier = modifier
@@ -59,7 +59,7 @@ fun RecommendationScreen(
             .padding(16.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            TextButton(onClick = onBack) { Text(s.back) }
+            if (onBack != null) TextButton(onClick = onBack) { Text(s.back) }
             Text(s.recTitle, style = MaterialTheme.typography.titleLarge)
         }
 
