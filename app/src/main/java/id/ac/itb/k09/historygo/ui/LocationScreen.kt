@@ -115,19 +115,23 @@ fun LocationScreen(
         hasPermission = result[Manifest.permission.ACCESS_FINE_LOCATION] == true
     }
 
-    LaunchedEffect(Unit) {
-        if (!hasPermission && !askedOnce) permissionLauncher.launch(LOCATION_PERMISSIONS)
-    }
+    // PB10: izin TIDAK diminta otomatis di sini; onboarding sudah menjelaskan dan memintanya.
+    // Kalau pengguna memilih "Jelajah tanpa lokasi", sheet di bawah peta menawarkan izin lagi.
 
     // ---------- MINTA IZIN NOTIFIKASI (PB05) ----------
     // Hanya Android 13 (API 33) ke atas yang butuh izin ini. Ditolak pun tidak apa-apa:
     // POI tetap disimpan dan kartunya muncul saat aplikasi dibuka (DECISIONS.md).
     val notificationLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { askedNotification = true }
+    ) {
+        askedNotification = true
+        SettingsStore.setNotificationAsked(context)
+    }
 
     LaunchedEffect(hasPermission) {
-        if (hasPermission && !askedNotification && Build.VERSION.SDK_INT >= 33) {
+        // Sudah pernah diminta (mis. di onboarding): jangan diminta lagi.
+        SettingsStore.load(context)
+        if (hasPermission && !askedNotification && !SettingsStore.notificationAsked.value && Build.VERSION.SDK_INT >= 33) {
             notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }

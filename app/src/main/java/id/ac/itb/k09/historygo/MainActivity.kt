@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.itb.k09.historygo.data.Poi
 import id.ac.itb.k09.historygo.data.ProfileStore
+import id.ac.itb.k09.historygo.data.SettingsStore
 import id.ac.itb.k09.historygo.i18n.AppStrings
 import id.ac.itb.k09.historygo.i18n.LanguageStore
 import id.ac.itb.k09.historygo.i18n.LocalLanguage
@@ -29,6 +30,7 @@ import id.ac.itb.k09.historygo.navigation.NavigationManager
 import id.ac.itb.k09.historygo.ui.GameScreen
 import id.ac.itb.k09.historygo.ui.HistoryScreen
 import id.ac.itb.k09.historygo.ui.LocationScreen
+import id.ac.itb.k09.historygo.ui.OnboardingScreen
 import id.ac.itb.k09.historygo.ui.PoiDetailScreen
 import id.ac.itb.k09.historygo.ui.ProfileScreen
 import id.ac.itb.k09.historygo.ui.RecommendationScreen
@@ -57,6 +59,8 @@ class MainActivity : ComponentActivity() {
         ProfileStore.load(this)
         // A01: baca bahasa tersimpan sebelum layar pertama digambar.
         LanguageStore.load(this)
+        // PB10: onboarding tampil sekali, dibaca sebelum layar pertama digambar.
+        SettingsStore.load(this)
         setContent {
             // Bahasa aktif dibagikan ke semua layar. Saat diganti, semua layar langsung digambar ulang.
             val language by LanguageStore.language.collectAsStateWithLifecycle()
@@ -74,6 +78,7 @@ class MainActivity : ComponentActivity() {
                     var showSettings by rememberSaveable { mutableStateOf(false) }
                     var detailPoiId by rememberSaveable { mutableStateOf<String?>(null) }
 
+                    val onboardingDone by SettingsStore.onboardingDone.collectAsStateWithLifecycle()
                     val profile by ProfileStore.profile.collectAsStateWithLifecycle()
                     val profileSkipped by ProfileStore.skipped.collectAsStateWithLifecycle()
                     // Alur PRD no. 1: kuesioner muncul otomatis saat pertama kali, sampai diisi atau dilewati.
@@ -91,7 +96,7 @@ class MainActivity : ComponentActivity() {
                     val startNavigation: (Poi) -> Unit = { poi -> startRoute(listOf(poi)) }
                     val openDetail: (Poi) -> Unit = { poi -> detailPoiId = poi.id }
 
-                    val overlayOpen = detailPoiId != null || showProfile || firstTimeProfile || showSettings || showSearch
+                    val overlayOpen = !onboardingDone || detailPoiId != null || showProfile || firstTimeProfile || showSettings || showSearch
 
                     // Tombol Back di tab selain Jelajah kembali ke Jelajah.
                     BackHandler(enabled = !overlayOpen && tab != MainTab.EXPLORE) { tab = MainTab.EXPLORE }
@@ -107,6 +112,9 @@ class MainActivity : ComponentActivity() {
                         val poiId = detailPoiId
 
                         when {
+                            // PB10: onboarding + penjelasan izin, sekali saja.
+                            !onboardingDone -> OnboardingScreen(onFinish = {}, modifier = screenModifier)
+
                             poiId != null -> PoiDetailScreen(
                                 poiId = poiId,
                                 onBack = { detailPoiId = null },

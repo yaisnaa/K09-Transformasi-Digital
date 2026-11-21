@@ -92,6 +92,17 @@ interface AppStrings {
     val cancel: String
     fun navTowards(name: String): String
 
+    // Onboarding dan izin (PB10 F6)
+    val onboardingTitle: String
+    val onboardingBody: String
+    val next: String
+    fun stepOf(step: Int, total: Int): String
+    val permTitle: String
+    val permLocationTitle: String
+    val permLocationBody: String
+    val permNotifTitle: String
+    val permNotifBody: String
+
     // Peta (Explore Map)
     val permissionNeeded: String
     val allowLocation: String
@@ -321,6 +332,16 @@ object IdStrings : AppStrings {
     override val resetConfirmBody = "Semua check-in, jawaban kuis, dan poin akan dihapus."
     override val cancel = "Batal"
     override fun navTowards(name: String) = "Menuju $name"
+
+    override val onboardingTitle = "Cerita datang saat kamu tiba."
+    override val onboardingBody = "Susuri Jalan Asia Afrika. Saat kamu berdiri di depan bangunan bersejarah, HistoryGo menampilkan ceritanya dan siap membacakannya untukmu."
+    override val next = "Lanjut"
+    override fun stepOf(step: Int, total: Int) = "Langkah $step dari $total"
+    override val permTitle = "Dua izin agar cerita bisa menemukanmu"
+    override val permLocationTitle = "Lokasi presisi"
+    override val permLocationBody = "Supaya HistoryGo tahu kamu sedang di depan bangunan mana. Dipakai selama deteksi berjalan, dan bisa kamu hentikan kapan saja."
+    override val permNotifTitle = "Notifikasi"
+    override val permNotifBody = "Memberi tahu saat kamu melewati bangunan bersejarah ketika HP ada di saku. Tanpa izin ini, ceritanya tetap tersimpan dan muncul saat aplikasi dibuka."
     override val switchLanguage = "🌐 English"
 
     override val permissionNeeded = "HistoryGo butuh izin lokasi presisi untuk mengetahui bangunan bersejarah di sekitarmu."
@@ -558,6 +579,16 @@ object EnStrings : AppStrings {
     override val resetConfirmBody = "All check-ins, quiz answers, and points will be deleted."
     override val cancel = "Cancel"
     override fun navTowards(name: String) = "Heading to $name"
+
+    override val onboardingTitle = "Stories arrive when you do."
+    override val onboardingBody = "Walk along Jalan Asia Afrika. When you stand in front of a historic building, HistoryGo shows its story and is ready to read it to you."
+    override val next = "Next"
+    override fun stepOf(step: Int, total: Int) = "Step $step of $total"
+    override val permTitle = "Two permissions so stories can find you"
+    override val permLocationTitle = "Precise location"
+    override val permLocationBody = "So HistoryGo knows which building you are standing in front of. Used while detection runs, and you can stop it any time."
+    override val permNotifTitle = "Notifications"
+    override val permNotifBody = "Lets you know when you pass a historic building while your phone is in your pocket. Without it, the story is still saved and shown when you open the app."
     override val switchLanguage = "🌐 Bahasa Indonesia"
 
     override val permissionNeeded = "HistoryGo needs precise location access to find historic buildings around you."
