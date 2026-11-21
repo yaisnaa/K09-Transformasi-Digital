@@ -15,6 +15,8 @@ Letakkan seluruhnya di satu file konstanta.
 | Akurasi maksimum | 30 m | Pembacaan lebih buruk dianggap tidak valid (usulan awal, sesuaikan saat uji lapangan) |
 | Umur data maksimum | 15 detik | Pembacaan lebih lama dianggap tidak valid (usulan awal) |
 | Ambang menyimpang navigasi (F06) | >30 m | Acceptance F06 no. 4. Rute dihitung ulang setelah 2 bacaan berturut-turut di luar rute, dan hanya kalau pengguna sudah berpindah >30 m dari titik hitung ulang terakhir (mencegah permintaan berulang saat pengguna jauh dari jalan). Ditambahkan 2026-11-21, PB09 |
+| Jarak "mendekati" POI (PB10) | ≤100 m (dan di luar radius masuk 25 m) | State prototype PRD "mendekati POI": peta menampilkan pita "Mendekati …" sebelum POI terpicu. Hanya tampilan, tidak memicu kartu atau notifikasi. Diputuskan anggota tim 2026-11-21, perlu konfirmasi seluruh tim; kalibrasi saat uji lapangan |
+| Gaya peta (PB10) | JSON lokal lewat `MapStyleOptions` (`res/raw/map_style*.json`) | Tanpa Map ID dan tanpa biaya tambahan. Kalau gaya tidak diterapkan, pindah ke cloud-based styling dengan Map ID. Ditambahkan 2026-11-21 |
 
 ## Logika pemicu
 
