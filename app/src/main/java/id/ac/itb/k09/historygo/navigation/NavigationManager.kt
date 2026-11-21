@@ -15,15 +15,22 @@ import kotlinx.coroutines.launch
 
 /** Keadaan navigasi yang ditampilkan di layar. null di NavigationManager.state = tidak sedang bernavigasi. */
 data class NavigationState(
-    val destination: Poi,
+    val stops: List<Poi>,                // titik berurutan; satu titik untuk "Navigasi ke sini"
+    val currentStopIndex: Int = 0,       // titik yang sedang dituju
+    val lastReachedIndex: Int? = null,   // titik terakhir yang baru dicapai (untuk pesan "Sudah sampai di ...")
     val route: Route? = null,
     val loading: Boolean = false,        // sedang meminta rute ke Routes API
     val rerouteCount: Int = 0,           // berapa kali rute dihitung ulang (F06 no. 4)
-    val remainingM: Int? = null,
+    val remainingM: Int? = null,         // sisa jarak sampai titik terakhir
     val remainingMinutes: Int? = null,
-    val arrived: Boolean = false,        // F06 no. 3
-    val error: String? = null,
-)
+    val toNextStopM: Int? = null,
+    val arrived: Boolean = false,        // F06 no. 3: titik terakhir sudah dicapai
+    val error: RouteError? = null,       // pesannya diterjemahkan di layar (A01)
+) {
+    /** POI yang sedang dituju. */
+    val destination: Poi get() = stops[currentStopIndex]
+    val isMultiStop: Boolean get() = stops.size > 1
+}
 
 /**
  * Pengelola navigasi (F06). Dipanggil dari layar (mulai/berhenti) dan dari TriggerService
@@ -39,14 +46,17 @@ object NavigationManager {
     private val _state = MutableStateFlow<NavigationState?>(null)
     val state: StateFlow<NavigationState?> = _state.asStateFlow()
 
-    /** Mulai navigasi ke sebuah POI. Rute diminta begitu posisi pengguna diketahui. */
-    fun start(context: Context, poi: Poi) {
-        val lat = poi.lat ?: return
-        val lng = poi.lng ?: return
+    /** Navigasi ke satu POI (tombol "Navigasi ke sini"). */
+    fun start(context: Context, poi: Poi) = startRoute(context, listOf(poi))
+
+    /** Navigasi melewati beberapa POI berurutan (rute rekomendasi F07). */
+    fun startRoute(context: Context, pois: List<Poi>) {
+        val stops = pois.filter { it.hasCoordinates }
+        if (stops.isEmpty()) return
         appContext = context.applicationContext
         fetchJob?.cancel()
-        engine = NavigationEngine(GeoPoint(lat, lng))
-        _state.value = NavigationState(destination = poi)
+        engine = NavigationEngine(stops.map { GeoPoint(it.lat!!, it.lng!!) })
+        _state.value = NavigationState(stops = stops)
         TriggerState.latestReading.value?.let { fetchRoute(it, isReroute = false) }
     }
 
@@ -73,11 +83,16 @@ object NavigationManager {
         }
 
         val update = nav.onReading(reading, System.currentTimeMillis()) ?: return
-        _state.value = _state.value?.copy(
-            remainingM = update.remainingM,
-            remainingMinutes = update.remainingMinutes,
-            arrived = (_state.value?.arrived == true) || update.arrived,
-        )
+        _state.value = _state.value?.let { s ->
+            s.copy(
+                currentStopIndex = update.currentStopIndex,
+                lastReachedIndex = update.reachedStopIndex ?: s.lastReachedIndex,
+                remainingM = update.remainingM,
+                remainingMinutes = update.remainingMinutes,
+                toNextStopM = update.toNextStopM,
+                arrived = s.arrived || update.arrived,
+            )
+        }
 
         // Setelah gagal, jangan terus mengulang otomatis; pengguna menekan "Coba lagi".
         if (update.needsReroute && !update.arrived && fetchJob?.isActive != true && _state.value?.error == null) {
@@ -87,16 +102,14 @@ object NavigationManager {
 
     private fun fetchRoute(from: LocationReading, isReroute: Boolean) {
         val nav = engine ?: return
-        val destination = _state.value?.destination ?: return
+        val stopsAtRequest = _state.value?.stops ?: return
+        // Rute diminta melewati titik yang BELUM dicapai saja.
+        val remaining = nav.remainingStops
         _state.value = _state.value?.copy(loading = true, error = null)
         fetchJob = scope.launch {
-            val result = RoutesClient.computeWalkingRoute(
-                appContext,
-                from = GeoPoint(from.lat, from.lng),
-                to = GeoPoint(destination.lat!!, destination.lng!!),
-            )
-            // Navigasi bisa saja dihentikan saat menunggu jawaban.
-            val stillActive = engine === nav && _state.value?.destination?.id == destination.id
+            val result = RoutesClient.computeWalkingRoute(appContext, GeoPoint(from.lat, from.lng), remaining)
+            // Navigasi bisa saja dihentikan atau diganti saat menunggu jawaban.
+            val stillActive = engine === nav && _state.value?.stops == stopsAtRequest
             if (!stillActive) return@launch
             result
                 .onSuccess { route ->
@@ -108,7 +121,10 @@ object NavigationManager {
                     )
                 }
                 .onFailure { e ->
-                    _state.value = _state.value?.copy(loading = false, error = e.message ?: "Gagal mengambil rute")
+                    _state.value = _state.value?.copy(
+                        loading = false,
+                        error = (e as? RouteException)?.error ?: RouteError.UNKNOWN,
+                    )
                 }
         }
     }

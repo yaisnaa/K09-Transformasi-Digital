@@ -16,14 +16,14 @@ import androidx.media3.session.SessionToken
 import id.ac.itb.k09.historygo.data.Poi
 
 /** Membuat item audio dari POI. Judulnya tampil di notifikasi media dan lock screen. */
-fun narrationItem(poi: Poi, audioPath: String): MediaItem =
+fun narrationItem(poi: Poi, audioPath: String, artist: String): MediaItem =
     MediaItem.Builder()
         .setMediaId(poi.id)
         .setUri("asset:///$audioPath")   // file di app/src/main/assets/
         .setMediaMetadata(
             MediaMetadata.Builder()
                 .setTitle(poi.nama)
-                .setArtist("HistoryGo · Narasi sejarah")
+                .setArtist(artist)   // teks sesuai bahasa aktif (A01)
                 .build()
         )
         .build()

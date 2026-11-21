@@ -99,6 +99,44 @@ class NavigationEngineTest {
         assertTrue(engine.onReading(at(140.0, eastM = 50.0), now)!!.needsReroute)
     }
 
+    /** Rute rekomendasi F07: awal -> titik 1 (100 m) -> titik 2 (200 m) -> titik 3 (300 m), lurus ke utara. */
+    @Test
+    fun beberapaTitik_berlanjutOtomatisSampaiTitikTerakhir() {
+        val engine = NavigationEngine(stops = listOf(point(100.0), point(200.0), point(300.0)))
+        engine.setRoute(
+            Route(listOf(point(0.0), point(100.0), point(200.0), point(300.0)), distanceM = 300.0, durationS = 225.0)
+        )
+
+        val awal = engine.onReading(at(0.0), now)!!
+        assertEquals(0, awal.currentStopIndex)
+        assertEquals(300.0, awal.remainingM.toDouble(), 2.0)     // sisa sampai titik terakhir
+        assertEquals(100.0, awal.toNextStopM.toDouble(), 2.0)
+
+        val diTitik1 = engine.onReading(at(95.0), now)!!
+        assertEquals(0, diTitik1.reachedStopIndex)               // titik 1 tercapai
+        assertEquals(1, diTitik1.currentStopIndex)               // lanjut menuju titik 2
+        assertFalse(diTitik1.arrived)
+
+        val diTitik2 = engine.onReading(at(200.0), now)!!
+        assertEquals(1, diTitik2.reachedStopIndex)
+        assertEquals(2, diTitik2.currentStopIndex)
+
+        val diTitik3 = engine.onReading(at(295.0), now)!!
+        assertEquals(2, diTitik3.reachedStopIndex)
+        assertTrue(diTitik3.arrived)                             // "Tiba" hanya di titik terakhir
+        assertEquals(0, diTitik3.remainingMinutes)
+    }
+
+    @Test
+    fun beberapaTitik_titikBerikutnyaTidakTerlewatiSebelumTitikSekarangDicapai() {
+        val engine = NavigationEngine(stops = listOf(point(100.0), point(200.0)))
+        // Langsung berada di titik 2 tanpa melewati titik 1: titik 2 belum dihitung tercapai.
+        val update = engine.onReading(at(200.0), now)!!
+        assertNull(update.reachedStopIndex)
+        assertEquals(0, update.currentStopIndex)
+        assertEquals(listOf(point(100.0), point(200.0)), engine.remainingStops)
+    }
+
     @Test
     fun bacaanTidakValid_diabaikan() {
         assertNull(engineWithRoute().onReading(at(50.0, accuracy = 80.0), now))

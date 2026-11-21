@@ -22,6 +22,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberUpdatedMarkerState
 import id.ac.itb.k09.historygo.data.LocationReading
 import id.ac.itb.k09.historygo.data.Poi
+import id.ac.itb.k09.historygo.i18n.LocalStrings
 import id.ac.itb.k09.historygo.navigation.Route
 
 /** Tingkat zoom yang cukup dekat untuk melihat trotoar dan bangunan. */
@@ -94,7 +95,7 @@ fun ExploreMap(
                     title = poi.nama,
                     // Akses manual (PRD): tap marker -> nama muncul -> tap nama -> POI Detail (2 tap),
                     // tetap bisa walau izin lokasi ditolak.
-                    snippet = "${poi.kategori} · ketuk untuk detail",
+                    snippet = LocalStrings.current.markerSnippet(poi.kategori),
                     onInfoWindowClick = { onPoiClick(poi) },
                 )
             }
@@ -112,7 +113,7 @@ fun ExploreMap(
             )
             Marker(
                 state = rememberUpdatedMarkerState(me),
-                title = "Posisi kamu",
+                title = LocalStrings.current.yourPosition,
                 icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE),
             )
         }

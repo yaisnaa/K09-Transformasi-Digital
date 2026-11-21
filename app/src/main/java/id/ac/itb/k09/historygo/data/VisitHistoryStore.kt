@@ -46,4 +46,12 @@ object VisitHistoryStore {
         _history.value = updated
         File(context.filesDir, FILE_NAME).writeText(json.encodeToString(serializer, updated))
     }
+
+    /** Menghapus seluruh riwayat (dipakai tombol "Hapus riwayat"). */
+    @Synchronized
+    fun clear(context: Context) {
+        load(context)
+        _history.value = emptyList()
+        File(context.filesDir, FILE_NAME).delete()
+    }
 }

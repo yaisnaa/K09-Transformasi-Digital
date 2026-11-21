@@ -27,6 +27,8 @@ import id.ac.itb.k09.historygo.data.SettingsStore
 import id.ac.itb.k09.historygo.data.VisitHistoryStore
 import id.ac.itb.k09.historygo.data.VisitRecord
 import id.ac.itb.k09.historygo.data.loadPoisFromAssets
+import id.ac.itb.k09.historygo.data.localized
+import id.ac.itb.k09.historygo.i18n.LanguageStore
 import id.ac.itb.k09.historygo.navigation.NavigationManager
 import id.ac.itb.k09.historygo.trigger.TriggerEngine
 import kotlinx.coroutines.CoroutineScope
@@ -138,7 +140,9 @@ class TriggerService : Service() {
         future.addListener(
             {
                 val controller = runCatching { future.get() }.getOrNull() ?: return@addListener
-                controller.setMediaItem(narrationItem(poi, audio))
+                val strings = LanguageStore.strings(this)
+                val localized = poi.localized(LanguageStore.language.value)
+                controller.setMediaItem(narrationItem(localized, audio, strings.narrationArtist))
                 controller.prepare()
                 controller.play()
             },
@@ -156,18 +160,20 @@ class TriggerService : Service() {
 
     // ---------- NOTIFIKASI ----------
 
+    // Semua teks notifikasi mengikuti bahasa aktif (A01). Nama channel ikut diperbarui setiap service dimulai.
     private fun createChannels() {
+        val s = LanguageStore.strings(this)
         val manager = NotificationManagerCompat.from(this)
         manager.createNotificationChannel(
             NotificationChannelCompat.Builder(CHANNEL_TRACKING, NotificationManagerCompat.IMPORTANCE_LOW)
-                .setName("Deteksi lokasi")
-                .setDescription("Notifikasi permanen saat HistoryGo mendeteksi POI")
+                .setName(s.channelTrackingName)
+                .setDescription(s.channelTrackingDescription)
                 .build()
         )
         manager.createNotificationChannel(
             NotificationChannelCompat.Builder(CHANNEL_POI, NotificationManagerCompat.IMPORTANCE_HIGH)
-                .setName("POI di sekitar")
-                .setDescription("Pemberitahuan saat kamu berada di dekat bangunan bersejarah")
+                .setName(s.channelPoiName)
+                .setDescription(s.channelPoiDescription)
                 .build()
         )
     }
@@ -178,25 +184,29 @@ class TriggerService : Service() {
             Intent(this, TriggerService::class.java).setAction(ACTION_STOP),
             PendingIntent.FLAG_IMMUTABLE,
         )
+        val s = LanguageStore.strings(this)
         return NotificationCompat.Builder(this, CHANNEL_TRACKING)
             .setSmallIcon(android.R.drawable.ic_dialog_map)
-            .setContentTitle("HistoryGo aktif")
-            .setContentText("Mendeteksi bangunan bersejarah di sekitarmu")
+            .setContentTitle(s.trackingTitle)
+            .setContentText(s.trackingText)
             .setOngoing(true)
             .setContentIntent(openAppIntent())
-            .addAction(0, "Berhenti", stopIntent)
+            .addAction(0, s.stop, stopIntent)
             .build()
     }
 
-    private fun buildPoiNotification(poi: Poi): Notification =
-        NotificationCompat.Builder(this, CHANNEL_POI)
+    private fun buildPoiNotification(poi: Poi): Notification {
+        val s = LanguageStore.strings(this)
+        val localized = poi.localized(LanguageStore.language.value)
+        return NotificationCompat.Builder(this, CHANNEL_POI)
             .setSmallIcon(android.R.drawable.ic_dialog_map)
-            .setContentTitle("Kamu di dekat ${poi.nama}")
-            .setContentText(poi.kategori)
+            .setContentTitle(s.nearPoiTitle(localized.nama))
+            .setContentText(localized.kategori)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)                 // hilang setelah diketuk
             .setContentIntent(openAppIntent())   // mengetuk notifikasi membuka aplikasi
             .build()
+    }
 
     private fun openAppIntent(): PendingIntent = PendingIntent.getActivity(
         this, 0,

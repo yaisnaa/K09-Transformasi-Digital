@@ -17,6 +17,28 @@
       "peranHistoris": "Tempat Konferensi Asia Afrika 1955, gedung Konstituante hingga 1959, Museum KAA sejak 1980"
     },
     "audio": "audio/placeholder.wav",
+    "kuis": {
+      "pertanyaan": "Sebelum bernama Gedung Merdeka, gedung ini dibangun pada 1895 sebagai apa?",
+      "pilihan": ["Sociëteit Concordia", "Kantor Pos dan Telegraf", "Hotel Homann", "Penjara kolonial"],
+      "jawaban": 0
+    },
+    "en": {
+      "nama": "Merdeka Building / Asia-Africa Conference Museum",
+      "kategori": "Heritage and Asia-Africa Conference history",
+      "titikPemicu": "Pedestrian walkway in front of Gedung Merdeka",
+      "ringkasan": "Gedung Merdeka was built in 1895 as the Sociëteit Concordia, where Bandung's European residents gathered, danced, and watched performances. In 1926 it was completely rebuilt by Van Galen Last and C.P. Wolff Schoemaker in the Art Deco style, and Albert Aalbers expanded it in 1940. From 18 to 24 April 1955 it hosted the Asia-Africa Conference. Afterwards the Constituent Assembly used it until it was dissolved in 1959. Since 1980 it has housed the Asia-Africa Conference Museum.",
+      "infografis": {
+        "tahunDibangun": "1895 (rebuilt 1926, expanded 1940)",
+        "arsitek": "Van Galen Last and C.P. Wolff Schoemaker (1926); Albert Aalbers (1940)",
+        "gayaArsitektur": "Art Deco",
+        "peranHistoris": "Venue of the 1955 Asia-Africa Conference, Constituent Assembly building until 1959, Asia-Africa Conference Museum since 1980"
+      },
+      "kuis": {
+        "pertanyaan": "Before it was named Gedung Merdeka, what was this building when it was built in 1895?",
+        "pilihan": ["Sociëteit Concordia", "Post and Telegraph Office", "Hotel Homann", "Colonial prison"],
+        "jawaban": 0
+      }
+    },
     "sumber": [
       "Wikipedia bahasa Indonesia, \"Gedung Merdeka\", https://id.wikipedia.org/wiki/Gedung_Merdeka (diakses 10 November 2026)",
       "Foto: Chainwit., CC BY 4.0, Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Bandung_-_Gedung_Merdeka_(2025)_-_img_03.jpg"
@@ -41,6 +63,30 @@
       "peranHistoris": "Penanda kawasan Asia Afrika dan spot foto (konten contoh)"
     },
     "audio": "audio/placeholder.wav",
+    "kuis": {
+      "pertanyaan": "Tulisan apa yang terpasang di dinding bawah Tugu Bola Dunia?",
+      "pilihan": ["BANDUNG", "ASIA AFRIKA", "MERDEKA", "KAA 1955"],
+      "jawaban": 1,
+      "dummy": true
+    },
+    "en": {
+      "nama": "Asia Afrika Globe Monument",
+      "kategori": "Monument and photo spot",
+      "titikPemicu": "Junction of Jl. Asia Afrika and Alun-Alun Timur",
+      "ringkasan": "[Sample content] The Globe Monument stands at the junction of Jalan Asia Afrika and the east side of Alun-Alun Bandung. It is a dark globe with copper-colored continents, set on a black wall bearing the words \"ASIA AFRIKA\". It is a popular photo spot for visitors to the Asia Afrika area. Historical details such as the year it was built and who built it are not available yet because no reference has been found.",
+      "infografis": {
+        "tahunDibangun": "No data yet (sample content)",
+        "arsitek": "No data yet (sample content)",
+        "gayaArsitektur": "Globe monument on a wall bearing the area's name",
+        "peranHistoris": "Landmark of the Asia Afrika area and photo spot (sample content)"
+      },
+      "kuis": {
+        "pertanyaan": "What words are written on the wall beneath the Globe Monument?",
+        "pilihan": ["BANDUNG", "ASIA AFRIKA", "MERDEKA", "KAA 1955"],
+        "jawaban": 1,
+        "dummy": true
+      }
+    },
     "sumber": [
       "Foto: Astari28, CC BY-SA 4.0, Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Tugu_Bola_Dunia_Asia_Afrika.jpg"
     ],
@@ -65,6 +111,28 @@
       "peranHistoris": "Penginapan tamu penting Konferensi Asia Afrika 1955"
     },
     "audio": "audio/placeholder.wav",
+    "kuis": {
+      "pertanyaan": "Siapa arsitek bangunan Hotel Savoy Homann yang selesai pada 1939?",
+      "pilihan": ["C.P. Wolff Schoemaker", "J. Ven Gendt", "Albert Aalbers", "H.W. Daendels"],
+      "jawaban": 2
+    },
+    "en": {
+      "nama": "Savoy Homann Hotel",
+      "kategori": "Heritage and architecture",
+      "titikPemicu": "Sidewalk in front of the hotel facade",
+      "ringkasan": "The hotel began as Hotel Homann, an inn owned by the Homann family that had stood on this road since the 19th century. The building you see today was completed in 1939, designed by Dutch architect Albert Aalbers in the Art Deco style, both outside and inside. During the 1955 Asia-Africa Conference it hosted prominent figures, including Sukarno, Ho Chi Minh, and Josip Broz Tito. Savoy Homann still operates as a hotel today.",
+      "infografis": {
+        "tahunDibangun": "1939 (current building); Hotel Homann existed since the 19th century",
+        "arsitek": "Albert Aalbers",
+        "gayaArsitektur": "Art Deco",
+        "peranHistoris": "Lodging for prominent guests of the 1955 Asia-Africa Conference"
+      },
+      "kuis": {
+        "pertanyaan": "Who designed the Savoy Homann Hotel building completed in 1939?",
+        "pilihan": ["C.P. Wolff Schoemaker", "J. Ven Gendt", "Albert Aalbers", "H.W. Daendels"],
+        "jawaban": 2
+      }
+    },
     "sumber": [
       "Wikipedia bahasa Indonesia, \"Savoy Homann Bidakara Hotel\", https://id.wikipedia.org/wiki/Savoy_Homann_Bidakara_Hotel (diakses 10 November 2026)",
       "Foto: Chainwit., CC BY 4.0, Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Bandung_-_Hotel_Savoy_Homann_(2025)_-_img_01.jpg"
@@ -89,6 +157,28 @@
       "peranHistoris": "Penginapan tamu Konferensi Asia Afrika 1955; Sukarno muda ikut dalam renovasinya"
     },
     "audio": "audio/placeholder.wav",
+    "kuis": {
+      "pertanyaan": "Siapa tokoh yang ikut menjadi juru gambar saat Hotel Preanger dibangun ulang pada 1920-an?",
+      "pilihan": ["Ho Chi Minh", "Sukarno", "Gatot Mangkoepraja", "R.A. Wiranatakusumah II"],
+      "jawaban": 1
+    },
+    "en": {
+      "nama": "Grand Hotel Preanger",
+      "kategori": "Heritage and architecture",
+      "titikPemicu": "Sidewalk in front of the hotel, near Jl. Tamblong",
+      "ringkasan": "Hotel Preanger started in 1897 as a small inn beside the road now called Jalan Asia Afrika. In the 1920s its owner, W.H.C. van Deeterkom, rebuilt it to a design by C.P. Wolff Schoemaker in the Art Deco style. A young Sukarno, then Schoemaker's student, worked on it as a draftsman. After the renovation was finished in 1929, it was renamed Grand Hotel Preanger. In 1955 the hotel also hosted guests of the Asia-Africa Conference held at Gedung Merdeka.",
+      "infografis": {
+        "tahunDibangun": "1897 (rebuilt, completed 1929)",
+        "arsitek": "C.P. Wolff Schoemaker",
+        "gayaArsitektur": "Art Deco",
+        "peranHistoris": "Lodging for Asia-Africa Conference guests in 1955; a young Sukarno took part in its renovation"
+      },
+      "kuis": {
+        "pertanyaan": "Who worked as a draftsman when Hotel Preanger was rebuilt in the 1920s?",
+        "pilihan": ["Ho Chi Minh", "Sukarno", "Gatot Mangkoepraja", "R.A. Wiranatakusumah II"],
+        "jawaban": 1
+      }
+    },
     "sumber": [
       "Wikipedia bahasa Indonesia, \"Prama Grand Preanger\", https://id.wikipedia.org/wiki/Prama_Grand_Preanger (diakses 10 November 2026)",
       "Foto: Chainwit., CC BY 4.0, Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Bandung_-_Hotel_Preanger_(2025)_-_img_01.jpg"
@@ -113,6 +203,28 @@
       "peranHistoris": "Penanda titik awal Kota Bandung dan pengingat pembangunan Jalan Raya Pos era Daendels (1810)"
     },
     "audio": "audio/placeholder.wav",
+    "kuis": {
+      "pertanyaan": "Menurut kisah yang beredar, apa yang ditancapkan Daendels di titik ini pada 1810?",
+      "pilihan": ["Bendera", "Patok batu", "Pedang", "Tongkat"],
+      "jawaban": 3
+    },
+    "en": {
+      "nama": "Bandung Kilometer Zero",
+      "kategori": "City history landmark",
+      "titikPemicu": "Walkway around the marker",
+      "ringkasan": "The Kilometer Zero monument stands on Jalan Asia Afrika, in front of the West Java Public Works and Spatial Planning office. According to a popular story, in 1810 Governor-General H.W. Daendels planted his walking stick at this spot while inspecting the Great Post Road with Regent R.A. Wiranatakusumah II, and asked that a city be built here. The monument was inaugurated by West Java Governor Danny Setiawan in 2004 and renovated in 2016. Nearby are a steam roller and an inscription honoring the victims of the Great Post Road's construction.",
+      "infografis": {
+        "tahunDibangun": "2004 (inaugurated); renovated 2016",
+        "arsitek": null,
+        "gayaArsitektur": null,
+        "peranHistoris": "Marks the starting point of Bandung and recalls the building of the Great Post Road under Daendels (1810)"
+      },
+      "kuis": {
+        "pertanyaan": "According to the popular story, what did Daendels plant at this spot in 1810?",
+        "pilihan": ["A flag", "A stone marker", "A sword", "A walking stick"],
+        "jawaban": 3
+      }
+    },
     "sumber": [
       "iNews.id, \"KM 0, Tonggak Sejarah Kota Bandung 211 Tahun Silam\", https://www.inews.id/regional/jabar/km-0-tonggak-sejarah-kota-bandung-211-tahun-silam/all (diakses 10 November 2026)"
     ],
@@ -137,6 +249,28 @@
       "peranHistoris": "Kantor pos dan telegraf sejak masa kolonial, masih beroperasi; cagar budaya nasional (2017)"
     },
     "audio": "audio/placeholder.wav",
+    "kuis": {
+      "pertanyaan": "Apa gaya arsitektur Kantor Pos Besar Bandung yang selesai dibangun pada 1931?",
+      "pilihan": ["Art Deco geometris", "Gotik", "Rumah adat Sunda", "Neoklasik Yunani"],
+      "jawaban": 0
+    },
+    "en": {
+      "nama": "Bandung Main Post Office",
+      "kategori": "Heritage and public service",
+      "titikPemicu": "Sidewalk in front, west side of the Alun-Alun",
+      "ringkasan": "The Bandung Main Post Office was built by the Dutch East Indies government from 1928 and completed in 1931 as a Post and Telegraph Office. Designed by J. Ven Gendt, the building is in a geometric Art Deco style. It stands close to a former horse-relay post on the Great Post Road. Almost a century later it still works as a post office run by Pos Indonesia. In 2017 the government designated it a national cultural heritage building.",
+      "infografis": {
+        "tahunDibangun": "1928-1931",
+        "arsitek": "J. Ven Gendt",
+        "gayaArsitektur": "Geometric Art Deco",
+        "peranHistoris": "Post and telegraph office since colonial times, still in operation; national cultural heritage (2017)"
+      },
+      "kuis": {
+        "pertanyaan": "What is the architectural style of the Bandung Main Post Office, completed in 1931?",
+        "pilihan": ["Geometric Art Deco", "Gothic", "Traditional Sundanese house", "Greek Neoclassical"],
+        "jawaban": 0
+      }
+    },
     "sumber": [
       "Wikipedia bahasa Indonesia, \"Kantor Pos Besar Bandung\", https://id.wikipedia.org/wiki/Kantor_Pos_Besar_Bandung (diakses 10 November 2026)",
       "Wikipedia bahasa Indonesia, \"Alun-alun Bandung\", https://id.wikipedia.org/wiki/Alun-alun_Bandung (diakses 10 November 2026)",
@@ -163,6 +297,28 @@
       "peranHistoris": "Pusat kota tradisional Bandung dan ruang publik warga"
     },
     "audio": "audio/placeholder.wav",
+    "kuis": {
+      "pertanyaan": "Sejak penataan pada 2014, taman Alun-Alun Bandung beralaskan apa?",
+      "pilihan": ["Pasir pantai", "Paving batu", "Rumput sintetis", "Rumput alami"],
+      "jawaban": 2
+    },
+    "en": {
+      "nama": "Bandung Town Square (Alun-Alun)",
+      "kategori": "Public space and rest area",
+      "titikPemicu": "Pedestrian access from Jl. Asia Afrika",
+      "ringkasan": "Alun-Alun Bandung has been the heart of the city since the seat of government moved from Krapyak to near the Great Post Road in the early 19th century, next to the Grand Mosque. The square has been redesigned many times. In 2001-2004 it was merged with the Grand Mosque's courtyard. The latest redesign was opened by Mayor Ridwan Kamil on 31 December 2014: a 1,200-square-meter park with synthetic grass on top of a parking building, complete with a children's play area, a library, and WiFi.",
+      "infografis": {
+        "tahunDibangun": "Early 19th century; latest redesign 2014",
+        "arsitek": null,
+        "gayaArsitektur": null,
+        "peranHistoris": "Bandung's traditional city center and a public space for residents"
+      },
+      "kuis": {
+        "pertanyaan": "Since its 2014 redesign, what covers the ground of the Alun-Alun Bandung park?",
+        "pilihan": ["Beach sand", "Paving stones", "Synthetic grass", "Natural grass"],
+        "jawaban": 2
+      }
+    },
     "sumber": [
       "Wikipedia bahasa Indonesia, \"Alun-alun Bandung\", https://id.wikipedia.org/wiki/Alun-alun_Bandung (diakses 10 November 2026)",
       "Wikipedia bahasa Indonesia, \"Masjid Raya Bandung\", https://id.wikipedia.org/wiki/Masjid_Raya_Bandung (diakses 10 November 2026)",
@@ -189,6 +345,28 @@
       "peranHistoris": "Pusat kegiatan keagamaan kota; tempat salat delegasi Konferensi Asia Afrika 1955"
     },
     "audio": "audio/placeholder.wav",
+    "kuis": {
+      "pertanyaan": "Berapa tinggi menara kembar Masjid Raya Bandung?",
+      "pilihan": ["45 meter", "81 meter", "99 meter", "120 meter"],
+      "jawaban": 1
+    },
+    "en": {
+      "nama": "Bandung Grand Mosque",
+      "kategori": "Religious and historical landmark",
+      "titikPemicu": "Walkway outside the complex",
+      "ringkasan": "The Bandung Grand Mosque was first built around 1810-1812, when the city center moved to the Alun-Alun area. It started as a simple mosque with bamboo walls, and its roof was later built in tall tiers that residents called bale nyungcung. Ahead of the 1955 Asia-Africa Conference, it was remodeled with an onion dome designed by Sukarno and served as the prayer place for delegates. Its current form, with twin 81-meter minarets, was inaugurated in 2003.",
+      "infografis": {
+        "tahunDibangun": "1810-1812; current form inaugurated 2003",
+        "arsitek": "Keulman, Arie Atmadibrata, Nu'man, and Slamet Wirasonjaya (2001 design)",
+        "gayaArsitektur": "Middle Eastern with Sundanese Islamic ornaments",
+        "peranHistoris": "Center of the city's religious life; prayer place for 1955 Asia-Africa Conference delegates"
+      },
+      "kuis": {
+        "pertanyaan": "How tall are the twin minarets of the Bandung Grand Mosque?",
+        "pilihan": ["45 meters", "81 meters", "99 meters", "120 meters"],
+        "jawaban": 1
+      }
+    },
     "sumber": [
       "Wikipedia bahasa Indonesia, \"Masjid Raya Bandung\", https://id.wikipedia.org/wiki/Masjid_Raya_Bandung (diakses 10 November 2026)",
       "Foto: Rhmtdns, CC BY-SA 4.0, Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Masjid_Raya_Bandung_menara_dua_sisi.jpg"
@@ -214,6 +392,28 @@
       "peranHistoris": "Ruang publik tepi sungai dan bagian dari upaya memulihkan Sungai Cikapundung"
     },
     "audio": "audio/placeholder.wav",
+    "kuis": {
+      "pertanyaan": "Melalui program apa Cikapundung Riverspot dibangun pada 2013-2015?",
+      "pilihan": ["Program Kota Tanpa Kumuh", "Bandung Smart City", "Gerakan Pungut Sampah", "Cikapundung Rehabilitation Program"],
+      "jawaban": 3
+    },
+    "en": {
+      "nama": "Cikapundung Riverspot",
+      "kategori": "Public space and photo spot",
+      "titikPemicu": "Access point near Jl. Asia Afrika",
+      "ringkasan": "Cikapundung Riverspot is a public space on the bank of the Cikapundung River, around Jalan Dr. Ir. Sukarno near Jalan Asia Afrika. It was built in 2013-2015 through the Cikapundung Rehabilitation Program together with local communities and residents, with a budget of about Rp18 billion from the state budget through BBWS Citarum. The goal was to turn a once-dirty river into a place where residents can gather and hold activities. In 2016, the Teras Cikapundung redevelopment, part of the same program, was inaugurated by Mayor Ridwan Kamil.",
+      "infografis": {
+        "tahunDibangun": "2013-2015",
+        "arsitek": null,
+        "gayaArsitektur": null,
+        "peranHistoris": "Riverside public space and part of efforts to restore the Cikapundung River"
+      },
+      "kuis": {
+        "pertanyaan": "Through which program was Cikapundung Riverspot built in 2013-2015?",
+        "pilihan": ["Slum-Free City Program", "Bandung Smart City", "Trash Pickup Movement", "Cikapundung Rehabilitation Program"],
+        "jawaban": 3
+      }
+    },
     "sumber": [
       "detikJabar, \"Sejarah Cikapundung Riverspot, Berawal dari Wajah Muram Sungai\", https://www.detik.com/jabar/berita/d-7077513/sejarah-cikapundung-riverspot-berawal-dari-wajah-muram-sungai (diakses 10 November 2026)"
     ],
@@ -238,6 +438,28 @@
       "peranHistoris": "Tempat Sukarno ditahan dan menyusun pleidoi Indonesia Menggugat (1929-1930)"
     },
     "audio": "audio/placeholder.wav",
+    "kuis": {
+      "pertanyaan": "Pidato pembelaan apa yang disusun Sukarno di sel nomor 5 Penjara Banceuy?",
+      "pilihan": ["Indonesia Menggugat", "Dasasila Bandung", "Lahirnya Pancasila", "Di Bawah Bendera Revolusi"],
+      "jawaban": 0
+    },
+    "en": {
+      "nama": "Banceuy Prison Site",
+      "kategori": "Heritage and independence struggle",
+      "titikPemicu": "Access point outside the site, Jl. Banceuy",
+      "ringkasan": "Banceuy Prison was built by the Dutch East Indies government in the late 19th century for political and ordinary prisoners; sources give 1871 and 1877. Sukarno was held here for about eight months from late December 1929, together with Maskoen, Soepriadinata, and Gatot Mangkoepraja. In cell number 5 he wrote his defense speech, Indonesia Menggugat (Indonesia Accuses), which he later delivered at the Bandung Landraad court. The prison was demolished in 1983 for a shopping complex; only Sukarno's cell and part of a watchtower remain.",
+      "infografis": {
+        "tahunDibangun": "1871 or 1877 (sources differ)",
+        "arsitek": null,
+        "gayaArsitektur": null,
+        "peranHistoris": "Where Sukarno was held and wrote the Indonesia Menggugat defense speech (1929-1930)"
+      },
+      "kuis": {
+        "pertanyaan": "What defense speech did Sukarno write in cell number 5 of Banceuy Prison?",
+        "pilihan": ["Indonesia Menggugat (Indonesia Accuses)", "Dasasila Bandung (Ten Principles of Bandung)", "The Birth of Pancasila", "Under the Banner of Revolution"],
+        "jawaban": 0
+      }
+    },
     "sumber": [
       "Wikipedia bahasa Indonesia, \"Penjara Banceuy\", https://id.wikipedia.org/wiki/Penjara_Banceuy (diakses 10 November 2026)"
     ],

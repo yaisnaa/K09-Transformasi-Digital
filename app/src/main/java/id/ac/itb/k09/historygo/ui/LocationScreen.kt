@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,7 +47,9 @@ import id.ac.itb.k09.historygo.BuildConfig
 import id.ac.itb.k09.historygo.data.Poi
 import id.ac.itb.k09.historygo.data.SettingsStore
 import id.ac.itb.k09.historygo.data.VisitHistoryStore
-import id.ac.itb.k09.historygo.data.loadPoisFromAssets
+import id.ac.itb.k09.historygo.i18n.LanguageStore
+import id.ac.itb.k09.historygo.i18n.LocalStrings
+import id.ac.itb.k09.historygo.i18n.rememberPois
 import id.ac.itb.k09.historygo.location.TriggerService
 import id.ac.itb.k09.historygo.navigation.NavigationManager
 import id.ac.itb.k09.historygo.location.TriggerState
@@ -64,6 +67,8 @@ fun LocationScreen(
     onOpenHistory: () -> Unit,
     onOpenDetail: (Poi) -> Unit,
     onOpenSearch: () -> Unit,
+    onOpenRecommendations: () -> Unit,
+    onOpenGame: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -141,7 +146,8 @@ fun LocationScreen(
     val navigation by NavigationManager.state.collectAsStateWithLifecycle()
 
     // ---------- DATA ----------
-    val pois = remember { loadPoisFromAssets(context) }
+    val s = LocalStrings.current
+    val pois = rememberPois()   // dalam bahasa aktif (A01)
     val current = reading
     val poiTanpaKoordinat = pois.count { !it.hasCoordinates }
 
@@ -173,8 +179,8 @@ fun LocationScreen(
 
             when {
                 !hasPermission -> StatusCard(
-                    message = "HistoryGo butuh izin lokasi presisi untuk mengetahui bangunan bersejarah di sekitarmu.",
-                    buttonText = "Izinkan lokasi",
+                    message = s.permissionNeeded,
+                    buttonText = s.allowLocation,
                     onClick = {
                         val canAskAgain = activity?.shouldShowRequestPermissionRationale(
                             Manifest.permission.ACCESS_FINE_LOCATION
@@ -193,27 +199,39 @@ fun LocationScreen(
                 )
 
                 !gpsOn -> StatusCard(
-                    message = "GPS sedang mati. Nyalakan lokasi agar posisimu terbaca.",
-                    buttonText = "Aktifkan GPS",
+                    message = s.gpsOff,
+                    buttonText = s.enableGps,
                     onClick = { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) },
                 )
 
-                current == null -> StatusCard(message = "Mencari lokasi…")
+                current == null -> StatusCard(message = s.searchingLocation)
             }
 
             if (!BuildConfig.HAS_MAPS_API_KEY) {
-                StatusCard(message = "MAPS_API_KEY belum diisi di local.properties, peta tidak bisa tampil.")
+                StatusCard(message = s.mapsKeyMissing)
             }
 
             if (poiTanpaKoordinat > 0) {
-                StatusCard(message = "$poiTanpaKoordinat POI belum punya koordinat, belum tampil di peta.")
+                StatusCard(message = s.poisWithoutCoordinates(poiTanpaKoordinat))
             }
 
             // F05: tombol Cari di sebelah tombol riwayat.
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = onOpenSearch) { Text("Cari POI") }
-                Button(onClick = onOpenHistory) { Text("POI yang dilewati (${history.size})") }
+                Button(onClick = onOpenSearch) { Text(s.searchPoi) }
+                // F07: rekomendasi sesuai profil.
+                Button(onClick = onOpenRecommendations) { Text(s.recommendations) }
             }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = onOpenHistory) { Text(s.visitedPois(history.size)) }
+                // F08: treasure hunt.
+                Button(onClick = onOpenGame) { Text(s.historyTrail) }
+            }
+
+            // A01: ganti bahasa langsung, tanpa restart. Notifikasi permanen ikut diperbarui.
+            OutlinedButton(onClick = {
+                LanguageStore.toggle(context)
+                if (hasPermission && gpsOn) TriggerService.start(context)
+            }) { Text(s.switchLanguage) }
 
             // F04 no. 3: saklar autoplay narasi (default mati, DECISIONS.md).
             Card(modifier = Modifier.padding(top = 8.dp)) {
@@ -221,7 +239,7 @@ fun LocationScreen(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("Putar narasi otomatis")
+                    Text(s.autoplayNarration)
                     Spacer(Modifier.width(12.dp))
                     Switch(
                         checked = autoplay,
@@ -232,7 +250,8 @@ fun LocationScreen(
         }
 
         // Kartu POI di bagian bawah saat sebuah POI terpicu (juga yang terpicu saat aplikasi di latar).
-        val shownPoi = triggeredPoi
+        // Service menyimpan POI versi asli; tampilkan versi bahasa aktif (A01).
+        val shownPoi = triggeredPoi?.let { raw -> pois.firstOrNull { it.id == raw.id } ?: raw }
         if (shownPoi != null) {
             PoiCard(
                 poi = shownPoi,

@@ -35,15 +35,22 @@ object RoutesClient {
     )
     @Serializable private data class PolylineDto(val encodedPolyline: String = "")
 
-    suspend fun computeWalkingRoute(context: Context, from: GeoPoint, to: GeoPoint): Result<Route> =
+    /**
+     * @param stops titik yang dikunjungi berurutan. Titik terakhir = tujuan akhir;
+     *        titik sebelumnya dikirim sebagai titik singgah ("intermediates").
+     */
+    suspend fun computeWalkingRoute(context: Context, from: GeoPoint, stops: List<GeoPoint>): Result<Route> =
         withContext(Dispatchers.IO) {
             runCatching {
-                val apiKey = readApiKey(context)
-                    ?: error("MAPS_API_KEY belum diisi di local.properties")
+                require(stops.isNotEmpty()) { "Minimal satu titik tujuan" }
+                val apiKey = readApiKey(context) ?: throw RouteException(RouteError.NO_API_KEY)
 
+                fun waypoint(p: GeoPoint) = """{"location":{"latLng":{"latitude":${p.lat},"longitude":${p.lng}}}}"""
+                val intermediates = stops.dropLast(1).joinToString(",") { waypoint(it) }
                 val body = """
-                    {"origin":{"location":{"latLng":{"latitude":${from.lat},"longitude":${from.lng}}}},
-                     "destination":{"location":{"latLng":{"latitude":${to.lat},"longitude":${to.lng}}}},
+                    {"origin":${waypoint(from)},
+                     "destination":${waypoint(stops.last())},
+                     "intermediates":[$intermediates],
                      "travelMode":"WALK","languageCode":"id"}
                 """.trimIndent()
 
@@ -63,20 +70,21 @@ object RoutesClient {
                     connection.outputStream.use { it.write(body.toByteArray()) }
                     val code = connection.responseCode
                     if (code !in 200..299) {
-                        // Detail teknis ke Logcat (tag "RoutesClient"), pesan ramah ke layar.
+                        // Detail teknis ke Logcat (tag "RoutesClient"); layar menampilkan pesan sesuai bahasa aktif.
                         val detail = connection.errorStream?.bufferedReader()?.use { it.readText() }.orEmpty()
                         Log.w(TAG, "computeRoutes HTTP $code: $detail")
-                        error(
+                        throw RouteException(
                             when (code) {
-                                403 -> "Routes API belum aktif atau API key belum diizinkan memakai Routes API."
-                                429 -> "Kuota Routes API habis. Coba lagi nanti."
-                                else -> "Layanan rute sedang bermasalah (HTTP $code)."
-                            }
+                                403 -> RouteError.NOT_AUTHORIZED
+                                429 -> RouteError.QUOTA
+                                else -> RouteError.SERVICE
+                            },
+                            httpCode = code,
                         )
                     }
                     val text = connection.inputStream.bufferedReader().use { it.readText() }
                     val route = json.decodeFromString(RoutesResponse.serializer(), text).routes.firstOrNull()
-                        ?: error("Rute jalan kaki tidak ditemukan")
+                        ?: throw RouteException(RouteError.NO_ROUTE)
                     Route(
                         points = decodePolyline(route.polyline?.encodedPolyline.orEmpty()),
                         distanceM = route.distanceMeters.toDouble(),
@@ -86,8 +94,8 @@ object RoutesClient {
                     connection.disconnect()
                 }
             }.recoverCatching { e ->
-                // Tanpa internet atau server tidak terjangkau: pesan yang bisa dipahami pengguna.
-                if (e is java.io.IOException) error("Tidak ada koneksi internet.") else throw e
+                // Tanpa internet atau server tidak terjangkau.
+                if (e is java.io.IOException) throw RouteException(RouteError.NO_INTERNET) else throw e
             }
         }
 

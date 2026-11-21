@@ -13,18 +13,37 @@ import kotlin.math.sqrt
 
 /** Hasil perhitungan navigasi untuk satu bacaan GPS. */
 data class NavigationUpdate(
-    val remainingM: Int,          // sisa jarak ke tujuan (meter)
+    val remainingM: Int,          // sisa jarak sampai titik TERAKHIR (meter)
     val remainingMinutes: Int,    // sisa waktu jalan kaki (menit), 0 kalau sudah tiba
-    val arrived: Boolean,         // F06 no. 3: sudah masuk radius POI tujuan
+    val arrived: Boolean,         // F06 no. 3: sudah masuk radius titik TERAKHIR
     val needsReroute: Boolean,    // F06 no. 4: menyimpang > 30 m, rute perlu dihitung ulang
     val offRouteM: Int?,          // jarak pengguna ke garis rute (null kalau belum ada rute)
+    val currentStopIndex: Int,    // titik yang sedang dituju (0 = pertama)
+    val reachedStopIndex: Int?,   // titik yang BARU SAJA dicapai pada bacaan ini, atau null
+    val toNextStopM: Int,         // jarak garis lurus ke titik yang sedang dituju
 )
 
 /**
- * Logika navigasi jalan kaki (F06). Kotlin murni, tanpa Android.
+ * Logika navigasi jalan kaki (F06), mendukung beberapa titik berurutan
+ * (mis. rute rekomendasi F07: awal -> rekomendasi 1 -> 2 -> 3). Kotlin murni, tanpa Android.
  * Semua ambang diambil dari TriggerConfig.
  */
-class NavigationEngine(private val destination: GeoPoint) {
+class NavigationEngine(private val stops: List<GeoPoint>) {
+
+    /** Navigasi ke satu tujuan saja. */
+    constructor(destination: GeoPoint) : this(listOf(destination))
+
+    init {
+        require(stops.isNotEmpty()) { "Minimal satu titik tujuan" }
+    }
+
+    /** Titik yang sedang dituju. Naik otomatis saat pengguna masuk radius titik itu. */
+    var currentStopIndex = 0
+        private set
+
+    /** Titik yang belum dicapai, termasuk yang sedang dituju (dipakai saat meminta ulang rute). */
+    val remainingStops: List<GeoPoint>
+        get() = stops.drop(currentStopIndex)
 
     private var route: Route? = null
     private var offRouteCount = 0
@@ -47,18 +66,37 @@ class NavigationEngine(private val destination: GeoPoint) {
         if (!isValidReading(reading, nowMillis)) return null
 
         val user = GeoPoint(reading.lat, reading.lng)
-        val straightToDestination = distanceMeters(user.lat, user.lng, destination.lat, destination.lng)
-        val arrived = straightToDestination <= TriggerConfig.ENTRY_RADIUS_M
+
+        // Sudah masuk radius titik yang sedang dituju? Tandai tercapai lalu lanjut ke titik berikutnya.
+        var reachedStopIndex: Int? = null
+        val target = stops[currentStopIndex]
+        if (distanceMeters(user.lat, user.lng, target.lat, target.lng) <= TriggerConfig.ENTRY_RADIUS_M) {
+            reachedStopIndex = currentStopIndex
+            if (currentStopIndex < stops.lastIndex) currentStopIndex++
+        }
+        // F06 no. 3: "tiba" berarti titik TERAKHIR sudah dicapai.
+        val arrived = reachedStopIndex == stops.lastIndex ||
+            (currentStopIndex == stops.lastIndex && distanceMeters(
+                user.lat, user.lng, stops.last().lat, stops.last().lng
+            ) <= TriggerConfig.ENTRY_RADIUS_M)
+
+        val next = stops[currentStopIndex]
+        val toNextStop = distanceMeters(user.lat, user.lng, next.lat, next.lng)
 
         val currentRoute = route
         if (currentRoute == null || currentRoute.points.size < 2) {
-            // Rute belum ada: pakai jarak garis lurus sebagai perkiraan.
+            // Rute belum ada: perkiraan garis lurus melewati semua titik yang tersisa.
+            var straight = toNextStop
+            remainingStops.zipWithNext().forEach { (a, b) -> straight += distanceMeters(a.lat, a.lng, b.lat, b.lng) }
             return NavigationUpdate(
-                remainingM = straightToDestination.roundToInt(),
-                remainingMinutes = if (arrived) 0 else PoiSearch.walkMinutes(straightToDestination),
+                remainingM = if (arrived) 0 else straight.roundToInt(),
+                remainingMinutes = if (arrived) 0 else PoiSearch.walkMinutes(straight),
                 arrived = arrived,
                 needsReroute = false,
                 offRouteM = null,
+                currentStopIndex = currentStopIndex,
+                reachedStopIndex = reachedStopIndex,
+                toNextStopM = toNextStop.roundToInt(),
             )
         }
 
@@ -94,11 +132,14 @@ class NavigationEngine(private val destination: GeoPoint) {
         }
 
         return NavigationUpdate(
-            remainingM = progress.remainingM.roundToInt(),
+            remainingM = if (arrived) 0 else progress.remainingM.roundToInt(),
             remainingMinutes = remainingMinutes,
             arrived = arrived,
             needsReroute = needsReroute,
             offRouteM = progress.offRouteM.roundToInt(),
+            currentStopIndex = currentStopIndex,
+            reachedStopIndex = reachedStopIndex,
+            toNextStopM = toNextStop.roundToInt(),
         )
     }
 }

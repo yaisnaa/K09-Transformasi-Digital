@@ -39,7 +39,8 @@ import id.ac.itb.k09.historygo.audio.narrationItem
 import id.ac.itb.k09.historygo.audio.rememberMediaController
 import id.ac.itb.k09.historygo.data.Infografis
 import id.ac.itb.k09.historygo.data.Poi
-import id.ac.itb.k09.historygo.data.loadPoisFromAssets
+import id.ac.itb.k09.historygo.i18n.LocalStrings
+import id.ac.itb.k09.historygo.i18n.rememberPois
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -51,8 +52,10 @@ fun PoiDetailScreen(
     onNavigate: (Poi) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-    val poi = remember(poiId) { loadPoisFromAssets(context).firstOrNull { it.id == poiId } }
+    val s = LocalStrings.current
+    // POI dalam bahasa aktif; ganti bahasa langsung mengganti isi halaman ini (A01).
+    val pois = rememberPois()
+    val poi = pois.firstOrNull { it.id == poiId }
 
     // Tombol Back di HP kembali ke layar sebelumnya.
     BackHandler(onBack = onBack)
@@ -63,10 +66,10 @@ fun PoiDetailScreen(
             .verticalScroll(rememberScrollState())   // halaman bisa di-scroll
             .padding(16.dp),
     ) {
-        TextButton(onClick = onBack) { Text("← Kembali") }
+        TextButton(onClick = onBack) { Text(s.back) }
 
         if (poi == null) {
-            Text("POI tidak ditemukan.")
+            Text(s.poiNotFound)
         } else {
             PoiDetailContent(poi, onNavigate = { onNavigate(poi) })
         }
@@ -75,18 +78,19 @@ fun PoiDetailScreen(
 
 @Composable
 private fun PoiDetailContent(poi: Poi, onNavigate: () -> Unit) {
+    val s = LocalStrings.current
     Text(poi.nama, style = MaterialTheme.typography.headlineSmall)
     Text(poi.kategori, style = MaterialTheme.typography.bodyMedium)
     if (!poi.validated) {
         Text(
-            "Konten belum divalidasi tim.",
+            s.notValidated,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.error,
         )
     }
     if (poi.dummy) {
         Text(
-            "Konten contoh (dummy), bukan data sejarah asli.",
+            s.dummyLong,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.error,
         )
@@ -95,28 +99,32 @@ private fun PoiDetailContent(poi: Poi, onNavigate: () -> Unit) {
     // F05 no. 4 + F06: tombol "Navigasi" memulai rute jalan kaki lalu kembali ke peta.
     Spacer(Modifier.height(12.dp))
     Button(onClick = onNavigate, enabled = poi.hasCoordinates) {
-        Text(if (poi.hasCoordinates) "Navigasi ke sini" else "Navigasi (koordinat belum ada)")
+        Text(if (poi.hasCoordinates) s.navigateHere else s.navigateNoCoordinates)
     }
 
-    SectionTitle("Foto")
-    AssetImage(path = poi.foto, contentDescription = "Foto ${poi.nama}")
+    // F08: check-in di lokasi lalu kuis (PRD alur 3: "check-in misi" di POI Detail).
+    Spacer(Modifier.height(12.dp))
+    CheckInSection(poi)
 
-    SectionTitle("Sejarah singkat")
-    Text(poi.ringkasan ?: "Ringkasan sejarah belum tersedia.")
+    SectionTitle(s.sectionPhoto)
+    AssetImage(path = poi.foto, contentDescription = s.photoDescription(poi.nama))
 
-    SectionTitle("Infografis")
+    SectionTitle(s.sectionHistory)
+    Text(poi.ringkasan ?: s.noSummary)
+
+    SectionTitle(s.sectionInfographic)
     InfografisCard(poi.infografis)
 
-    SectionTitle("Narasi audio")
+    SectionTitle(s.sectionNarration)
     val audioPath = poi.audio
     if (audioPath == null) {
-        Text("Audio belum tersedia.")
+        Text(s.noAudio)
     } else {
         NarrationButton(poi = poi, audioPath = audioPath)
     }
-    SectionTitle("Sumber")
+    SectionTitle(s.sectionSources)
     if (poi.sumber.isEmpty()) {
-        Text("Sumber rujukan belum dicantumkan.")
+        Text(s.noSources)
     } else {
         poi.sumber.forEach { Text("• $it") }
     }
@@ -148,10 +156,11 @@ private fun AssetImage(path: String?, contentDescription: String) {
         }
     }
 
+    val s = LocalStrings.current
     val image = result?.getOrNull()
     when {
-        path == null -> Text("Foto belum tersedia.")
-        result == null -> Text("Memuat foto…")
+        path == null -> Text(s.photoUnavailable)
+        result == null -> Text(s.photoLoading)
         image != null -> Image(
             bitmap = image,
             contentDescription = contentDescription,
@@ -161,18 +170,19 @@ private fun AssetImage(path: String?, contentDescription: String) {
                 .heightIn(max = 240.dp)
                 .clip(RoundedCornerShape(12.dp)),
         )
-        else -> Text("Foto tidak ditemukan: $path")
+        else -> Text(s.photoNotFound(path))
     }
 }
 
 @Composable
 private fun InfografisCard(info: Infografis?) {
+    val s = LocalStrings.current
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
-            InfoRow("Tahun dibangun", info?.tahunDibangun)
-            InfoRow("Arsitek", info?.arsitek)
-            InfoRow("Gaya arsitektur", info?.gayaArsitektur)
-            InfoRow("Peran historis", info?.peranHistoris)
+            InfoRow(s.infoYearBuilt, info?.tahunDibangun)
+            InfoRow(s.infoArchitect, info?.arsitek)
+            InfoRow(s.infoStyle, info?.gayaArsitektur)
+            InfoRow(s.infoRole, info?.peranHistoris)
         }
     }
 }
@@ -181,12 +191,13 @@ private fun InfografisCard(info: Infografis?) {
 private fun InfoRow(label: String, value: String?) {
     Row(modifier = Modifier.padding(vertical = 4.dp)) {
         Text(label, style = MaterialTheme.typography.labelLarge, modifier = Modifier.width(130.dp))
-        Text(value ?: "belum diisi", style = MaterialTheme.typography.bodyMedium)
+        Text(value ?: LocalStrings.current.infoEmpty, style = MaterialTheme.typography.bodyMedium)
     }
 }
 /** Tombol narasi satu tombol (F04): putar / jeda. */
 @Composable
 private fun NarrationButton(poi: Poi, audioPath: String) {
+    val s = LocalStrings.current
     val controller = rememberMediaController()
     var isPlaying by remember { mutableStateOf(false) }
     var currentId by remember { mutableStateOf<String?>(null) }
@@ -225,13 +236,13 @@ private fun NarrationButton(poi: Poi, audioPath: String) {
                     c.play()
                 }
                 else -> {                                  // narasi POI lain / belum ada: mulai baru
-                    c.setMediaItem(narrationItem(poi, audioPath))
+                    c.setMediaItem(narrationItem(poi, audioPath, s.narrationArtist))
                     c.prepare()
                     c.play()
                 }
             }
         },
     ) {
-        Text(if (thisPoiPlaying) "⏸  Jeda narasi" else "▶  Putar narasi")
+        Text(if (thisPoiPlaying) s.pauseNarration else s.playNarration)
     }
 }

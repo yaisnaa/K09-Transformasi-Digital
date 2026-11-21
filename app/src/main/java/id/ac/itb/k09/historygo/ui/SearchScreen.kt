@@ -32,7 +32,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.ac.itb.k09.historygo.data.Poi
 import id.ac.itb.k09.historygo.data.PoiFilter
 import id.ac.itb.k09.historygo.data.PoiSearch
-import id.ac.itb.k09.historygo.data.loadPoisFromAssets
+import id.ac.itb.k09.historygo.i18n.LocalStrings
+import id.ac.itb.k09.historygo.i18n.rememberPois
 import id.ac.itb.k09.historygo.location.TriggerState
 
 /** Layar pencarian dan filter POI (F05). Tetap bisa dipakai tanpa izin lokasi. */
@@ -42,8 +43,8 @@ fun SearchScreen(
     onOpenDetail: (Poi) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-    val pois = remember { loadPoisFromAssets(context) }
+    val s = LocalStrings.current
+    val pois = rememberPois()   // dalam bahasa aktif (A01)
     // Posisi terakhir dari TriggerService; null kalau izin lokasi belum ada atau GPS mati.
     val reading by TriggerState.latestReading.collectAsStateWithLifecycle()
 
@@ -60,14 +61,14 @@ fun SearchScreen(
 
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            TextButton(onClick = onBack) { Text("← Kembali") }
-            Text("Cari POI", style = MaterialTheme.typography.titleLarge)
+            TextButton(onClick = onBack) { Text(s.back) }
+            Text(s.searchTitle, style = MaterialTheme.typography.titleLarge)
         }
 
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
-            label = { Text("Nama tempat, mis. merdeka") },
+            label = { Text(s.searchHint) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -82,27 +83,27 @@ fun SearchScreen(
             FilterChip(
                 selected = filter == null,
                 onClick = { filter = null },
-                label = { Text("Semua") },
+                label = { Text(s.filterAll) },
             )
             PoiFilter.entries.forEach { option ->
                 FilterChip(
                     selected = filter == option,
                     // Ketuk chip yang sudah terpilih = kembali ke "Semua".
                     onClick = { filter = if (filter == option) null else option },
-                    label = { Text(option.label) },
+                    label = { Text(s.filterLabel(option)) },
                 )
             }
         }
 
         if (current == null) {
             Text(
-                "Lokasi belum terbaca: hasil diurutkan menurut nama, tanpa jarak.",
+                s.noLocationSortedByName,
                 style = MaterialTheme.typography.bodySmall,
             )
         }
 
         if (results.isEmpty()) {
-            Text("POI tidak ditemukan.", modifier = Modifier.padding(top = 16.dp))
+            Text(s.notFound, modifier = Modifier.padding(top = 16.dp))
         } else {
             LazyColumn {
                 items(results, key = { it.poi.id }) { result ->
@@ -116,7 +117,7 @@ fun SearchScreen(
                         Text(result.poi.kategori, style = MaterialTheme.typography.bodySmall)
                         if (result.distanceM != null) {
                             Text(
-                                "${result.distanceM} m · ±${result.walkMinutes} menit jalan kaki",
+                                s.distanceAndWalk(result.distanceM, result.walkMinutes ?: 0),
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }

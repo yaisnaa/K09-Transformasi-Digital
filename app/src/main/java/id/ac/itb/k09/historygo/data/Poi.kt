@@ -25,11 +25,26 @@ data class Poi(
     val validated: Boolean = false,   // konten sudah diperiksa tim?
     val dummy: Boolean = false,       // true = konten contoh buatan, bukan data asli (CLAUDE.md aturan 2)
     val filter: List<PoiFilter> = emptyList(), // kategori untuk filter pencarian (F05); boleh lebih dari satu
+    val kuis: Kuis? = null,           // soal kuis "Jejak Sejarah" (F08)
+    val en: PoiTranslation? = null,   // terjemahan bahasa Inggris (A01)
 ) {
     /** true kalau lat dan lng sudah terisi, artinya POI bisa tampil di peta. */
     val hasCoordinates: Boolean
         get() = lat != null && lng != null
 }
+
+/**
+ * Satu soal pilihan ganda untuk misi "Jejak Sejarah" (F08).
+ * jawaban = indeks pilihan yang benar (0 = pilihan pertama).
+ * dummy = soal dibuat dari konten dummy (CLAUDE.md aturan 2).
+ */
+@Serializable
+data class Kuis(
+    val pertanyaan: String,
+    val pilihan: List<String>,
+    val jawaban: Int,
+    val dummy: Boolean = false,
+)
 
 /**
  * Tiga kategori filter pencarian dari PRD F05.

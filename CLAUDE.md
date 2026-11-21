@@ -37,6 +37,7 @@ location/  pembacaan GPS dan foreground service
 trigger/   logika pemicu POI (Kotlin murni, tanpa dependensi Android)
 audio/     pemutar narasi berbasis Media3
 navigation/ rute jalan kaki (F06): logika navigasi Kotlin murni + klien Google Routes API
+game/      gamifikasi "Jejak Sejarah" (F08): aturan check-in/kuis/poin/badge Kotlin murni + penyimpanan progres
 ui/        layar: Explore Map, kartu POI, POI Detail
 ```
 
