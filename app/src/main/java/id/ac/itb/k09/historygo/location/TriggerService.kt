@@ -130,7 +130,8 @@ class TriggerService : Service() {
     private fun autoplayNarration(poi: Poi) {
         SettingsStore.load(this)
         if (!SettingsStore.autoplay.value) return   // default mati
-        val audio = poi.audio ?: return             // POI ini belum punya audio
+        // Audio sesuai bahasa aktif (A01); POI tanpa audio tidak diputar.
+        val audio = poi.localized(LanguageStore.language.value).audio ?: return
 
         // Buat koneksi sekali, lalu pakai ulang untuk POI-POI berikutnya.
         val future = narrationFuture ?: MediaController.Builder(

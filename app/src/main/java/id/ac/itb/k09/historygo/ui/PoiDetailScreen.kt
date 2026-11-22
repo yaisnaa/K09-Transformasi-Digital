@@ -288,9 +288,15 @@ private fun NarrationBar(poi: Poi) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(if (playing) s.pauseStory else s.listenStory, style = MaterialTheme.typography.titleMedium, color = colors.onPrimary, maxLines = 1)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (audio == PLACEHOLDER_AUDIO) {
+                // Label kejujuran konten: audio contoh, atau narasi dari suara AI.
+                val chip = when {
+                    audio == PLACEHOLDER_AUDIO -> s.audioSampleChip
+                    poi.audioAi -> s.audioAiChip
+                    else -> null
+                }
+                if (chip != null) {
                     Text(
-                        s.audioSampleChip,
+                        chip,
                         style = MaterialTheme.typography.labelSmall,
                         color = colors.onPrimary,
                         modifier = Modifier.background(extra.narrationChip, RoundedCornerShape(6.dp)).padding(horizontal = 8.dp, vertical = 3.dp),

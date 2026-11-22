@@ -21,6 +21,7 @@ data class Poi(
     val foto: String? = null,         // path di folder assets, mis. "foto/p01.jpg"
     val infografis: Infografis? = null,
     val audio: String? = null,        // path di folder assets, mis. "audio/p01.mp3"
+    val audioAi: Boolean = false,     // true = narasi dibuat dengan suara AI (text-to-speech); tampil label "Suara AI"
     val sumber: List<String> = emptyList(),
     val validated: Boolean = false,   // konten sudah diperiksa tim?
     val dummy: Boolean = false,       // true = konten contoh buatan, bukan data asli (CLAUDE.md aturan 2)

@@ -63,6 +63,7 @@ interface AppStrings {
 
     // POI Detail dan misi (PB10 F4)
     val audioSampleChip: String
+    val audioAiChip: String
     val keepsPlayingLocked: String
     val quizDummyChip: String
     fun pointsShort(value: Int): String
@@ -325,6 +326,7 @@ object IdStrings : AppStrings {
     override val recenter = "Kembali ke posisi saya"
 
     override val audioSampleChip = "Audio contoh"
+    override val audioAiChip = "Suara AI"
     override val keepsPlayingLocked = "Tetap berputar saat layar terkunci"
     override val quizDummyChip = "Soal contoh"
     override fun pointsShort(value: Int) = "+$value poin"
@@ -602,6 +604,7 @@ object EnStrings : AppStrings {
     override val recenter = "Back to my location"
 
     override val audioSampleChip = "Sample audio"
+    override val audioAiChip = "AI voice"
     override val keepsPlayingLocked = "Keeps playing when the screen is locked"
     override val quizDummyChip = "Sample question"
     override fun pointsShort(value: Int) = "+$value pts"
