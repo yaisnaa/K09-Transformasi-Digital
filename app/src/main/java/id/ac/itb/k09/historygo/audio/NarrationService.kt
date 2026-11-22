@@ -50,6 +50,15 @@ class NarrationService : MediaSessionService() {
     /** Dipanggil Media3 saat ada "remote control" (layar detail, notifikasi, headset) yang ingin terhubung. */
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = session
 
+    /**
+     * Pengguna mengusap aplikasi dari daftar Recent = menutup aplikasi, jadi narasi ikut berhenti
+     * dan notifikasi media hilang. Bawaan Media3 justru terus memutar (seperti aplikasi musik).
+     * Layar terkunci atau pindah ke aplikasi lain tidak memanggil ini, jadi F04 tetap terpenuhi.
+     */
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        pauseAllPlayersAndStopSelf()
+    }
+
     override fun onDestroy() {
         session?.run {
             player.release()   // lepaskan pemutar supaya memori dan audio dibebaskan

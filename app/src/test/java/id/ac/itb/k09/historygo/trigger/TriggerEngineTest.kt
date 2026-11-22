@@ -110,4 +110,14 @@ class TriggerEngineTest {
         // Tetap di sana: B tidak boleh ikut terpicu.
         repeat(5) { assertNull(engine.onReading(at(10.0), now)) }
     }
+
+    /** DECISIONS.md Bab 4.2: saat navigasi aktif, POI tujuan diprioritaskan pada radius tumpang tindih. */
+    @Test
+    fun radiusTumpangTindih_tujuanNavigasiDiprioritaskan() {
+        val engine = TriggerEngine(listOf(poi("A", 0.0), poi("B", 30.0)))
+
+        // Di 10 m: A lebih dekat (10 m) daripada B (20 m), tetapi B adalah tujuan navigasi.
+        assertNull(engine.onReading(at(10.0), now, priorityPoiId = "B"))
+        assertEquals("B", engine.onReading(at(10.0), now, priorityPoiId = "B")?.id)
+    }
 }

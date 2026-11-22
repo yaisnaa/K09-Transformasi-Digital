@@ -3,7 +3,7 @@
 Aplikasi Android panduan wisata berbasis lokasi untuk koridor cagar budaya Jalan Asia Afrika, Bandung.
 Tugas besar II4011 Transformasi Digital, ITB, Kelompok 9.
 
-Fokus saat ini: **Sprint 1 dan Sprint 2**.
+Fokus saat ini: **Sprint 3 (W12): PB07-PB10**. Sprint 1-2 sudah selesai di emulator; sisanya (konten, audio asli, uji HP fisik) masuk PB07.
 
 ## Dokumen konteks
 
@@ -11,9 +11,10 @@ Baca sesuai kebutuhan, jangan menebak isinya:
 
 | File | Isi | Baca saat |
 |---|---|---|
-| `SPRINT.md` | Backlog S1-S2, urutan kerja, definisi selesai | Memulai atau memilih pekerjaan |
+| `SPRINT.md` | Backlog S1-S5, urutan kerja, definisi selesai | Memulai atau memilih pekerjaan |
 | `PRD.md` | Requirement F01-F08, acceptance criteria, POI, non-goals | Mengerjakan atau menguji fitur |
 | `DECISIONS.md` | Keputusan teknis, konflik PRD, parameter trigger | Menyentuh lokasi, trigger, notifikasi, atau audio |
+| `CHANGELOG.md` | Perubahan requirement atau backlog setelah baseline W9 | Mengubah requirement atau definisi PB |
 
 Kalau `PRD.md` dan `DECISIONS.md` berbeda soal trigger, ikuti `DECISIONS.md`.
 
@@ -35,13 +36,19 @@ data/      model POI, pembaca JSON, penyimpanan lokal
 location/  pembacaan GPS dan foreground service
 trigger/   logika pemicu POI (Kotlin murni, tanpa dependensi Android)
 audio/     pemutar narasi berbasis Media3
+navigation/ rute jalan kaki (F06): logika navigasi Kotlin murni + klien Google Routes API
+game/      gamifikasi "Jejak Sejarah" (F08): aturan check-in/kuis/poin/badge Kotlin murni + penyimpanan progres
 ui/        layar: Explore Map, kartu POI, POI Detail
 ```
 
 ## Aturan kerja
 
-1. Kerjakan hanya PB yang diminta. Jangan menambah fitur Sprint 3 ke atas tanpa diminta.
-2. Jangan mengarang koordinat POI, sejarah, sumber rujukan, atau status "tervalidasi". Kalau datanya belum ada, pakai placeholder yang jelas dan tandai `verified=false` / `validated=false`.
+1. Kerjakan hanya PB yang diminta. Jangan menambah fitur dari sprint berikutnya (Sprint 4 ke atas) tanpa diminta.
+2. Karena ini prototype, data dummy (koordinat, teks, soal kuis, dan sejenisnya) boleh dibuat kalau data asli belum ada, dengan syarat:
+   - ditandai jelas sebagai dummy (mis. field `dummy=true` dan label "Konten contoh" di aplikasi), serta `verified=false` / `validated=false`;
+   - tidak pernah mencantumkan sumber rujukan palsu (field `sumber` dikosongkan) dan tidak pernah menandai `validated=true`;
+   - tidak menggantikan konten asli yang sudah bersumber;
+   - dicatat di AI & Tools Disclosure, dan diganti data asli sebelum deliverable final bila memungkinkan.
 3. Semua parameter trigger berada di satu file konstanta. Dilarang hardcode di tempat lain.
 4. Jangan commit API key. Simpan di `local.properties` dan pastikan file itu masuk `.gitignore`.
 5. Logika trigger wajib punya unit test.

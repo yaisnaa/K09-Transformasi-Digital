@@ -1,4 +1,4 @@
-# Rencana Sprint 1 dan 2
+# Rencana Sprint 1 sampai 5
 
 Sprint berlangsung satu minggu. Status repo belum dikonfirmasi: cek dulu apakah project Android sudah ada sebelum membuat yang baru.
 
@@ -56,15 +56,97 @@ Selesai jika memenuhi acceptance F03 dan F04 di `PRD.md`.
 
 **Goal S2:** pengguna mendekati POI, menerima kartu atau notifikasi, lalu membuka informasi visual dan audio.
 
-## Di luar Sprint 1-2
+## Sprint 3-5: sesuai slide roadmap tim
 
-Jangan dikerjakan kecuali diminta: profiling dan rekomendasi (F07), pencarian (F05), navigasi (F06), gamifikasi (F08), dukungan bahasa (A01).
+Sumber: slide "Rencana Eksekusi Sprint 3 - Sprint 5" (Next Steps & Roadmap menuju Major Progress Review dan Final Release), menggantikan usulan S3 tanggal 2026-11-10. PB07-PB14 tidak ada di PRD asli; catat di Change Log. Kriteria "Selesai jika" diambil dari acceptance criteria di `PRD.md`.
 
-Tombol atau state untuk "Check-in misi" boleh tampil sebagai placeholder, tetapi logikanya bukan bagian S1-S2.
+## Sprint 3 (W12): Core Exploration & Review
+
+### PB07: Penyelesaian konten dan uji awal di HP fisik (Must, F01-F04, N01)
+- Koordinat P06-P10
+- Konten (ringkasan, infografis, sumber) untuk P02
+- Foto P05, P09, P10
+- 10 file audio narasi asli, menggantikan `audio/placeholder.wav`
+- Uji awal di HP Android fisik: izin, notifikasi latar, foreground service, audio saat layar terkunci
+- N01: tim memeriksa konten lalu menandai `validated=true`. Konten dummy tetap `validated=false`; penyimpangan dari N01 (konten belum tervalidasi ikut tampil dengan label) dicatat di Change Log
+- Konfirmasi tim untuk CL-01 dan keputusan radius tumpang tindih, lalu rapikan `DECISIONS.md`
+- Selesai jika: semua POI punya koordinat dan konten lengkap (asli atau dummy yang ditandai), dan acceptance F01-F04 sudah dicoba di HP fisik
+
+### PB08: Search & Destination (Must, F05)
+- Cari POI dengan kata kunci parsial
+- Filter kategori: Heritage, Spot Foto, Tempat Istirahat/Kuliner
+- Hasil diurutkan dari terdekat, menampilkan jarak (m) dan estimasi waktu jalan kaki (menit)
+- Hasil membuka POI Detail dengan tombol "Navigasi"; hasil kosong menampilkan "tidak ditemukan"
+- Akses manual tanpa izin lokasi (PRD Bab POI): ketuk marker POI di peta membuka POI Detail; pencarian tetap bisa dipakai tanpa lokasi (urutan jarak tidak ditampilkan)
+- Selesai jika memenuhi acceptance F05 no. 1-4, setiap POI bisa dibuka dari peta dalam ≤2 tap tanpa izin lokasi, dan logika pencarian serta pengurutan punya unit test
+
+### PB09: Walking Navigation (Must, F06)
+- Garis rute jalan kaki di peta menuju POI tujuan
+- Sisa jarak dan waktu diperbarui saat pengguna mendekat
+- Status "Tiba di tujuan" saat masuk radius POI tujuan
+- Rerouting saat pengguna menyimpang lebih dari 30 m
+- Setelah F06 ada, POI tujuan navigasi aktif diprioritaskan saat radius tumpang tindih (`DECISIONS.md`, Bab 4.2)
+- Selesai jika memenuhi acceptance F06 no. 1-4 (rute tampil ≤5 detik setelah tujuan dipilih)
+- Perlu keputusan sebelum mulai: Directions/Routes API Google berbayar di atas kuota gratis. Ambang menyimpang 30 m menjadi parameter di `TriggerConfig.kt`
+
+### PB10: Implementasi desain high fidelity (Must)
+- Desain high fidelity diterapkan ke semua layar yang sudah ada
+- Ikon aplikasi dan ikon notifikasi diganti dari bawaan template
+- Layar onboarding (alur inisiasi PRD): penjelasan singkat sebelum meminta izin lokasi dan notifikasi
+- State "mendekati POI" sehingga keempat kondisi prototype PRD tampil: di luar area, mendekati, terpicu, akses konten. Jarak "mendekati" adalah parameter baru: masukkan ke `TriggerConfig.kt` dan catat di `DECISIONS.md`
+- Sumber desain (link Figma atau ekspor gambar per layar) disediakan tim sebelum pengerjaan; kalau onboarding atau state "mendekati" belum ada di desain, tim menentukan gayanya
+- Selesai jika: setiap layar sesuai desain saat dibandingkan berdampingan, keempat state dapat didemokan, dan acceptance F01-F06 tetap lolos
+
+### Persiapan Major Progress Review (akhir W12)
+- Naskah demo 3-5 menit: buka aplikasi, berjalan, kartu atau notifikasi, detail, audio, pencarian, navigasi
+- Draf PRD compliance matrix F01-F06 (Pass, Fail, atau belum teruji) beserta buktinya; "Pass" hanya untuk yang benar-benar teruji
+- Rangkuman Development Log dan AI & Tools Disclosure S1-S3
+
+**Goal S3:** eksplorasi inti (peta, trigger, konten, pencarian, navigasi) berjalan dengan tampilan high fidelity dan siap didemokan di Major Progress Review.
+
+## Sprint 4 (W13): Personalization & Gamification
+
+### PB11: User profiling dan Contextual Recommendation (Must, F07)
+- Kuesioner profil pengguna: durasi kunjungan dan minat
+- Mesin rekomendasi: rute awal dan maksimal 3 POI berikutnya
+- Selesai jika memenuhi acceptance F07: total estimasi rute ≤ durasi pilihan pengguna, tidak merekomendasikan POI yang sudah dikunjungi, maksimal 3 rekomendasi diurutkan berdasarkan minat dan jarak, dan dua profil berbeda menghasilkan rekomendasi berbeda
+- Logika rekomendasi ditulis Kotlin murni dan punya unit test
+
+### PB12: Gamifikasi "Jejak Sejarah" (Must, F08)
+- Check-in wajib di dalam radius 25 m POI
+- Kuis sejarah per POI, poin, dan badge
+- Progres, poin, dan badge tersimpan di perangkat
+- Selesai jika memenuhi acceptance F08: check-in hanya berhasil di dalam radius, progres misi (x/N POI) naik setelah check-in, jawaban benar menambah poin, semua misi selesai membuka badge, dan progres tetap ada setelah aplikasi ditutup
+- Soal kuis disusun dari sumber yang tercatat (N01); soal dummy boleh dipakai sementara asal ditandai
+
+### PB13: Dukungan dwibahasa ID/EN (Should, A01)
+- Seluruh teks antarmuka dan konten POI tersedia dalam bahasa Indonesia dan Inggris
+- Selesai jika memenuhi acceptance A01: ganti bahasa mengubah seluruh teks tanpa restart, dan pilihan bahasa tetap tersimpan
+
+**Feature Freeze di akhir W13:** setelah ini tidak ada fitur baru, hanya perbaikan bug dan kalibrasi.
+
+## Sprint 5 (W14-W15): Field Testing & Deliverables
+
+### PB14: Uji lapangan F01-F08 (Must)
+- Uji jalan kaki langsung di koridor Jalan Asia Afrika dengan HP Android asli
+- Stabilisasi dan retest: kalibrasi final parameter radius dan akurasi di `TriggerConfig.kt`, dicatat di Change Log
+- Perbaikan bug khusus merek HP (OEM), misalnya service latar yang dimatikan sistem
+- Selesai jika: setiap acceptance F01-F08 punya hasil uji lapangan (Pass atau Fail) beserta buktinya
+
+### Deliverables W15
+- APK final
+- Testing report
+- PRD Compliance Matrix (Bab 11)
+- Video demo maksimal 3 menit
+- AI & Tools Disclosure / Development Log
+
+**Goal S5:** aplikasi stabil di HP asli dan seluruh deliverables W15 terkumpul.
 
 ## Harus dilakukan manusia
 
-- Membuat Google Maps API key
-- Menyediakan koordinat dan konten POI yang terverifikasi
-- Menguji di HP asli: izin, notifikasi latar, audio saat layar terkunci
-- Uji lapangan di Jalan Asia Afrika untuk memfinalkan radius, lalu mencatatnya di Change Log
+- Menyediakan koordinat, konten, foto, dan audio POI yang terverifikasi
+- Memutuskan biaya API navigasi (F06) sebelum PB09
+- Menyediakan desain high fidelity (link Figma atau ekspor gambar per layar)
+- Menyusun soal kuis F08 dan teks terjemahan A01, beserta sumbernya
+- Menguji di HP asli dan uji lapangan di Jalan Asia Afrika, lalu mencatat hasil kalibrasi di Change Log
+- Mempresentasikan Major Progress Review dan merekam video demo

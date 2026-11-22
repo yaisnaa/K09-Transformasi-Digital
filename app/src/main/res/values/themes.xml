@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.HistoryGo" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Latar jendela = warna Kertas, supaya tidak berkedip putih saat aplikasi dibuka. -->
+    <style name="Theme.HistoryGo" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/kertas</item>
+    </style>
 </resources>

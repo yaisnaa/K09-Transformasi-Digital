@@ -20,6 +20,7 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import id.ac.itb.k09.historygo.MainActivity
+import id.ac.itb.k09.historygo.R
 import id.ac.itb.k09.historygo.audio.NarrationService
 import id.ac.itb.k09.historygo.audio.narrationItem
 import id.ac.itb.k09.historygo.data.Poi
@@ -27,6 +28,9 @@ import id.ac.itb.k09.historygo.data.SettingsStore
 import id.ac.itb.k09.historygo.data.VisitHistoryStore
 import id.ac.itb.k09.historygo.data.VisitRecord
 import id.ac.itb.k09.historygo.data.loadPoisFromAssets
+import id.ac.itb.k09.historygo.data.localized
+import id.ac.itb.k09.historygo.i18n.LanguageStore
+import id.ac.itb.k09.historygo.navigation.NavigationManager
 import id.ac.itb.k09.historygo.trigger.TriggerEngine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -75,7 +79,11 @@ class TriggerService : Service() {
             trackingJob = scope.launch {
                 LocationClient(this@TriggerService).locationUpdates().collect { reading ->
                     TriggerState.latestReading.value = reading
-                    val poi = engine.onReading(reading, System.currentTimeMillis())
+                    // F06: perbarui sisa jarak / status tiba / hitung ulang rute.
+                    NavigationManager.onReading(reading)
+                    // Tujuan navigasi aktif diprioritaskan saat radius tumpang tindih (DECISIONS.md Bab 4.2).
+                    val navigationTargetId = NavigationManager.state.value?.destination?.id
+                    val poi = engine.onReading(reading, System.currentTimeMillis(), navigationTargetId)
                     if (poi != null) onPoiTriggered(poi)
                 }
             }
@@ -122,7 +130,8 @@ class TriggerService : Service() {
     private fun autoplayNarration(poi: Poi) {
         SettingsStore.load(this)
         if (!SettingsStore.autoplay.value) return   // default mati
-        val audio = poi.audio ?: return             // POI ini belum punya audio
+        // Audio sesuai bahasa aktif (A01); POI tanpa audio tidak diputar.
+        val audio = poi.localized(LanguageStore.language.value).audio ?: return
 
         // Buat koneksi sekali, lalu pakai ulang untuk POI-POI berikutnya.
         val future = narrationFuture ?: MediaController.Builder(
@@ -133,7 +142,9 @@ class TriggerService : Service() {
         future.addListener(
             {
                 val controller = runCatching { future.get() }.getOrNull() ?: return@addListener
-                controller.setMediaItem(narrationItem(poi, audio))
+                val strings = LanguageStore.strings(this)
+                val localized = poi.localized(LanguageStore.language.value)
+                controller.setMediaItem(narrationItem(localized, audio, strings.narrationArtist))
                 controller.prepare()
                 controller.play()
             },
@@ -151,18 +162,20 @@ class TriggerService : Service() {
 
     // ---------- NOTIFIKASI ----------
 
+    // Semua teks notifikasi mengikuti bahasa aktif (A01). Nama channel ikut diperbarui setiap service dimulai.
     private fun createChannels() {
+        val s = LanguageStore.strings(this)
         val manager = NotificationManagerCompat.from(this)
         manager.createNotificationChannel(
             NotificationChannelCompat.Builder(CHANNEL_TRACKING, NotificationManagerCompat.IMPORTANCE_LOW)
-                .setName("Deteksi lokasi")
-                .setDescription("Notifikasi permanen saat HistoryGo mendeteksi POI")
+                .setName(s.channelTrackingName)
+                .setDescription(s.channelTrackingDescription)
                 .build()
         )
         manager.createNotificationChannel(
             NotificationChannelCompat.Builder(CHANNEL_POI, NotificationManagerCompat.IMPORTANCE_HIGH)
-                .setName("POI di sekitar")
-                .setDescription("Pemberitahuan saat kamu berada di dekat bangunan bersejarah")
+                .setName(s.channelPoiName)
+                .setDescription(s.channelPoiDescription)
                 .build()
         )
     }
@@ -173,25 +186,31 @@ class TriggerService : Service() {
             Intent(this, TriggerService::class.java).setAction(ACTION_STOP),
             PendingIntent.FLAG_IMMUTABLE,
         )
+        val s = LanguageStore.strings(this)
         return NotificationCompat.Builder(this, CHANNEL_TRACKING)
-            .setSmallIcon(android.R.drawable.ic_dialog_map)
-            .setContentTitle("HistoryGo aktif")
-            .setContentText("Mendeteksi bangunan bersejarah di sekitarmu")
+            .setSmallIcon(R.drawable.ic_stat_historygo)
+            .setColor(ContextCompat.getColor(this, R.color.chestnut))
+            .setContentTitle(s.trackingTitle)
+            .setContentText(s.trackingText)
             .setOngoing(true)
             .setContentIntent(openAppIntent())
-            .addAction(0, "Berhenti", stopIntent)
+            .addAction(0, s.stop, stopIntent)
             .build()
     }
 
-    private fun buildPoiNotification(poi: Poi): Notification =
-        NotificationCompat.Builder(this, CHANNEL_POI)
-            .setSmallIcon(android.R.drawable.ic_dialog_map)
-            .setContentTitle("Kamu di dekat ${poi.nama}")
-            .setContentText(poi.kategori)
+    private fun buildPoiNotification(poi: Poi): Notification {
+        val s = LanguageStore.strings(this)
+        val localized = poi.localized(LanguageStore.language.value)
+        return NotificationCompat.Builder(this, CHANNEL_POI)
+            .setSmallIcon(R.drawable.ic_stat_historygo)
+            .setColor(ContextCompat.getColor(this, R.color.chestnut))
+            .setContentTitle(s.nearPoiTitle(localized.nama))
+            .setContentText(localized.kategori)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)                 // hilang setelah diketuk
             .setContentIntent(openAppIntent())   // mengetuk notifikasi membuka aplikasi
             .build()
+    }
 
     private fun openAppIntent(): PendingIntent = PendingIntent.getActivity(
         this, 0,
@@ -208,7 +227,15 @@ class TriggerService : Service() {
 
         /** Dipanggil dari layar saat aplikasi terlihat dan izin lokasi sudah ada. */
         fun start(context: Context) {
+            // PB10: pengguna bisa mematikan deteksi di layar Pengaturan.
+            SettingsStore.load(context)
+            if (!SettingsStore.detection.value) return
             ContextCompat.startForegroundService(context, Intent(context, TriggerService::class.java))
+        }
+
+        /** Dipanggil saat pengguna mematikan "Deteksi bangunan sekitar" di Pengaturan. */
+        fun stop(context: Context) {
+            context.stopService(Intent(context, TriggerService::class.java))
         }
     }
 }

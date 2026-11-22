@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Konfigurasi plugin desain lokal
+.impeccable/

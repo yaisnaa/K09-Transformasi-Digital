@@ -23,10 +23,12 @@ class TriggerEngine(pois: List<Poi>) {
      * Dipanggil untuk setiap bacaan GPS.
      * Mengembalikan POI yang BARU SAJA terpicu, atau null kalau tidak ada.
      * nowMillis = waktu sekarang; dikirim dari luar supaya mudah diuji.
+     * priorityPoiId = POI tujuan navigasi aktif (F06). Kalau POI itu ada di dalam radius,
+     * ia diprioritaskan walau ada POI lain yang lebih dekat (DECISIONS.md, Bab 4.2).
      */
-    fun onReading(reading: LocationReading, nowMillis: Long): Poi? {
+    fun onReading(reading: LocationReading, nowMillis: Long, priorityPoiId: String? = null): Poi? {
         // 1. Bacaan tidak valid atau kedaluwarsa: abaikan, hitungan calon tidak berubah.
-        if (!isValid(reading, nowMillis)) return null
+        if (!isValidReading(reading, nowMillis)) return null
 
         // 2. Hitung jarak ke semua POI.
         val distances: Map<Poi, Double> = pois.associateWith { poi ->
@@ -38,11 +40,10 @@ class TriggerEngine(pois: List<Poi>) {
             if (distance > TriggerConfig.REARM_DISTANCE_M) triggeredIds.remove(poi.id)
         }
 
-        // 4. Cari satu POI terdekat yang berada di dalam radius masuk.
-        val nearest: Poi? = distances
-            .filter { (_, distance) -> distance <= TriggerConfig.ENTRY_RADIUS_M }
-            .minByOrNull { (_, distance) -> distance }
-            ?.key
+        // 4. Cari satu POI di dalam radius masuk: tujuan navigasi kalau ada di sana, kalau tidak yang terdekat.
+        val inRadius = distances.filter { (_, distance) -> distance <= TriggerConfig.ENTRY_RADIUS_M }
+        val nearest: Poi? = inRadius.keys.firstOrNull { it.id == priorityPoiId }
+            ?: inRadius.minByOrNull { (_, distance) -> distance }?.key
 
         // Tidak ada POI di dekat pengguna, atau POI terdekat sudah terpicu: tidak ada yang dipicu.
         if (nearest == null || nearest.id in triggeredIds) {
@@ -70,11 +71,4 @@ class TriggerEngine(pois: List<Poi>) {
         candidateId = null
         candidateCount = 0
     }
-
-    private fun isValid(r: LocationReading, nowMillis: Long): Boolean =
-        r.lat.isFinite() && r.lng.isFinite() &&
-                r.lat in -90.0..90.0 && r.lng in -180.0..180.0 &&
-                r.accuracyM.isFinite() && r.accuracyM >= 0.0 &&
-                r.accuracyM <= TriggerConfig.MAX_ACCURACY_M &&
-                nowMillis - r.timeMillis <= TriggerConfig.MAX_AGE_MS
 }
