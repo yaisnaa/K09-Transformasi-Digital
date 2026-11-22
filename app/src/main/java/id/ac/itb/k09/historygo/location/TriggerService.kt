@@ -20,6 +20,7 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import id.ac.itb.k09.historygo.MainActivity
+import id.ac.itb.k09.historygo.R
 import id.ac.itb.k09.historygo.audio.NarrationService
 import id.ac.itb.k09.historygo.audio.narrationItem
 import id.ac.itb.k09.historygo.data.Poi
@@ -129,7 +130,8 @@ class TriggerService : Service() {
     private fun autoplayNarration(poi: Poi) {
         SettingsStore.load(this)
         if (!SettingsStore.autoplay.value) return   // default mati
-        val audio = poi.audio ?: return             // POI ini belum punya audio
+        // Audio sesuai bahasa aktif (A01); POI tanpa audio tidak diputar.
+        val audio = poi.localized(LanguageStore.language.value).audio ?: return
 
         // Buat koneksi sekali, lalu pakai ulang untuk POI-POI berikutnya.
         val future = narrationFuture ?: MediaController.Builder(
@@ -186,7 +188,8 @@ class TriggerService : Service() {
         )
         val s = LanguageStore.strings(this)
         return NotificationCompat.Builder(this, CHANNEL_TRACKING)
-            .setSmallIcon(android.R.drawable.ic_dialog_map)
+            .setSmallIcon(R.drawable.ic_stat_historygo)
+            .setColor(ContextCompat.getColor(this, R.color.chestnut))
             .setContentTitle(s.trackingTitle)
             .setContentText(s.trackingText)
             .setOngoing(true)
@@ -199,7 +202,8 @@ class TriggerService : Service() {
         val s = LanguageStore.strings(this)
         val localized = poi.localized(LanguageStore.language.value)
         return NotificationCompat.Builder(this, CHANNEL_POI)
-            .setSmallIcon(android.R.drawable.ic_dialog_map)
+            .setSmallIcon(R.drawable.ic_stat_historygo)
+            .setColor(ContextCompat.getColor(this, R.color.chestnut))
             .setContentTitle(s.nearPoiTitle(localized.nama))
             .setContentText(localized.kategori)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -223,7 +227,15 @@ class TriggerService : Service() {
 
         /** Dipanggil dari layar saat aplikasi terlihat dan izin lokasi sudah ada. */
         fun start(context: Context) {
+            // PB10: pengguna bisa mematikan deteksi di layar Pengaturan.
+            SettingsStore.load(context)
+            if (!SettingsStore.detection.value) return
             ContextCompat.startForegroundService(context, Intent(context, TriggerService::class.java))
+        }
+
+        /** Dipanggil saat pengguna mematikan "Deteksi bangunan sekitar" di Pengaturan. */
+        fun stop(context: Context) {
+            context.stopService(Intent(context, TriggerService::class.java))
         }
     }
 }

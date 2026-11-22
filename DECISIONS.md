@@ -1,6 +1,6 @@
 # Keputusan Teknis dan Konflik PRD
 
-Status: **usulan, belum disetujui tim**, kecuali ditandai lain. Implementasi memakai nilai di sini agar konsisten, dan semua parameter harus mudah diubah. Setelah disetujui, perbarui PRD dan catat di Change Log.
+Status: parameter dan keputusan di bawah **disetujui tim 2026-11-22**, kecuali ditandai lain. Nilai trigger tetap dikalibrasi saat uji lapangan (PB14). Implementasi memakai nilai di sini agar konsisten, dan semua parameter harus mudah diubah. Setelah disetujui, perbarui PRD dan catat di Change Log.
 
 ## Parameter trigger
 
@@ -15,6 +15,8 @@ Letakkan seluruhnya di satu file konstanta.
 | Akurasi maksimum | 30 m | Pembacaan lebih buruk dianggap tidak valid (usulan awal, sesuaikan saat uji lapangan) |
 | Umur data maksimum | 15 detik | Pembacaan lebih lama dianggap tidak valid (usulan awal) |
 | Ambang menyimpang navigasi (F06) | >30 m | Acceptance F06 no. 4. Rute dihitung ulang setelah 2 bacaan berturut-turut di luar rute, dan hanya kalau pengguna sudah berpindah >30 m dari titik hitung ulang terakhir (mencegah permintaan berulang saat pengguna jauh dari jalan). Ditambahkan 2026-11-21, PB09 |
+| Jarak "mendekati" POI (PB10) | ≤100 m (dan di luar radius masuk 25 m) | State prototype PRD "mendekati POI": peta menampilkan pita "Mendekati …" sebelum POI terpicu. Hanya tampilan, tidak memicu kartu atau notifikasi. Disetujui tim 2026-11-22; kalibrasi saat uji lapangan |
+| Gaya peta (PB10) | JSON lokal lewat `MapStyleOptions` (`res/raw/map_style*.json`) | Tanpa Map ID dan tanpa biaya tambahan. Kalau gaya tidak diterapkan, pindah ke cloud-based styling dengan Map ID. Ditambahkan 2026-11-21, disetujui tim 2026-11-22 |
 
 ## Logika pemicu
 
@@ -31,7 +33,7 @@ untuk setiap pembacaan lokasi:
     aplikasi di latar + tanpa izin notifikasi: simpan, tampilkan saat aplikasi dibuka
 ```
 
-Hanya POI terdekat yang dipicu. Prioritas "tujuan navigasi aktif" dari Bab 4.2 baru relevan setelah F06 ada.
+Hanya POI terdekat yang dipicu; saat navigasi aktif, POI tujuan diprioritaskan (Bab 4.2). Disetujui tim 2026-11-22.
 
 ## Konflik PRD yang diselesaikan
 
@@ -69,15 +71,26 @@ Gunakan **Fused Location Provider di foreground service, lalu hitung jarak sendi
 Status: dipilih dalam diskusi. Sesuai PRD, target hanya Android, dan bagian paling berisiko bersifat native.
 
 ### iOS: belum masuk scope, tetapi arsitektur disiapkan
-Status: dipilih dalam diskusi (Opsi A), belum dikonfirmasi tim. Target tetap Android saja sesuai baseline, jadi tidak perlu Change Log. iOS butuh Mac dan Xcode, dan mekanisme lokasi latar di iOS berbeda total, sehingga terlalu berisiko untuk tenggat W15.
+Status: Opsi A, disetujui tim 2026-11-22. Target tetap Android saja sesuai baseline, jadi tidak perlu Change Log. iOS butuh Mac dan Xcode, dan mekanisme lokasi latar di iOS berbeda total, sehingga terlalu berisiko untuk tenggat W15.
 
 Agar iOS bisa ditambahkan nanti (misalnya lewat Kotlin Multiplatform), kode di `trigger/` dan model di `data/` ditulis sebagai Kotlin murni: tanpa import `android.*`, tanpa `Context`, dan tanpa class `Location` milik Android. Kode khusus Android ditempatkan di `location/`, `audio/`, dan `ui/`.
 
 ### Jetpack Compose untuk UI
 PRD tidak menentukan. Compose diusulkan agar perubahan state (di luar radius, mendekat, terpicu, akses konten) sederhana dibuat.
 
+### Izin diminta lewat onboarding (CL-04)
+Status: diimplementasikan di PB10. Izin lokasi presisi dan notifikasi (Android 13+) diminta bersamaan di layar onboarding setelah dijelaskan, satu kali. `LocationScreen` tidak lagi meminta izin otomatis; kalau ditolak, sheet di peta menawarkan "Izinkan lokasi" atau "Jelajah tanpa lokasi". Izin notifikasi tidak diminta dua kali (`SettingsStore.notificationAsked`).
+
+### Deteksi bisa dimatikan dari Pengaturan (CL-05)
+Status: diimplementasikan di PB10. `SettingsStore.detection` (default nyala). Saat mati, `TriggerService.start()` tidak menjalankan service dan toggle memanggil `TriggerService.stop()`; chip peta menampilkan "Deteksi mati". Tetap tanpa `ACCESS_BACKGROUND_LOCATION`.
+
+### Desain UI: "Jurnal Penjelajah Deco" (PB10)
+Status: diimplementasikan di PB10. Token, tipografi, komponen, dan katalog state ada di `DESIGN.md`. Material 3 sebagai kerangka, Dynamic Color tidak dipakai, font dibundel (OFL). Navigasi utama 4 tab (Jelajah, Rute, Jejak Sejarah, Riwayat); Pengaturan dibuka dari bar atas peta.
+
+### Akun pengguna: lokal di HP (CL-03)
+Status: diimplementasikan, disetujui tim 2026-11-22. Akun dan progres disimpan di perangkat (SharedPreferences/berkas per akun), password di-hash PBKDF2 + salt. Logika validasi akun ditulis Kotlin murni dengan unit test. Firebase dipertimbangkan ulang hanya kalau sinkronisasi antar-HP benar-benar dibutuhkan.
+
 ## Pertanyaan terbuka
 
-- Apakah repo sudah ada?
-- Siapa yang menyediakan koordinat, foto, infografis, audio, dan sumber untuk 10 POI?
+- Siapa yang merekam audio narasi asli untuk 10 POI, dan siapa yang memeriksa konten sebelum ditandai `validated=true` (N01)?
 - Apakah HP uji tim menjalankan Android 13/14 ke atas?

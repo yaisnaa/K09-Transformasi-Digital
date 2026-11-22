@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PB10: ikon garis 24dp (DESIGN.md, Navigation). Warna diatur lewat tint di Compose. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M6,21a2,2 0,1 0,0 -4a2,2 0,0 0,0 4zM18,7a2,2 0,1 0,0 -4a2,2 0,0 0,0 4zM8,19h8a3,3 0,0 0,0 -6H8a3,3 0,0 1,0 -6h8"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+</vector>

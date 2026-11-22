@@ -15,6 +15,119 @@ interface AppStrings {
     val change: String
     val switchLanguage: String          // label tombol untuk pindah ke bahasa LAIN
 
+    // Navigasi utama dan Pengaturan (PB10)
+    val tabExplore: String
+    val tabRoute: String
+    val tabTrail: String
+    val tabHistory: String
+    val settingsTitle: String
+    val settingsVisitPlan: String
+    val settingsVisitPlanUsed: String
+    val settingsVisitPlanEmpty: String
+    fun settingsVisitPlanSummary(minutes: Int, interests: String): String
+    val settingsLanguage: String
+    val languageIndonesian: String
+    val languageEnglish: String
+    val settingsStoriesDetection: String
+    val autoplayHelp: String
+    val detectionLabel: String
+    val detectionHelp: String
+    val aboutContent: String
+    val notValidatedChip: String
+    val dummyChip: String
+    val aboutNotValidated: String
+    val aboutDummy: String
+    val aboutSources: String
+
+    // Peta (PB10 F3)
+    val chipDetecting: String
+    val chipLocationOff: String
+    val chipDetectionOff: String
+    val searchPlaceholder: String
+    val locationNotReadTitle: String
+    val manualAccessHint: String
+    val exploreWithoutLocation: String
+    val gpsOffTitle: String
+    val gpsOffBody: String
+    val idleTitle: String
+    fun nearestPlace(name: String): String
+    fun meters(value: Int): String
+    fun walkMinutes(value: Int): String
+    val directionsThere: String
+    val freeTimeRoute: String
+    fun approaching(name: String): String
+    val approachingHint: String
+    val listenStory: String
+    val pauseStory: String
+    val recenter: String
+
+    // POI Detail dan misi (PB10 F4)
+    val audioSampleChip: String
+    val audioAiChip: String
+    val keepsPlayingLocked: String
+    val quizDummyChip: String
+    fun pointsShort(value: Int): String
+
+    // Layar fitur (PB10 F5)
+    fun resultsCount(count: Int): String
+    val notFoundHint: String
+    val interestMultiHint: String
+    fun filterHelp(filter: PoiFilter): String
+    val minutesUnit: String
+    fun etaAt(time: String): String
+    fun recFinish(time: String, used: Int, duration: Int): String
+    fun recVisitNote(visit: Int): String
+    val recOrderNote: String
+    val changeDuration: String
+    val historySubtitle: String
+    val today: String
+    val emptyHistoryHint: String
+    val historyCleared: String
+    val undo: String
+    val detectedBackgroundShort: String
+    val detectedForegroundShort: String
+    val missionsDoneLabel: String
+    fun pointsLabel(value: Int): String
+    val resetConfirmTitle: String
+    val resetConfirmBody: String
+    val cancel: String
+    fun navTowards(name: String): String
+
+    // Onboarding dan izin (PB10 F6)
+    val onboardingTitle: String
+    val onboardingBody: String
+    val next: String
+    fun stepOf(step: Int, total: Int): String
+    val permTitle: String
+    val permLocationTitle: String
+    val permLocationBody: String
+    val permNotifTitle: String
+    val permNotifBody: String
+
+    // Akun lokal (CL-03)
+    val signInTitle: String
+    val signUpTitle: String
+    val authIntro: String
+    val fieldName: String
+    val fieldEmail: String
+    val fieldPassword: String
+    val fieldConfirmPassword: String
+    val signIn: String
+    val signUp: String
+    val noAccountYet: String
+    val haveAccount: String
+    val continueAsGuest: String
+    fun accountError(error: id.ac.itb.k09.historygo.account.AccountError): String
+    val settingsAccount: String
+    val guestMode: String
+    val guestModeHint: String
+    val signInOrUp: String
+    val signOut: String
+    val signOutConfirmTitle: String
+    val signOutConfirmBody: String
+    val showPassword: String
+    val hidePassword: String
+
     // Peta (Explore Map)
     val permissionNeeded: String
     val allowLocation: String
@@ -167,6 +280,124 @@ object IdStrings : AppStrings {
     override val back = "← Kembali"
     override val close = "Tutup"
     override val change = "Ubah"
+
+    override val tabExplore = "Jelajah"
+    override val tabRoute = "Rute"
+    override val tabTrail = "Jejak Sejarah"
+    override val tabHistory = "Riwayat"
+    override val settingsTitle = "Pengaturan"
+    override val settingsVisitPlan = "Rencana kunjungan"
+    override val settingsVisitPlanUsed = "Dipakai untuk rute rekomendasi"
+    override val settingsVisitPlanEmpty = "Belum diisi"
+    override fun settingsVisitPlanSummary(minutes: Int, interests: String) = "$minutes menit · $interests"
+    override val settingsLanguage = "Bahasa"
+    override val languageIndonesian = "Indonesia"
+    override val languageEnglish = "English"
+    override val settingsStoriesDetection = "Cerita dan deteksi"
+    override val autoplayHelp = "Cerita langsung dibacakan saat kamu tiba di sebuah bangunan."
+    override val detectionLabel = "Deteksi bangunan sekitar"
+    override val detectionHelp = "Matikan untuk menghentikan pembacaan GPS dan notifikasi."
+    override val aboutContent = "Tentang konten"
+    override val notValidatedChip = "Belum tervalidasi"
+    override val dummyChip = "Konten contoh"
+    override val aboutNotValidated = "Konten belum diperiksa dan disahkan oleh tim."
+    override val aboutDummy = "Teks sementara, bukan data sejarah asli. Akan diganti sebelum rilis."
+    override val aboutSources = "Sumber rujukan tercantum di bagian bawah setiap halaman tempat."
+
+    override val chipDetecting = "Mendeteksi bangunan"
+    override val chipLocationOff = "Lokasi mati"
+    override val chipDetectionOff = "Deteksi mati"
+    override val searchPlaceholder = "Cari bangunan, spot foto, kuliner"
+    override val locationNotReadTitle = "Lokasimu belum terbaca"
+    override val manualAccessHint = "Tanpa lokasi, kamu tetap bisa mengetuk penanda di peta atau mencari tempat."
+    override val exploreWithoutLocation = "Jelajah tanpa lokasi"
+    override val gpsOffTitle = "GPS sedang mati"
+    override val gpsOffBody = "Nyalakan lokasi agar posisimu terbaca dan cerita bangunan bisa muncul otomatis."
+    override val idleTitle = "Belum ada bangunan di dekatmu"
+    override fun nearestPlace(name: String) = "Terdekat: $name"
+    override fun meters(value: Int) = "$value m"
+    override fun walkMinutes(value: Int) = "±$value menit jalan"
+    override val directionsThere = "Arahkan ke sana"
+    override val freeTimeRoute = "Punya waktu luang? Lihat rute rekomendasi"
+    override fun approaching(name: String) = "Mendekati $name"
+    override val approachingHint = "Ceritanya muncul begitu kamu tiba."
+    override val listenStory = "Dengarkan cerita"
+    override val pauseStory = "Jeda cerita"
+    override val recenter = "Kembali ke posisi saya"
+
+    override val audioSampleChip = "Audio contoh"
+    override val audioAiChip = "Suara AI"
+    override val keepsPlayingLocked = "Tetap berputar saat layar terkunci"
+    override val quizDummyChip = "Soal contoh"
+    override fun pointsShort(value: Int) = "+$value poin"
+
+    override fun resultsCount(count: Int) = "$count tempat, terdekat dulu"
+    override val notFoundHint = "Coba kata lain, atau pilih kategori Semua."
+    override val interestMultiHint = "Boleh lebih dari satu."
+    override fun filterHelp(filter: PoiFilter) = when (filter) {
+        PoiFilter.HERITAGE -> "Bangunan dan situs bersejarah"
+        PoiFilter.SPOT_FOTO -> "Tempat ikonik untuk berfoto"
+        PoiFilter.ISTIRAHAT_KULINER -> "Ruang publik untuk rehat dan makan"
+    }
+    override val minutesUnit = "menit"
+    override fun etaAt(time: String) = "tiba ±$time"
+    override fun recFinish(time: String, used: Int, duration: Int) = "Selesai ±$time, memakai $used dari $duration menitmu"
+    override fun recVisitNote(visit: Int) = "Termasuk ±$visit menit di setiap tempat."
+    override val recOrderNote = "Urutan dimulai dari tempat terdekat. Waktu jalan diperkirakan dari jarak garis lurus."
+    override val changeDuration = "Ubah durasi"
+    override val historySubtitle = "Tercatat otomatis, juga saat HP ada di saku."
+    override val today = "Hari ini"
+    override val emptyHistoryHint = "Mulai berjalan di Jalan Asia Afrika. Setiap bangunan yang kamu datangi akan tercatat di sini."
+    override val historyCleared = "Riwayat dihapus"
+    override val undo = "Urungkan"
+    override val detectedBackgroundShort = "Terdeteksi di latar"
+    override val detectedForegroundShort = "Terdeteksi saat aplikasi terbuka"
+    override val missionsDoneLabel = "misi selesai"
+    override fun pointsLabel(value: Int) = "$value poin"
+    override val resetConfirmTitle = "Ulangi semua misi?"
+    override val resetConfirmBody = "Semua check-in, jawaban kuis, dan poin akan dihapus."
+    override val cancel = "Batal"
+    override fun navTowards(name: String) = "Menuju $name"
+
+    override val onboardingTitle = "Cerita datang saat kamu tiba."
+    override val onboardingBody = "Susuri Jalan Asia Afrika. Saat kamu berdiri di depan bangunan bersejarah, HistoryGo menampilkan ceritanya dan siap membacakannya untukmu."
+    override val next = "Lanjut"
+    override fun stepOf(step: Int, total: Int) = "Langkah $step dari $total"
+    override val permTitle = "Dua izin agar cerita bisa menemukanmu"
+    override val permLocationTitle = "Lokasi presisi"
+    override val permLocationBody = "Supaya HistoryGo tahu kamu sedang di depan bangunan mana. Dipakai selama deteksi berjalan, dan bisa kamu hentikan kapan saja."
+    override val permNotifTitle = "Notifikasi"
+    override val permNotifBody = "Memberi tahu saat kamu melewati bangunan bersejarah ketika HP ada di saku. Tanpa izin ini, ceritanya tetap tersimpan dan muncul saat aplikasi dibuka."
+
+    override val signInTitle = "Masuk"
+    override val signUpTitle = "Buat akun"
+    override val authIntro = "Simpan profil, riwayat, dan progres Jejak Sejarah di akunmu. Akun tersimpan di HP ini."
+    override val fieldName = "Nama"
+    override val fieldEmail = "Email"
+    override val fieldPassword = "Password"
+    override val fieldConfirmPassword = "Ulangi password"
+    override val signIn = "Masuk"
+    override val signUp = "Daftar"
+    override val noAccountYet = "Belum punya akun? Daftar"
+    override val haveAccount = "Sudah punya akun? Masuk"
+    override val continueAsGuest = "Lanjut tanpa akun"
+    override val settingsAccount = "Akun"
+    override val guestMode = "Mode tamu"
+    override val guestModeHint = "Progres tersimpan di HP ini tanpa akun."
+    override val signInOrUp = "Masuk / Daftar"
+    override val signOut = "Keluar"
+    override val signOutConfirmTitle = "Keluar dari akun?"
+    override val signOutConfirmBody = "Progresmu tetap tersimpan di akun ini dan muncul lagi saat kamu masuk."
+    override val showPassword = "Tampilkan password"
+    override val hidePassword = "Sembunyikan password"
+    override fun accountError(error: id.ac.itb.k09.historygo.account.AccountError) = when (error) {
+        id.ac.itb.k09.historygo.account.AccountError.NAME_EMPTY -> "Nama belum diisi."
+        id.ac.itb.k09.historygo.account.AccountError.EMAIL_INVALID -> "Format email belum benar."
+        id.ac.itb.k09.historygo.account.AccountError.PASSWORD_SHORT -> "Password minimal 8 karakter."
+        id.ac.itb.k09.historygo.account.AccountError.PASSWORD_MISMATCH -> "Password tidak sama."
+        id.ac.itb.k09.historygo.account.AccountError.EMAIL_TAKEN -> "Email sudah terdaftar di HP ini. Silakan masuk."
+        id.ac.itb.k09.historygo.account.AccountError.WRONG_CREDENTIALS -> "Email atau password salah."
+    }
     override val switchLanguage = "🌐 English"
 
     override val permissionNeeded = "HistoryGo butuh izin lokasi presisi untuk mengetahui bangunan bersejarah di sekitarmu."
@@ -210,16 +441,16 @@ object IdStrings : AppStrings {
     override val infoStyle = "Gaya arsitektur"
     override val infoRole = "Peran historis"
     override val infoEmpty = "belum diisi"
-    override val playNarration = "▶  Putar narasi"
-    override val pauseNarration = "⏸  Jeda narasi"
+    override val playNarration = "Putar narasi"
+    override val pauseNarration = "Jeda narasi"
 
-    override val historyTitle = "POI yang dilewati"
-    override val noHistory = "Belum ada POI yang dilewati."
+    override val historyTitle = "Tempat yang kamu lewati"
+    override val noHistory = "Belum ada tempat yang kamu lewati."
     override val clearHistory = "Hapus riwayat"
     override val detectedInBackground = " · terdeteksi di latar"
     override val detectedInForeground = " · terdeteksi saat aplikasi terbuka"
 
-    override val searchTitle = "Cari POI"
+    override val searchTitle = "Cari tempat"
     override val searchHint = "Nama tempat, mis. merdeka"
     override val filterAll = "Semua"
     override fun filterLabel(filter: PoiFilter) = when (filter) {
@@ -228,7 +459,7 @@ object IdStrings : AppStrings {
         PoiFilter.ISTIRAHAT_KULINER -> "Istirahat/Kuliner"
     }
     override val noLocationSortedByName = "Lokasi belum terbaca: hasil diurutkan menurut nama, tanpa jarak."
-    override val notFound = "POI tidak ditemukan."
+    override val notFound = "Tempat tidak ditemukan."
     override fun distanceAndWalk(meters: Int, minutes: Int) = "$meters m · ±$minutes menit jalan kaki"
 
     override val navArrived = "Tiba di tujuan"
@@ -261,16 +492,16 @@ object IdStrings : AppStrings {
     override val profileIntro = "HistoryGo akan menyarankan hingga 3 tempat yang cocok dan muat dalam waktumu."
     override val profileDurationQuestion = "Berapa lama waktumu di kawasan Asia Afrika?"
     override fun minutes(value: Int) = "$value menit"
-    override val profileInterestQuestion = "Apa yang ingin kamu lihat? (boleh lebih dari satu)"
+    override val profileInterestQuestion = "Apa yang ingin kamu lihat?"
     override val skip = "Lewati"
     override val seeRecommendations = "Lihat rekomendasi"
     override val recTitle = "Rekomendasi untukmu"
     override val recNeedProfile = "Isi profil singkat dulu supaya HistoryGo bisa memberi rekomendasi."
     override val fillProfile = "Isi profil"
     override val recNoLocation = "Lokasi belum terbaca: jarak dihitung dari tengah kawasan."
-    override fun recVisitedExcluded(count: Int) = "$count POI yang sudah dilewati tidak direkomendasikan lagi."
+    override fun recVisitedExcluded(count: Int) = "$count tempat yang sudah kamu lewati tidak direkomendasikan lagi."
     override fun recEmpty(duration: Int) =
-        "Belum ada POI yang muat dalam $duration menit, atau semua POI sudah dilewati. Coba durasi yang lebih panjang."
+        "Belum ada tempat yang muat dalam $duration menit, atau semua tempat sudah kamu lewati. Coba durasi yang lebih panjang."
     override fun recLine(meters: Int, walk: Int, finishAt: Int) =
         "$meters m · ±$walk menit jalan · selesai di menit ke-$finishAt"
     override val recMatchesInterest = "Sesuai minatmu"
@@ -283,15 +514,15 @@ object IdStrings : AppStrings {
     override val gameIntro = "Datangi setiap tempat, check-in di lokasi, lalu jawab kuisnya."
     override fun missionsDone(done: Int, total: Int) = "Misi selesai: $done/$total"
     override fun points(value: Int) = "Poin: $value"
-    override val badgeUnlocked = "🏅 Badge terbuka"
-    override val badgeLocked = "🔒 Badge terkunci"
+    override val badgeUnlocked = "Badge terbuka"
+    override val badgeLocked = "Badge terkunci"
     override val badgeName = "Penjelajah Jejak Sejarah"
     override val badgeUnlockedText = "Selamat! Kamu sudah menyelesaikan semua misi di koridor Asia Afrika."
     override fun badgeLockedText(remaining: Int) = "Selesaikan $remaining misi lagi untuk membuka badge ini."
     override val statusNotCheckedIn = "Belum check-in"
     override val statusQuizPending = "Sudah check-in · kuis belum dijawab"
-    override val statusQuizCorrect = "Check-in ✓ · kuis benar"
-    override val statusQuizWrong = "Check-in ✓ · kuis salah"
+    override val statusQuizCorrect = "Check-in · kuis benar"
+    override val statusQuizWrong = "Check-in · kuis salah"
     override val resetMissions = "Ulangi misi dari awal"
     override val missionCardTitle = "Misi Jejak Sejarah"
     override val checkInNoLocation = "Lokasi belum terbaca. Check-in hanya bisa dilakukan di lokasi."
@@ -304,7 +535,7 @@ object IdStrings : AppStrings {
     override val locationNotRead = "Lokasi belum terbaca."
     override fun answerCorrect(points: Int) = "Benar! +$points poin"
     override fun answerWrong(correctAnswer: String) = "Kurang tepat. Jawabannya: $correctAnswer"
-    override fun missionDone(correct: Boolean?) = "Misi selesai ✓" + when (correct) {
+    override fun missionDone(correct: Boolean?) = "Misi selesai" + when (correct) {
         true -> " · kuis dijawab benar"
         false -> " · kuis dijawab salah"
         null -> ""
@@ -327,6 +558,124 @@ object EnStrings : AppStrings {
     override val back = "← Back"
     override val close = "Close"
     override val change = "Edit"
+
+    override val tabExplore = "Explore"
+    override val tabRoute = "Route"
+    override val tabTrail = "History Trail"
+    override val tabHistory = "History"
+    override val settingsTitle = "Settings"
+    override val settingsVisitPlan = "Visit plan"
+    override val settingsVisitPlanUsed = "Used for recommended routes"
+    override val settingsVisitPlanEmpty = "Not set yet"
+    override fun settingsVisitPlanSummary(minutes: Int, interests: String) = "$minutes min · $interests"
+    override val settingsLanguage = "Language"
+    override val languageIndonesian = "Indonesia"
+    override val languageEnglish = "English"
+    override val settingsStoriesDetection = "Stories and detection"
+    override val autoplayHelp = "Stories play automatically when you arrive at a building."
+    override val detectionLabel = "Detect nearby buildings"
+    override val detectionHelp = "Turn off to stop GPS and notifications."
+    override val aboutContent = "About the content"
+    override val notValidatedChip = "Not yet validated"
+    override val dummyChip = "Sample content"
+    override val aboutNotValidated = "Content not yet reviewed and approved by the team."
+    override val aboutDummy = "Placeholder text, not real historical data. Will be replaced before release."
+    override val aboutSources = "References are listed at the bottom of each place page."
+
+    override val chipDetecting = "Detecting buildings"
+    override val chipLocationOff = "Location off"
+    override val chipDetectionOff = "Detection off"
+    override val searchPlaceholder = "Search buildings, photo spots, food"
+    override val locationNotReadTitle = "We can't read your location"
+    override val manualAccessHint = "Without location, you can still tap markers on the map or search for places."
+    override val exploreWithoutLocation = "Explore without location"
+    override val gpsOffTitle = "GPS is off"
+    override val gpsOffBody = "Turn on location so we can find you and stories appear automatically."
+    override val idleTitle = "No buildings near you yet"
+    override fun nearestPlace(name: String) = "Nearest: $name"
+    override fun meters(value: Int) = "$value m"
+    override fun walkMinutes(value: Int) = "~$value min walk"
+    override val directionsThere = "Get directions"
+    override val freeTimeRoute = "Have some time? See a recommended route"
+    override fun approaching(name: String) = "Approaching $name"
+    override val approachingHint = "The story appears as soon as you arrive."
+    override val listenStory = "Listen to the story"
+    override val pauseStory = "Pause story"
+    override val recenter = "Back to my location"
+
+    override val audioSampleChip = "Sample audio"
+    override val audioAiChip = "AI voice"
+    override val keepsPlayingLocked = "Keeps playing when the screen is locked"
+    override val quizDummyChip = "Sample question"
+    override fun pointsShort(value: Int) = "+$value pts"
+
+    override fun resultsCount(count: Int) = "$count places, nearest first"
+    override val notFoundHint = "Try another word, or choose All."
+    override val interestMultiHint = "Choose one or more."
+    override fun filterHelp(filter: PoiFilter) = when (filter) {
+        PoiFilter.HERITAGE -> "Historic buildings and sites"
+        PoiFilter.SPOT_FOTO -> "Iconic spots for photos"
+        PoiFilter.ISTIRAHAT_KULINER -> "Public spaces to rest and eat"
+    }
+    override val minutesUnit = "min"
+    override fun etaAt(time: String) = "arrive ~$time"
+    override fun recFinish(time: String, used: Int, duration: Int) = "Done ~$time, using $used of your $duration minutes"
+    override fun recVisitNote(visit: Int) = "Includes ~$visit min at each place."
+    override val recOrderNote = "The order starts from the nearest place. Walking time is estimated from straight-line distance."
+    override val changeDuration = "Change duration"
+    override val historySubtitle = "Recorded automatically, even with your phone in your pocket."
+    override val today = "Today"
+    override val emptyHistoryHint = "Start walking along Jalan Asia Afrika. Every building you visit will be recorded here."
+    override val historyCleared = "History cleared"
+    override val undo = "Undo"
+    override val detectedBackgroundShort = "Detected in the background"
+    override val detectedForegroundShort = "Detected while the app was open"
+    override val missionsDoneLabel = "missions done"
+    override fun pointsLabel(value: Int) = "$value pts"
+    override val resetConfirmTitle = "Restart all missions?"
+    override val resetConfirmBody = "All check-ins, quiz answers, and points will be deleted."
+    override val cancel = "Cancel"
+    override fun navTowards(name: String) = "Heading to $name"
+
+    override val onboardingTitle = "Stories arrive when you do."
+    override val onboardingBody = "Walk along Jalan Asia Afrika. When you stand in front of a historic building, HistoryGo shows its story and is ready to read it to you."
+    override val next = "Next"
+    override fun stepOf(step: Int, total: Int) = "Step $step of $total"
+    override val permTitle = "Two permissions so stories can find you"
+    override val permLocationTitle = "Precise location"
+    override val permLocationBody = "So HistoryGo knows which building you are standing in front of. Used while detection runs, and you can stop it any time."
+    override val permNotifTitle = "Notifications"
+    override val permNotifBody = "Lets you know when you pass a historic building while your phone is in your pocket. Without it, the story is still saved and shown when you open the app."
+
+    override val signInTitle = "Sign in"
+    override val signUpTitle = "Create account"
+    override val authIntro = "Keep your profile, history, and History Trail progress in your account. Accounts are stored on this phone."
+    override val fieldName = "Name"
+    override val fieldEmail = "Email"
+    override val fieldPassword = "Password"
+    override val fieldConfirmPassword = "Repeat password"
+    override val signIn = "Sign in"
+    override val signUp = "Sign up"
+    override val noAccountYet = "No account yet? Sign up"
+    override val haveAccount = "Already have an account? Sign in"
+    override val continueAsGuest = "Continue without an account"
+    override val settingsAccount = "Account"
+    override val guestMode = "Guest mode"
+    override val guestModeHint = "Progress is saved on this phone without an account."
+    override val signInOrUp = "Sign in / Sign up"
+    override val signOut = "Sign out"
+    override val signOutConfirmTitle = "Sign out?"
+    override val signOutConfirmBody = "Your progress stays saved in this account and comes back when you sign in."
+    override val showPassword = "Show password"
+    override val hidePassword = "Hide password"
+    override fun accountError(error: id.ac.itb.k09.historygo.account.AccountError) = when (error) {
+        id.ac.itb.k09.historygo.account.AccountError.NAME_EMPTY -> "Please enter your name."
+        id.ac.itb.k09.historygo.account.AccountError.EMAIL_INVALID -> "Please enter a valid email."
+        id.ac.itb.k09.historygo.account.AccountError.PASSWORD_SHORT -> "Password must be at least 8 characters."
+        id.ac.itb.k09.historygo.account.AccountError.PASSWORD_MISMATCH -> "Passwords do not match."
+        id.ac.itb.k09.historygo.account.AccountError.EMAIL_TAKEN -> "This email is already registered on this phone. Please sign in."
+        id.ac.itb.k09.historygo.account.AccountError.WRONG_CREDENTIALS -> "Wrong email or password."
+    }
     override val switchLanguage = "🌐 Bahasa Indonesia"
 
     override val permissionNeeded = "HistoryGo needs precise location access to find historic buildings around you."
@@ -371,10 +720,10 @@ object EnStrings : AppStrings {
     override val infoStyle = "Architectural style"
     override val infoRole = "Historical role"
     override val infoEmpty = "not filled yet"
-    override val playNarration = "▶  Play narration"
-    override val pauseNarration = "⏸  Pause narration"
+    override val playNarration = "Play narration"
+    override val pauseNarration = "Pause narration"
 
-    override val historyTitle = "Visited places"
+    override val historyTitle = "Places you passed"
     override val noHistory = "No places visited yet."
     override val clearHistory = "Clear history"
     override val detectedInBackground = " · detected in the background"
@@ -422,7 +771,7 @@ object EnStrings : AppStrings {
     override val profileIntro = "HistoryGo will suggest up to 3 places that match your interests and fit your time."
     override val profileDurationQuestion = "How much time do you have in the Asia Afrika area?"
     override fun minutes(value: Int) = "$value min"
-    override val profileInterestQuestion = "What would you like to see? (choose one or more)"
+    override val profileInterestQuestion = "What would you like to see?"
     override val skip = "Skip"
     override val seeRecommendations = "See recommendations"
     override val recTitle = "Recommended for you"
@@ -445,16 +794,16 @@ object EnStrings : AppStrings {
     override val gameIntro = "Visit each place, check in on site, then answer its quiz."
     override fun missionsDone(done: Int, total: Int) = "Missions completed: $done/$total"
     override fun points(value: Int) = "Points: $value"
-    override val badgeUnlocked = "🏅 Badge unlocked"
-    override val badgeLocked = "🔒 Badge locked"
+    override val badgeUnlocked = "Badge unlocked"
+    override val badgeLocked = "Badge locked"
     override val badgeName = "History Trail Explorer"
     override val badgeUnlockedText = "Congratulations! You have completed every mission in the Asia Afrika corridor."
     override fun badgeLockedText(remaining: Int) =
         "Complete $remaining more mission${if (remaining == 1) "" else "s"} to unlock this badge."
     override val statusNotCheckedIn = "Not checked in"
     override val statusQuizPending = "Checked in · quiz not answered"
-    override val statusQuizCorrect = "Checked in ✓ · quiz correct"
-    override val statusQuizWrong = "Checked in ✓ · quiz wrong"
+    override val statusQuizCorrect = "Checked in · quiz correct"
+    override val statusQuizWrong = "Checked in · quiz wrong"
     override val resetMissions = "Restart missions"
     override val missionCardTitle = "History Trail mission"
     override val checkInNoLocation = "Location not available. You can only check in on site."
@@ -467,7 +816,7 @@ object EnStrings : AppStrings {
     override val locationNotRead = "Location not available yet."
     override fun answerCorrect(points: Int) = "Correct! +$points points"
     override fun answerWrong(correctAnswer: String) = "Not quite. The answer is: $correctAnswer"
-    override fun missionDone(correct: Boolean?) = "Mission complete ✓" + when (correct) {
+    override fun missionDone(correct: Boolean?) = "Mission complete" + when (correct) {
         true -> " · quiz answered correctly"
         false -> " · quiz answered incorrectly"
         null -> ""

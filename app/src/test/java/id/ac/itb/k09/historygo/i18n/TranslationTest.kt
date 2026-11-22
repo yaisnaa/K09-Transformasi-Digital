@@ -70,6 +70,26 @@ class TranslationTest {
     }
 
     @Test
+    fun audioInggris_dipakaiDiModeEN_danAudioIndonesiaJadiCadangan() {
+        val pois = PoiParser.parse(
+            """[{"id":"PA","nama":"A","kategori":"Tes","audio":"audio/pa.mp3","en":{"audio":"audio/pa_en.mp3"}},
+                {"id":"PB","nama":"B","kategori":"Tes","audio":"audio/pb.mp3","en":{"nama":"B en"}}]"""
+        )
+        assertEquals("audio/pa_en.mp3", pois[0].localized(AppLanguage.EN).audio)
+        assertEquals("audio/pa.mp3", pois[0].localized(AppLanguage.ID).audio)
+        assertEquals("audio/pb.mp3", pois[1].localized(AppLanguage.EN).audio)   // belum ada audio EN
+    }
+
+    @Test
+    fun semuaFileAudio_diPoiJson_benarBenarAda() {
+        for (poi in pois) {
+            for (path in listOfNotNull(poi.audio, poi.en?.audio)) {
+                assertTrue("${poi.id}: file $path tidak ada", File("src/main/assets/$path").exists())
+            }
+        }
+    }
+
+    @Test
     fun localized_tanpaTerjemahan_kembaliKeBahasaIndonesia() {
         val poi = PoiParser.parse("""[{"id":"PX","nama":"Uji","kategori":"Tes"}]""").first()
         assertSame(poi, poi.localized(AppLanguage.EN))

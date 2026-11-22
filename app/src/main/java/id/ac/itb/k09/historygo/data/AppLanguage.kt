@@ -17,9 +17,10 @@ data class PoiTranslation(
     val ringkasan: String? = null,
     val infografis: Infografis? = null,
     val kuis: Kuis? = null,
+    val audio: String? = null,   // narasi bahasa Inggris, mis. "audio/p01_en.mp3"; null = pakai audio bahasa Indonesia
 )
 
-/** Mengembalikan POI dengan teks dalam bahasa yang dipilih. ID, koordinat, foto, dan sumber tidak berubah. */
+/** Mengembalikan POI dengan teks dan audio dalam bahasa yang dipilih. ID, koordinat, foto, dan sumber tidak berubah. */
 fun Poi.localized(language: AppLanguage): Poi {
     val t = en
     if (language == AppLanguage.ID || t == null) return this
@@ -30,5 +31,6 @@ fun Poi.localized(language: AppLanguage): Poi {
         ringkasan = t.ringkasan ?: ringkasan,
         infografis = t.infografis ?: infografis,
         kuis = t.kuis ?: kuis,
+        audio = t.audio ?: audio,
     )
 }

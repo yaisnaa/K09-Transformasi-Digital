@@ -17,6 +17,13 @@ object TriggerConfig {
     /** Seberapa sering GPS dibaca (milidetik). 3_000 = 3 detik. */
     const val LOCATION_INTERVAL_MS = 3_000L
 
+    /**
+     * State "mendekati POI" (PB10): POI terdekat yang jaraknya di atas ENTRY_RADIUS_M dan paling jauh
+     * sejauh ini (meter) ditampilkan sebagai pita "Mendekati …" di peta. Hanya tampilan, tidak memicu
+     * kartu atau notifikasi. Usulan 100 m, lihat DECISIONS.md.
+     */
+    const val APPROACH_DISTANCE_M = 100.0
+
     /** Bacaan dengan akurasi lebih buruk dari ini dianggap tidak valid (meter). */
     const val MAX_ACCURACY_M = 30.0
 
