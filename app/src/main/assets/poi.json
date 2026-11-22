@@ -16,7 +16,8 @@
       "gayaArsitektur": "Art Deco",
       "peranHistoris": "Tempat Konferensi Asia Afrika 1955, gedung Konstituante hingga 1959, Museum KAA sejak 1980"
     },
-    "audio": "audio/placeholder.wav",
+    "audio": "audio/p01.mp3",
+    "audioAi": true,
     "kuis": {
       "pertanyaan": "Sebelum bernama Gedung Merdeka, gedung ini dibangun pada 1895 sebagai apa?",
       "pilihan": ["Sociëteit Concordia", "Kantor Pos dan Telegraf", "Hotel Homann", "Penjara kolonial"],
@@ -62,7 +63,8 @@
       "gayaArsitektur": "Bola dunia pelat tembaga di atas dinding bertuliskan nama negara peserta KAA",
       "peranHistoris": "Monumen peringatan 60 tahun Konferensi Asia Afrika (1955-2015)"
     },
-    "audio": "audio/placeholder.wav",
+    "audio": "audio/p02.mp3",
+    "audioAi": true,
     "kuis": {
       "pertanyaan": "Tugu Bola Dunia dibangun pada 2015 untuk memperingati berapa tahun Konferensi Asia Afrika?",
       "pilihan": ["25 tahun", "50 tahun", "60 tahun", "70 tahun"],
@@ -110,7 +112,8 @@
       "gayaArsitektur": "Art Deco",
       "peranHistoris": "Penginapan tamu penting Konferensi Asia Afrika 1955"
     },
-    "audio": "audio/placeholder.wav",
+    "audio": "audio/p03.mp3",
+    "audioAi": true,
     "kuis": {
       "pertanyaan": "Siapa arsitek bangunan Hotel Savoy Homann yang selesai pada 1939?",
       "pilihan": ["C.P. Wolff Schoemaker", "J. Ven Gendt", "Albert Aalbers", "H.W. Daendels"],
@@ -156,7 +159,8 @@
       "gayaArsitektur": "Art Deco",
       "peranHistoris": "Penginapan tamu Konferensi Asia Afrika 1955; Sukarno muda ikut dalam renovasinya"
     },
-    "audio": "audio/placeholder.wav",
+    "audio": "audio/p04.mp3",
+    "audioAi": true,
     "kuis": {
       "pertanyaan": "Siapa tokoh yang ikut menjadi juru gambar saat Hotel Preanger dibangun ulang pada 1920-an?",
       "pilihan": ["Ho Chi Minh", "Sukarno", "Gatot Mangkoepraja", "R.A. Wiranatakusumah II"],
@@ -202,7 +206,8 @@
       "gayaArsitektur": null,
       "peranHistoris": "Penanda titik awal Kota Bandung dan pengingat pembangunan Jalan Raya Pos era Daendels (1810)"
     },
-    "audio": "audio/placeholder.wav",
+    "audio": "audio/p05.mp3",
+    "audioAi": true,
     "kuis": {
       "pertanyaan": "Menurut kisah yang beredar, apa yang ditancapkan Daendels di titik ini pada 1810?",
       "pilihan": ["Bendera", "Patok batu", "Pedang", "Tongkat"],
@@ -250,7 +255,8 @@
       "gayaArsitektur": "Art Deco geometris",
       "peranHistoris": "Kantor pos dan telegraf sejak masa kolonial, masih beroperasi; cagar budaya nasional (2017)"
     },
-    "audio": "audio/placeholder.wav",
+    "audio": "audio/p06.mp3",
+    "audioAi": true,
     "kuis": {
       "pertanyaan": "Apa gaya arsitektur Kantor Pos Besar Bandung yang selesai dibangun pada 1931?",
       "pilihan": ["Art Deco geometris", "Gotik", "Rumah adat Sunda", "Neoklasik Yunani"],
@@ -298,7 +304,8 @@
       "gayaArsitektur": null,
       "peranHistoris": "Pusat kota tradisional Bandung dan ruang publik warga"
     },
-    "audio": "audio/placeholder.wav",
+    "audio": "audio/p07.mp3",
+    "audioAi": true,
     "kuis": {
       "pertanyaan": "Sejak penataan pada 2014, taman Alun-Alun Bandung beralaskan apa?",
       "pilihan": ["Pasir pantai", "Paving batu", "Rumput sintetis", "Rumput alami"],
@@ -346,7 +353,8 @@
       "gayaArsitektur": "Timur Tengah dengan ornamen seni Islam Sunda",
       "peranHistoris": "Pusat kegiatan keagamaan kota; tempat salat delegasi Konferensi Asia Afrika 1955"
     },
-    "audio": "audio/placeholder.wav",
+    "audio": "audio/p08.mp3",
+    "audioAi": true,
     "kuis": {
       "pertanyaan": "Berapa tinggi menara kembar Masjid Raya Bandung?",
       "pilihan": ["45 meter", "81 meter", "99 meter", "120 meter"],
@@ -393,7 +401,8 @@
       "gayaArsitektur": null,
       "peranHistoris": "Ruang publik tepi sungai dan bagian dari upaya memulihkan Sungai Cikapundung"
     },
-    "audio": "audio/placeholder.wav",
+    "audio": "audio/p09.mp3",
+    "audioAi": true,
     "kuis": {
       "pertanyaan": "Melalui program apa Cikapundung Riverspot dibangun pada 2013-2015?",
       "pilihan": ["Program Kota Tanpa Kumuh", "Bandung Smart City", "Gerakan Pungut Sampah", "Cikapundung Rehabilitation Program"],
@@ -440,7 +449,8 @@
       "gayaArsitektur": null,
       "peranHistoris": "Tempat Sukarno ditahan dan menyusun pleidoi Indonesia Menggugat (1929-1930)"
     },
-    "audio": "audio/placeholder.wav",
+    "audio": "audio/p10.mp3",
+    "audioAi": true,
     "kuis": {
       "pertanyaan": "Pidato pembelaan apa yang disusun Sukarno di sel nomor 5 Penjara Banceuy?",
       "pilihan": ["Indonesia Menggugat", "Dasasila Bandung", "Lahirnya Pancasila", "Di Bawah Bendera Revolusi"],

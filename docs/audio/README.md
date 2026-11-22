@@ -1,6 +1,8 @@
 # Narasi Audio POI (F04)
 
-Narasi dibuat dengan text-to-speech ElevenLabs dari naskah di `naskah.md`. Karena suaranya buatan AI, setiap POI yang memakai narasi ini diberi `"audioAi": true` di `poi.json`. Aplikasi lalu menampilkan label "Suara AI" di bar narasi. Catat juga pemakaian ElevenLabs di AI & Tools Disclosure.
+Narasi dibuat dengan text-to-speech ElevenLabs dari naskah di `naskah.md`.
+
+Status saat ini: narasi bahasa Indonesia P01-P10 sudah ada (`p01.mp3` … `p10.mp3`). Semuanya dibuat lewat situs web ElevenLabs dengan suara Library **Maya** (Voice ID `U3dExJoUNcmTY5H6GMuG`) dan model Eleven Multilingual v2, memakai naskah tanpa perubahan. Narasi bahasa Inggris belum ada, jadi mode EN masih memutar narasi bahasa Indonesia. Akun gratis tidak bisa memakai suara Library lewat API, jadi `tools/generate_narration.py` hanya bisa dipakai dengan paket berbayar; dengan akun gratis, buat audionya lewat situs web. Karena suaranya buatan AI, setiap POI yang memakai narasi ini diberi `"audioAi": true` di `poi.json`. Aplikasi lalu menampilkan label "Suara AI" di bar narasi. Catat juga pemakaian ElevenLabs di AI & Tools Disclosure.
 
 ## Persiapan (sekali saja)
 
