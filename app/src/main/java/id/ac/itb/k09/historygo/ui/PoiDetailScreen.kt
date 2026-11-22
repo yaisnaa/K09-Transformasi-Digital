@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import id.ac.itb.k09.historygo.R
 import id.ac.itb.k09.historygo.audio.rememberNarration
 import id.ac.itb.k09.historygo.data.Infografis
+import id.ac.itb.k09.historygo.data.YearTextSplitter
 import id.ac.itb.k09.historygo.data.Poi
 import id.ac.itb.k09.historygo.i18n.LocalStrings
 import id.ac.itb.k09.historygo.i18n.rememberPois
@@ -309,10 +310,8 @@ private fun InfografisPlaque(info: Infografis?) {
     val s = LocalStrings.current
     val colors = MaterialTheme.colorScheme
     // "1895 (dirombak 1926, diperluas 1940)" -> angka besar "1895" + keterangan kecil.
-    val year = info?.tahunDibangun
-    val yearMatch = year?.let { Regex("""^(\S+)\s*\((.+)\)$""").find(it.trim()) }
-    val yearMain = yearMatch?.groupValues?.get(1) ?: year
-    val yearNote = yearMatch?.groupValues?.get(2)?.replaceFirstChar { it.uppercase() }
+    // Teks tanpa tahun di awal ("Awal abad ke-19; ...") tampil sebagai teks biasa.
+    val year = YearTextSplitter.split(info?.tahunDibangun)
 
     val shape = MaterialTheme.shapes.medium
     Column(
@@ -320,7 +319,13 @@ private fun InfografisPlaque(info: Infografis?) {
     ) {
         // Tinggi baris mengikuti sel tertinggi, supaya garis tengah lurus dan teks tidak terpotong.
         Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
-            PlaqueCell(s.infoYearBuilt, yearMain, yearNote, big = true, modifier = Modifier.weight(1f))
+            PlaqueCell(
+                s.infoYearBuilt,
+                value = year.main ?: year.note,
+                note = if (year.main != null) year.note else null,
+                big = year.main != null,
+                modifier = Modifier.weight(1f),
+            )
             Box(Modifier.width(1.dp).fillMaxHeight().background(colors.outlineVariant))
             val style = info?.gayaArsitektur
             PlaqueCell(s.infoStyle, style, null, big = (style?.length ?: 0) <= 14, modifier = Modifier.weight(1f))
