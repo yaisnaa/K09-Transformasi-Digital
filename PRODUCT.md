@@ -68,8 +68,8 @@ Istilah: POI (Point of Interest; di teks untuk wisatawan disebut "tempat"), "POI
 
 ## Evidence on Hand
 
-- `app/src/main/assets/poi.json`: 10 POI (P01-P10) dengan ringkasan, infografis, dan sumber. Semua `validated=false` dan `verified=false`. P02 berisi konten dummy (`dummy=true`). Koordinat P06-P10 masih perkiraan (`koordinatDummy=true`).
-- `app/src/main/assets/foto/`: foto P01-P04 dan P06-P08 dari Wikimedia Commons dengan atribusi di field `sumber`. P05, P09, P10 belum punya foto.
+- `app/src/main/assets/poi.json`: 10 POI (P01-P10) dengan ringkasan, infografis, dan sumber. Semua `validated=false` dan `verified=false`. Tidak ada lagi konten dummy: P02 sudah bersumber (detikNews, Medcom.id, detikTravel). Koordinat P06-P10 diambil dari OpenStreetMap (titik tengah objek, tautan di `sumber`), belum dicek di lapangan.
+- `app/src/main/assets/foto/`: foto P01-P08 dan P10 dari Wikimedia Commons dengan atribusi di field `sumber`. P09 (Cikapundung Riverspot) belum punya foto karena belum ada foto berlisensi bebas yang memang memotret lokasi itu.
 - `app/src/main/assets/audio/placeholder.wav`: semua POI masih memakai audio placeholder; narasi asli belum ada.
 - Kuis: setiap POI di `poi.json` punya satu soal (`kuis`: pertanyaan, 4 pilihan, indeks jawaban). Soal P02 bertanda `dummy=true`.
 - Terjemahan Inggris: field `en` di setiap POI (nama, kategori, titik pemicu, ringkasan, infografis, kuis) dan teks antarmuka di `app/src/main/java/id/ac/itb/k09/historygo/i18n/AppStrings.kt`. Status pemeriksaan terjemahan oleh tim belum tercatat.
