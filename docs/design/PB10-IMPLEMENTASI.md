@@ -27,7 +27,7 @@ Panduan kerja untuk menerapkan desain Baseline v3 ke kode. Dikerjakan berurutan 
 | Warna | Skema statis terang dan gelap, tanpa Dynamic Color | Palet brand harus sama di semua HP |
 | Font | DM Serif Display, Inter, IBM Plex Mono dibundel di `res/font/` | Tidak bergantung koneksi; lisensi OFL |
 | Navigasi layar | Tetap state di `MainActivity` (sealed class `Screen`) + `BackHandler`, tanpa library navigasi baru | Perubahan kecil dari pola sekarang |
-| Jarak "mendekati" | Parameter baru `APPROACH_DISTANCE_M` di `TriggerConfig.kt`, usulan **100 m** | Syarat PB10 (state "mendekati"). **Perlu konfirmasi tim**, lalu dicatat di `DECISIONS.md` |
+| Jarak "mendekati" | Parameter baru `APPROACH_DISTANCE_M` di `TriggerConfig.kt`, **100 m** | Syarat PB10 (state "mendekati"). Disetujui tim 2026-11-22, tercatat di `DECISIONS.md` |
 | Jam tiba di rekomendasi | Ditampilkan "tiba ±14.07" (jam sekarang + menit selesai) | Hasil critique: "selesai di menit ke-7" ambigu. Perubahan tampilan, bukan requirement |
 
 ## Fase
@@ -117,7 +117,6 @@ Belum teruji (butuh HP fisik, PB07/PB14):
 
 Masih terbuka:
 - Ekspor PNG artboard v3 ke `docs/design/baseline-v3/` untuk perbandingan berdampingan
-- Konfirmasi seluruh tim untuk `APPROACH_DISTANCE_M` = 100 m (DECISIONS.md)
 - Acceptance F01-F06 lengkap per butir (compliance matrix) dan entri Development Log
 
 ## Cara menguji di emulator
